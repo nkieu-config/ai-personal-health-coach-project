@@ -8,7 +8,7 @@
 
 | รหัส | Requirement | ระดับ |
 |---|---|---|
-| FR-0.1 | สมัคร/ล็อกอินด้วย email+password (Supabase Auth) | M |
+| FR-0.1 | สมัคร/ล็อกอินด้วย **Google OAuth** และ email+password (Supabase Auth) — ดู ADR-0005 | M |
 | FR-0.2 | Onboarding เก็บบริบทชีวิต: สถานะ (นักศึกษา/first jobber), วันที่มีเรียน/งานเช้า, ช่วง deadline, ข้อจำกัด | M |
 | FR-0.3 | แสดง safety disclaimer ("wellness coach ไม่ใช่แพทย์") ตอน onboarding และผู้ใช้ต้องกดรับทราบ | M |
 
