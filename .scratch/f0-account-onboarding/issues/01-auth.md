@@ -12,6 +12,7 @@ Refs: FR-0.1
 - [x] Middleware กันหน้า in-app ทั้งหมดถ้ายังไม่ล็อกอิน (ใช้ proxy เดิม — verify แล้วว่า redirect ถูก)
 - [x] ผู้ใช้ใหม่ที่ยังไม่ผ่าน onboarding ถูก redirect ไป onboarding
 - [x] ล็อกเอาต์จากเมนู
+- [x] ล็อกอินด้วย Google OAuth — ปุ่ม + `/auth/callback` route (โค้ดเสร็จ; ต้อง config Google Cloud + Supabase provider ถึงจะใช้ได้จริง — ดู ADR-0005)
 
 ## Acceptance criteria
 
@@ -35,3 +36,7 @@ Heads-up ก่อนลงมือ:
 Verify: `npm run build` + `lint` ผ่าน; smoke test dev — `/login` `/register` `/` = 200 มีฟอร์ม, `/onboarding` + route ที่ไม่มี (เช่น `/dashboard`) แบบไม่ล็อกอิน → 307 เด้ง `/login` (proxy guard = AC ข้อ 2 ผ่าน)
 
 ยังเหลือ (ทำบน Vercel preview ของ PR): click-through จริงในเบราว์เซอร์ สมัคร→onboarding→home→logout (AC ข้อ 1 "จบเส้นบน production") — server action POST เทสต์ curl ไม่ได้ ⚠️ ก่อนเทส ยืนยัน Supabase ปิด "Confirm email" (ไม่งั้น signUp ไม่ได้ session)
+
+2026-07-07 (เพิ่ม Google OAuth — ตามที่ A ขอ): เปิด **ทั้ง Google + email/password** (ADR-0005) ไฟล์เพิ่ม: `signInWithGoogle` ใน actions.ts, `components/auth/google-button.tsx`, `app/auth/callback/route.ts`; หน้า login/register มีปุ่ม "ดำเนินการต่อด้วย Google" + ตัวคั่น
+Verify: build + lint ผ่าน; smoke test — ปุ่ม Google เรนเดอร์ทั้ง login/register, `/auth/callback` ไม่มี code → redirect `/login?error=oauth` (dev ใช้ http://localhost ถูกต้อง)
+⚠️ **ยังใช้ Google ล็อกอินจริงไม่ได้จนกว่าจะ config** (นอกโค้ด — ทำไม่ได้จาก repo): Google Cloud OAuth client + Supabase enable Google provider + Redirect URLs allowlist ดูขั้นตอนใน ADR-0005 / คอมเมนต์ของ A ในกลุ่ม

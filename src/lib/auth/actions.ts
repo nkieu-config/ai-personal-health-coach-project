@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { hasCompletedOnboarding } from "@/lib/auth/onboarding";
@@ -71,4 +72,23 @@ export async function signOut() {
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
   redirect("/login");
+}
+
+async function siteOrigin() {
+  const store = await headers();
+  const host = store.get("x-forwarded-host") ?? store.get("host") ?? "localhost:3000";
+  const proto = store.get("x-forwarded-proto") ?? (host.startsWith("localhost") ? "http" : "https");
+  return `${proto}://${host}`;
+}
+
+export async function signInWithGoogle() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${await siteOrigin()}/auth/callback` },
+  });
+  if (error || !data.url) {
+    redirect("/login?error=oauth");
+  }
+  redirect(data.url);
 }
