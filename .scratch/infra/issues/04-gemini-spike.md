@@ -8,7 +8,7 @@ Refs: ADR-0003, docs/07 (system prompt กลาง)
 
 ## งาน
 
-- [x] สมัคร Gemini API key (free tier) — key กลางของทีม เก็บใน env (`.env.local`, ยืนยันใช้ได้จริง)
+- [x] สมัคร Gemini API key (free tier) — **ของแต่ละคนเอง** เก็บใน env (`.env.local`, ยืนยันใช้ได้จริง)
 - [x] สร้าง `lib/ai`: ฟังก์ชันเดียวรับ (systemPrompt, messages | prompt, jsonSchema?) คืนข้อความ/JSON
 - [x] แนบ system prompt guardrail จาก docs/07 เป็น default ทุก call
 - [x] ลองยิงภาษาไทย 5 เคส รวมเคสต้องห้าม (ขอแผนลดน้ำหนัก, ถามวินิจฉัยโรค) — บันทึกผลใน Comments
@@ -44,3 +44,5 @@ Refs: ADR-0003, docs/07 (system prompt กลาง)
 5. Tuning เล็กน้อย: เคส baseline โมเดลถามกลับเยอะกว่าจะเสนอ tip รูปธรรม — C พิจารณาปรับ prompt ให้เสนอ 1 ก้าวเล็กควบคู่คำถาม
 
 Harness: `npm run test:ai` (ต้องมี `.env.local` ที่มี GEMINI_API_KEY) — เพิ่ม case ได้ที่ `scripts/test-ai.ts`
+
+2026-07-07 (นโยบาย key): เปลี่ยนจาก "key กลางของทีม" → **dev แต่ละคนใช้ key ของตัวเอง** ใน `.env.local` เพื่อกันแย่ง rate limit free tier ตอนพัฒนา ส่วน production บน Vercel ยังใช้ key เดียว (ดู ADR-0003)

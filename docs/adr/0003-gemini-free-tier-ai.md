@@ -20,3 +20,4 @@
 - Safety guardrail ทำผ่าน system prompt กลางที่ใช้ร่วมทุก feature (ดู [../08-safety-privacy.md](../08-safety-privacy.md))
 - ความเสี่ยง rate limit ช่วง demo — บรรเทาด้วย: (1) cache ผลลัพธ์ pattern/reflection ใน DB (2) service module สลับไป Typhoon ได้ (3) เตรียม screenshot สำรองตอน pitch
 - API key เก็บใน environment variable ฝั่ง server เท่านั้น ห้ามเรียก Gemini จาก client
+- **การจัดสรร key (อัปเดต 2026-07-07):** dev แต่ละคนใช้ Gemini key ของตัวเองใน `.env.local` เพื่อกันแย่ง rate limit ตอนพัฒนา/รัน `npm run test:ai`; production บน Vercel ใช้ **key เดียว**ที่ตั้งใน Vercel env — dogfooding บน prod แชร์ key นั้น รับได้เพราะทราฟฟิกเบา (check-in ไม่กี่ครั้ง/วัน/คน) ถ้าเข้าใกล้ลิมิตให้พึ่ง mitigation เดิม (cache ผลใน DB + สลับ provider ได้) — ไม่แยก key เฉพาะ prod
