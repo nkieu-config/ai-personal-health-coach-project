@@ -2,6 +2,8 @@
 
 AI Personal Health Coach สำหรับนักศึกษาและ first jobber (Mission #5) — wellness coach ที่ช่วยเห็น pattern กิน–นอน–เคลื่อนไหว และตั้ง micro goal ที่ทำได้จริง ไม่ใช่ระบบวินิจฉัยโรค
 
+**Production:** https://personal-healthcoach.vercel.app/ (deploy อัตโนมัติจาก branch `main`)
+
 เอกสารทั้งหมดอยู่ที่ [docs/README.md](docs/README.md) | ศัพท์กลางที่ต้องใช้: [CONTEXT.md](CONTEXT.md) | งาน: [.scratch/BOARD.md](.scratch/BOARD.md)
 
 ## Stack
@@ -35,6 +37,17 @@ Next.js 16 (App Router, TypeScript) + Tailwind v4 + shadcn/ui + Supabase + Gemin
    ```bash
    npm run dev
    ```
+
+## คำสั่งที่มี
+
+| คำสั่ง | ทำอะไร |
+|---|---|
+| `npm run dev` | dev server |
+| `npm run build` / `npm run lint` | build production / เช็ค lint |
+| `npm run verify:db` | ยืนยัน schema + RLS ของ Supabase (ตารางครบ, anon เข้าไม่ได้, user เห็นข้ามกันไม่ได้) รันซ้ำได้หลังแก้ schema |
+| `npm run test:ai` | ยิงเคสภาษาไทยผ่าน `lib/ai` เช็ค guardrail + latency; เจาะเคสเดียวด้วย `npm run test:ai -- <id/category>` |
+
+`verify:db` และ `test:ai` ต้องมี `.env.local` ครบ — เป็นฐานของงาน QA-01 (safety checklist) ตอน Sprint 3
 
 ## แผนที่โปรเจกต์
 

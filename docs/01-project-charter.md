@@ -4,6 +4,8 @@
 
 **HealthCoach** — AI Personal Health Coach for Students and First Jobbers (Mission #5)
 
+Production: https://personal-healthcoach.vercel.app/ · Repo: https://github.com/nkieu-config/ai-personal-health-coach-project
+
 ## เป้าหมาย
 
 สร้าง prototype ระบบ AI wellness coach ที่ช่วยนักศึกษา/first jobber เห็น pattern พฤติกรรม กิน–นอน–เคลื่อนไหว ของตัวเอง และเริ่มปรับพฤติกรรมจาก micro goal เล็ก ๆ ที่ทำได้จริง โดยไม่ตัดสิน ไม่กดดันเรื่องรูปร่าง และไม่เกินขอบเขตทางการแพทย์ — พร้อมนำเสนอวัน **Pitching Day 30 ก.ค. 2026**
