@@ -1,76 +1,93 @@
-# Board รวม — HealthCoach (อัปเดตล่าสุด: 6 ก.ค. 2026)
+# Board — HealthCoach (อัปเดต 12 ก.ค. 2026)
 
-มุมมองรวมของ issues ทั้งหมดใน `.scratch/` เรียงตาม sprint — สถานะจริงอยู่ในไฟล์ issue แต่ละใบ (`Status:` line) ไฟล์นี้เป็นแค่ index สำหรับ PM ไล่ดูภาพรวม
+ภาพรวมว่าใครทำอะไร — **วิธีเริ่มงานอยู่ใน kickoff comment ของ issue แรกของสายตัวเอง** (บอกครบว่าเริ่มตรงไหน มีอะไรก๊อปใช้ได้บ้าง)
 
-## Sprint 0 (6–8 ก.ค.) — Foundation
+## สถานะ: เสร็จ 7 / 37 งาน
 
-| Issue | งาน | Owner |
-|---|---|---|
-| infra/01 | Repo + Next.js scaffold | D |
-| infra/02 | Supabase schema + RLS | D |
-| infra/03 | Vercel deploy | D |
-| infra/04 | Gemini spike + lib/ai | C |
-| infra/05 | Wireframes | A + B |
+- ✅ **Sprint 0 (infra)** — repo, Supabase + RLS, Vercel, Gemini พร้อมหมด
+- ✅ **F0** — สมัคร/ล็อกอิน (Google + รหัสผ่าน), onboarding, disclaimer → **ใช้งานได้จริงบน prod แล้ว**
+- ⚠️ **F1 check-in** — เลย deadline (12 ก.ค.) แล้ว **เร่งด่วนที่สุด** ทุกคนรอเริ่ม dogfooding
 
-## Sprint 1 (9–15 ก.ค.) — Check-in + โครง ⚠️ check-in ต้องขึ้น production 12 ก.ค.
+## ใครทำอะไร — 4 สาย ทำพร้อมกันได้ ไม่ต้องรอกัน
 
-| Issue | งาน | Owner |
-|---|---|---|
-| f0/01 | Auth | D |
-| f0/02 | Onboarding + โปรไฟล์ | A |
-| f0/03 | Safety disclaimer 🔒 | A |
-| f1/01 | Check-in form ⚠️ | A |
-| f1/02 | Check-in API upsert ⚠️ | A |
-| f1/03 | แก้ย้อนหลัง + backfill | A |
-| f1/04 | สรุปหลังบันทึก | A |
-| f2/01 | Dashboard layout | B |
-| f2/02 | กราฟ 3 pillars | B |
-| f3/01 | lib/patterns + tests | C |
-| f3/02 | System prompt guardrail 🔒 | C |
-| f7/01 | หน้า privacy 🔒 | D |
-| f7/02 | ลบข้อมูล/บัญชี 🔒 | D |
+| สาย | ตอนนี้ใครถือ | งานตามลำดับ | โฟลเดอร์ของสาย | Branch |
+| --- | --- | --- | --- | --- |
+| **Check-in** ⚠️ | **A** → ส่งต่อเพื่อน | F1-01 form → F1-02 API → *(ส่งไม้)* → F1-03 → F1-04 | `app/checkin/` | `feat/f1-checkin` |
+| **Dashboard** | **B** | F2-01 layout → F2-02 กราฟ | `app/dashboard/` | `feat/f2-dashboard` |
+| **AI** | **C** | F3-01 patterns → F3-02 guardrail | `lib/patterns/`, `lib/ai/` | `feat/f3-patterns` |
+| **Privacy** | **D** | F7-01 หน้า privacy → F7-02 ลบข้อมูล | `app/settings/` | `feat/f7-privacy` |
+| **Seed data** | **A** (หลังทำ F1-02 เสร็จ) | INFRA-06 seed script | `scripts/seed.ts` | `feat/seed` |
 
-## Sprint 2 (16–22 ก.ค.) — AI ทั้งหมด
+### แผนสลับคน (ตกลง 12 ก.ค.)
 
-| Issue | งาน | Owner |
-|---|---|---|
+1. **A ทำ F1-01 + F1-02 ให้ขึ้น prod ก่อน** (เร่งด่วน — ปลดล็อก dogfooding ให้ทั้งทีม)
+2. จากนั้น **A ย้ายไปทำ seed script** (งานนี้ต้องใช้สิทธิ์ Supabase ที่ A ถืออยู่)
+3. **เพื่อนรับ F1-03 + F1-04 ต่อ** — ตอนนั้นฟอร์มมีแล้วให้ดูเป็นตัวอย่าง หยิบทำง่าย
+
+## กติกา 5 ข้อ
+
+1. **วันแรก:** clone → ขอ `.env.local` จาก A → `npm run dev` ให้ขึ้นได้ → **เปิด PR จิ๋ว 1 อันลองระบบก่อน** (ยังไม่มีใครเคย push เลย ลองให้ชินก่อนลงงานจริง)
+2. **1 สาย = 1 branch** · PR เล็ก merge บ่อย **อย่าดองเกิน 2 วัน**
+3. **อยู่ในโฟลเดอร์ของสายตัวเอง** — ถ้าต้องแตะของคนอื่น หรือเพิ่ม npm package ให้ **แจ้งกลุ่มก่อน**
+4. **ห้ามแก้ฐานข้อมูลเอง** — ถ้าเจอว่าต้องเพิ่ม/แก้คอลัมน์ ให้แจ้งกลุ่ม แล้วให้ **A เขียน migration ใหม่** (DB ใช้ร่วมกันทั้งทีม ถ้าต่างคนต่างแก้จะพังหมด)
+5. **ส่งไม้ต่อ (ตอนสลับคน):** คนเดิมเขียน comment ใน issue ว่า **ทำถึงไหน / เหลืออะไร / ติดอะไร** → merge PR ที่ค้างให้จบ → แก้ช่อง "ตอนนี้ใครถือ" ในตารางข้างบน
+
+## จุดที่ต้องรอกัน (มีแค่ 3 จุด นอกนั้นอิสระ)
+
+1. **F1 ขึ้น prod** → ทุกคนเริ่มบันทึก check-in จริง (dogfooding)
+2. **Seed script เสร็จ (~15 ก.ค.)** → B เลิกใส่ข้อมูลมือ มาใช้ seed แทน
+3. **C ประกาศรูปแบบ JSON ของ insight (ต้น Sprint 2)** → B เอาไปทำ pattern table ต่อ
+
+---
+
+## รายการงานทั้งหมด
+
+### Sprint 1 (ถึง 15 ก.ค.)
+
+| Issue | งาน | คนถือ | สถานะ |
+| --- | --- | --- | --- |
+| f0/01–03 | Auth + onboarding + disclaimer | A | ✅ |
+| f1/01 | Check-in form ⚠️ | A | ⬜ |
+| f1/02 | Check-in API (upsert) ⚠️ | A | ⬜ |
+| f1/03 | แก้ check-in ย้อนหลัง | เพื่อน (รับช่วง) | ⬜ |
+| f1/04 | สรุปสั้นหลังบันทึก | เพื่อน (รับช่วง) | ⬜ |
+| f2/01 | Dashboard layout | B | ⬜ |
+| f2/02 | กราฟ 3 ด้าน | B | ⬜ |
+| f3/01 | lib/patterns + tests | C | ⬜ |
+| f3/02 | System prompt guardrail 🔒 | C | ⬜ เกือบเสร็จ (เหลือรัน + บันทึกผล) |
+| f7/01 | หน้า privacy 🔒 | D | ⬜ |
+| f7/02 | ลบข้อมูล/บัญชี 🔒 | D | ⬜ |
+| infra/05 | Wireframes | — | ⬜ ข้ามได้ (ทำ UI ตรงไปแล้ว) |
+
+### Sprint 2 (16–22 ก.ค.) — AI
+
+| Issue | งาน | คนถือ |
+| --- | --- | --- |
 | f3/03 | Insight endpoint + cache | C |
 | f3/04 | เคสข้อมูลไม่พอ 🔒 | C |
-| f4/01 | Chat UI + ประวัติ | C |
-| f4/02 | Context assembly | C |
-| f4/03 | Guided flow ตั้งเป้า | C |
-| f4/04 | Escalation 🔒 | C |
-| f4/05 | ลบประวัติแชท | C |
-| f5/01 | Goal recommendation + validation 🔒 | C |
-| f5/02 | Goals UI | B |
-| f2/03 | Disruptor overlay | B |
-| f2/04 | Pattern table | B |
-| infra/06 | Seed script demo account | D |
+| f4/01–05 | AI coach (แชท, context, ตั้งเป้า, escalation 🔒) | C |
+| f5/01 | แนะนำ micro goal + validation 🔒 | C |
+| f5/02 | หน้า goals | B |
+| f2/03–04 | Disruptor overlay + pattern table | B |
+| infra/06 | Seed script | A |
 
-## Sprint 3 (23–28 ก.ค.) — Reflection + Polish + Pitch
+### Sprint 3 (23–28 ก.ค.) — Polish + Pitch
 
-| Issue | งาน | Owner |
-|---|---|---|
-| f6/01 | Reflection generation | C |
-| f6/02 | Reflection UI | B |
-| f2/05 | Streak (ทำเมื่อว่างเท่านั้น) | B |
+| Issue | งาน | คนถือ |
+| --- | --- | --- |
+| f6/01–02 | Weekly reflection | C + B |
+| f2/05 | Streak (ทำถ้าว่างเท่านั้น) | B |
 | qa/01 | AI safety checklist 10 ข้อ 🔒 | C + D |
-| qa/02 | QA เต็มรอบ | D + ทุกคน |
+| qa/02 | QA เต็มรอบ | ทุกคน |
 | qa/03 | Pitch deck + demo script | A |
-| qa/04 | Limitations & future doc | A |
+| qa/04 | Limitations & future | A |
 
 ## สัญลักษณ์
 
-- ⚠️ = อยู่บนเส้นตาย dogfooding 12 ก.ค. — เลื่อนไม่ได้
-- 🔒 = ห้ามตัดออกแม้เวลาไม่พอ (เกณฑ์ Safety/Privacy — ดูท้าย docs/04)
+- ⚠️ = **เร่งด่วน** ทั้งทีมรออยู่
+- 🔒 = **ห้ามตัดทิ้งแม้เวลาไม่พอ** (เป็นเกณฑ์ให้คะแนน Safety / Privacy โดยตรง)
 
-## สรุปโหลดต่อคน
+## หมายเหตุโหลดงาน
 
-| คน | Sprint 0 | Sprint 1 | Sprint 2 | Sprint 3 | รวม |
-|---|---|---|---|---|---|
-| A (PM) | 0.5 | 6 | 0 | 2 | 8.5 |
-| B | 0.5 | 2 | 3 | 2.5 | 8 |
-| C | 1 | 2 | 8 | 1.5 | 12.5 |
-| D | 3 | 3 | 1 | 1.5 | 8.5 |
-
-C โหลดหนักสุดใน Sprint 2 — ถ้า C ติดขัด งานที่โอนง่ายสุดคือ f4/01 (Chat UI) และ f4/05 ให้ B หรือ D ช่วย
+**C หนักสุด** — Sprint 2 แบก AI เกือบทั้งหมด (F3 → F4 → F5) ถ้าเริ่มช้าจะเป็นคอขวด → **ให้ C เริ่มก่อนเพื่อน**
+ถ้า C ไม่ไหว งานที่โอนออกง่ายสุดคือ **f4/01 (Chat UI)** ให้ B หรือ D ช่วย
