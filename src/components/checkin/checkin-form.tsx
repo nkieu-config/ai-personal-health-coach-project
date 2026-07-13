@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CheckCircle2 } from "lucide-react";
 import { saveCheckin } from "@/lib/checkins/actions";
 import { formatThaiDate, today } from "@/lib/checkins/date";
+import { CheckinSummary } from "./checkin-summary";
 import {
   BED_TIME_LABELS,
   DISRUPTOR_LABELS,
@@ -29,7 +28,7 @@ import type {
   MovementBlocker,
   MovementType,
 } from "@/lib/patterns/types";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Chip, toggleValue } from "@/components/ui/chip";
 import { Label } from "@/components/ui/label";
@@ -73,7 +72,7 @@ function Field({
 export function CheckinForm({ date, existing }: { date: string; existing: Checkin | null }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
-  const [saved, setSaved] = useState(false);
+  const [saved, setSaved] = useState<Checkin | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -145,53 +144,36 @@ export function CheckinForm({ date, existing }: { date: string; existing: Checki
       return;
     }
 
+    const checkin: Checkin = {
+      checkinDate: date,
+      mealsCount: mealsCount!,
+      skippedMeals: asks.skippedMeals ? skippedMeals : [],
+      sweetDrinks: sweetDrinks!,
+      mealFeeling,
+      sleepHours: sleepHours!,
+      bedTimeBucket: bedTimeBucket!,
+      sleepQuality: sleepQuality!,
+      lateReason: asks.lateReason ? lateReason : null,
+      movementTypes,
+      movementMinutes: minutes ?? 0,
+      movementBlocker: asks.movementBlocker ? movementBlocker : null,
+      energyLevel: energyLevel!,
+      disruptors,
+      note: note.trim() || null,
+    };
+
     startTransition(async () => {
-      const result = await saveCheckin({
-        checkinDate: date,
-        mealsCount: mealsCount!,
-        skippedMeals: asks.skippedMeals ? skippedMeals : [],
-        sweetDrinks: sweetDrinks!,
-        mealFeeling,
-        sleepHours: sleepHours!,
-        bedTimeBucket: bedTimeBucket!,
-        sleepQuality: sleepQuality!,
-        lateReason: asks.lateReason ? lateReason : null,
-        movementTypes,
-        movementMinutes: minutes ?? 0,
-        movementBlocker: asks.movementBlocker ? movementBlocker : null,
-        energyLevel: energyLevel!,
-        disruptors,
-        note: note.trim() || null,
-      });
+      const result = await saveCheckin(checkin);
       if ("error" in result) {
         setError(result.error);
         return;
       }
-      setSaved(true);
+      setSaved(checkin);
     });
   }
 
   if (saved) {
-    return (
-      <Card>
-        <CardHeader className="items-center text-center">
-          <CheckCircle2 className="size-10 text-primary" />
-          <CardTitle>บันทึกแล้ว</CardTitle>
-          <CardDescription>{formatThaiDate(date)}</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <p className="text-center text-sm text-muted-foreground">
-            บันทึกต่อเนื่องหลายวันจะช่วยให้เห็นรูปแบบของตัวเองชัดขึ้น
-          </p>
-          <Link href="/dashboard" className={buttonVariants({ className: "w-full" })}>
-            ดูภาพรวม
-          </Link>
-          <Button variant="outline" className="w-full" onClick={() => setSaved(false)}>
-            แก้ไขบันทึกวันนี้
-          </Button>
-        </CardContent>
-      </Card>
-    );
+    return <CheckinSummary checkin={saved} onEdit={() => setSaved(null)} />;
   }
 
   return (
