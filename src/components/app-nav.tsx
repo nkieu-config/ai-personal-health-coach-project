@@ -16,7 +16,7 @@ export function AppNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="sticky bottom-0 border-t bg-background">
+    <nav className="sticky bottom-0 border-t bg-background pb-[env(safe-area-inset-bottom)]">
       <ul className="mx-auto flex w-full max-w-md">
         {ITEMS.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(`${href}/`);
@@ -26,7 +26,7 @@ export function AppNav() {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex flex-col items-center gap-1 py-2.5 text-xs transition-colors",
+                  "flex min-h-14 flex-col items-center justify-center gap-1 py-2 text-xs transition-colors",
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 )}
               >
