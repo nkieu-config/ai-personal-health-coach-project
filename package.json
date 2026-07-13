@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ai": "node --env-file=.env.local --import tsx scripts/test-ai.ts",
-    "verify:db": "node --env-file=.env.local --import tsx scripts/verify-db.ts"
+    "verify:db": "node --env-file=.env.local --import tsx scripts/verify-db.ts",
+    "verify:user": "node --env-file=.env.local --import tsx scripts/verify-user.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
