@@ -16,6 +16,7 @@ export default async function EditCheckinPage({ params }: { params: Promise<{ da
 
   return (
     <PageContainer>
+      <h1 className="sr-only">บันทึกย้อนหลัง</h1>
       <CheckinForm date={date} existing={existing} isBackfill />
     </PageContainer>
   );

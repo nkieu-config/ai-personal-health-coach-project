@@ -18,6 +18,8 @@ export default async function CheckinPage() {
 
   return (
     <PageContainer className="space-y-4">
+      <h1 className="sr-only">เช็คอินประจำวัน</h1>
+
       {hasEarlierCheckin && missedYesterday && (
         <Link
           href={`/checkin/edit/${yesterday}`}
