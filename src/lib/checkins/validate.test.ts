@@ -15,6 +15,16 @@ describe("validateCheckin", () => {
     expect(validateCheckin(future, TODAY)).toBe("บันทึกล่วงหน้าไม่ได้");
   });
 
+  it("กันบันทึกย้อนหลังเกินช่วงที่อนุญาต (พิมพ์ URL มั่ว)", () => {
+    expect(validateCheckin(makeCheckin({ checkinDate: "2026-06-14" }), TODAY)).toBeNull();
+    expect(validateCheckin(makeCheckin({ checkinDate: "2026-06-13" }), TODAY)).toContain(
+      "ย้อนหลัง"
+    );
+    expect(validateCheckin(makeCheckin({ checkinDate: "2020-01-01" }), TODAY)).toContain(
+      "ย้อนหลัง"
+    );
+  });
+
   it("กันค่าที่ DB จะ reject (sleep_quality นอกช่วง 1–5)", () => {
     const bad = makeCheckin({ sleepQuality: 9 as 1 });
     expect(validateCheckin(bad, TODAY)).not.toBeNull();
