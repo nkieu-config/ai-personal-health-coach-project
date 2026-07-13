@@ -17,7 +17,10 @@ export function parsePeriod(value: string | undefined): DashboardPeriod {
 
 export function PeriodToggle({ period }: { period: DashboardPeriod }) {
   return (
-    <nav aria-label="เลือกช่วงเวลา" className="inline-flex rounded-full border p-1">
+    <nav
+      aria-label="เลือกช่วงเวลา"
+      className="flex w-full gap-1 rounded-full border bg-muted/40 p-1 lg:w-auto"
+    >
       {DASHBOARD_PERIODS.map((days) => {
         const active = days === period;
         return (
@@ -26,10 +29,10 @@ export function PeriodToggle({ period }: { period: DashboardPeriod }) {
             href={`/dashboard?days=${days}`}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "inline-flex min-h-9 items-center rounded-full px-4 text-sm transition-colors",
+              "inline-flex min-h-11 flex-1 items-center justify-center rounded-full px-4 text-sm font-medium transition-colors lg:flex-none",
               active
                 ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted"
+                : "text-muted-foreground hover:bg-background hover:text-foreground"
             )}
           >
             {days} วัน
