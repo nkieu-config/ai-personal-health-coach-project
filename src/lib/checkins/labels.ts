@@ -1,5 +1,6 @@
 import type {
   BedTimeBucket,
+  Checkin,
   Disruptor,
   EnergyLevel,
   LateReason,
@@ -69,7 +70,7 @@ export const DISRUPTOR_LABELS: Record<Disruptor, string> = {
   none: "ไม่มีอะไรพิเศษ",
 };
 
-export const SLEEP_QUALITY_LABELS: Record<number, string> = {
+export const SLEEP_QUALITY_LABELS: Record<Checkin["sleepQuality"], string> = {
   1: "แย่มาก",
   2: "ไม่ค่อยดี",
   3: "พอใช้",

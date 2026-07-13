@@ -2,9 +2,10 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CheckCircle2 } from "lucide-react";
 import { saveCheckin } from "@/lib/checkins/actions";
-import { formatThaiDate } from "@/lib/checkins/date";
+import { formatThaiDate, today } from "@/lib/checkins/date";
 import {
   BED_TIME_LABELS,
   DISRUPTOR_LABELS,
@@ -16,7 +17,7 @@ import {
   MOVEMENT_TYPE_LABELS,
   SLEEP_QUALITY_LABELS,
 } from "@/lib/checkins/labels";
-import { NOTE_MAX_LENGTH } from "@/lib/checkins/validate";
+import { NOTE_MAX_LENGTH, TOTAL_MEALS } from "@/lib/checkins/validate";
 import type {
   BedTimeBucket,
   Checkin,
@@ -70,6 +71,7 @@ function Field({
 }
 
 export function CheckinForm({ date, existing }: { date: string; existing: Checkin | null }) {
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -103,7 +105,13 @@ export function CheckinForm({ date, existing }: { date: string; existing: Checki
 
   const didNotMove = movementTypes.includes("none");
   const minutes = didNotMove ? 0 : movementMinutes;
-  const showBlocker = didNotMove || minutes === 0;
+
+  const asks = {
+    skippedMeals: mealsCount !== null && mealsCount < TOTAL_MEALS,
+    lateReason: bedTimeBucket !== null && LATE_BUCKETS.includes(bedTimeBucket),
+    movementMinutes: !didNotMove && movementTypes.length > 0,
+    movementBlocker: movementTypes.length > 0 && (didNotMove || minutes === 0),
+  };
 
   const canProceed = [
     mealsCount !== null && sweetDrinks !== null,
@@ -130,20 +138,27 @@ export function CheckinForm({ date, existing }: { date: string; existing: Checki
 
   function submit() {
     setError(null);
+
+    if (today() !== date) {
+      setError("ข้ามไปวันใหม่แล้ว — กำลังเปลี่ยนเป็นบันทึกของวันนี้ กดบันทึกอีกครั้ง");
+      router.refresh();
+      return;
+    }
+
     startTransition(async () => {
       const result = await saveCheckin({
         checkinDate: date,
         mealsCount: mealsCount!,
-        skippedMeals,
+        skippedMeals: asks.skippedMeals ? skippedMeals : [],
         sweetDrinks: sweetDrinks!,
         mealFeeling,
         sleepHours: sleepHours!,
         bedTimeBucket: bedTimeBucket!,
         sleepQuality: sleepQuality!,
-        lateReason: LATE_BUCKETS.includes(bedTimeBucket!) ? lateReason : null,
+        lateReason: asks.lateReason ? lateReason : null,
         movementTypes,
         movementMinutes: minutes ?? 0,
-        movementBlocker: showBlocker ? movementBlocker : null,
+        movementBlocker: asks.movementBlocker ? movementBlocker : null,
         energyLevel: energyLevel!,
         disruptors,
         note: note.trim() || null,
@@ -212,7 +227,7 @@ export function CheckinForm({ date, existing }: { date: string; existing: Checki
               ))}
             </Field>
 
-            {mealsCount !== null && mealsCount < 3 && (
+            {asks.skippedMeals && (
               <Field label="มื้อไหนที่ข้ามไป" hint="เลือกได้หลายมื้อ">
                 {keysOf(MEAL_LABELS).map((meal) => (
                   <Chip
@@ -274,7 +289,7 @@ export function CheckinForm({ date, existing }: { date: string; existing: Checki
               ))}
             </Field>
 
-            {bedTimeBucket !== null && LATE_BUCKETS.includes(bedTimeBucket) && (
+            {asks.lateReason && (
               <Field label="ที่นอนดึกเพราะอะไร" hint="ข้ามได้">
                 {keysOf(LATE_REASON_LABELS).map((reason) => (
                   <Chip
@@ -316,7 +331,7 @@ export function CheckinForm({ date, existing }: { date: string; existing: Checki
               ))}
             </Field>
 
-            {!didNotMove && movementTypes.length > 0 && (
+            {asks.movementMinutes && (
               <Field label="รวมแล้วประมาณกี่นาที">
                 {MOVEMENT_MINUTES.map((value) => (
                   <Chip
@@ -330,7 +345,7 @@ export function CheckinForm({ date, existing }: { date: string; existing: Checki
               </Field>
             )}
 
-            {showBlocker && movementTypes.length > 0 && (
+            {asks.movementBlocker && (
               <Field label="อะไรทำให้ไม่ได้ขยับ" hint="ข้ามได้">
                 {keysOf(MOVEMENT_BLOCKER_LABELS).map((blocker) => (
                   <Chip

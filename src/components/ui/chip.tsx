@@ -18,7 +18,7 @@ export function Chip({
       onClick={onClick}
       aria-pressed={active}
       className={cn(
-        "inline-flex min-h-10 items-center justify-center rounded-full border px-4 text-sm transition-colors",
+        "inline-flex min-h-11 items-center justify-center rounded-full border px-4 text-sm transition-colors",
         active
           ? "border-primary bg-primary text-primary-foreground"
           : "border-border bg-background hover:bg-muted"
