@@ -107,8 +107,9 @@ function countDays(checkins: Checkin[], matches: (checkin: Checkin) => boolean) 
 function average(checkins: Checkin[], value: (checkin: Checkin) => number) {
   if (checkins.length === 0) return 0;
   return (
-    Math.round((checkins.reduce((sum, checkin) => sum + value(checkin), 0) / checkins.length) * 10) /
-    10
+    Math.round(
+      (checkins.reduce((sum, checkin) => sum + value(checkin), 0) / checkins.length) * 10
+    ) / 10
   );
 }
 

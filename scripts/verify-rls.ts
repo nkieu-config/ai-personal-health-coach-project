@@ -134,17 +134,31 @@ async function run() {
       console.log(`  ✅ ปฏิเสธ — ${attack.label}`);
     } else {
       console.log(`  ❌ ผ่านเข้าไปได้! — ${attack.label}`);
-      await admin.from(attack.table).delete().eq("user_id", me).match(
-        attack.table === "checkins"
-          ? { checkin_date: attack.row.checkin_date as string }
-          : { week_start: attack.row.week_start as string }
-      );
+      await admin
+        .from(attack.table)
+        .delete()
+        .eq("user_id", me)
+        .match(
+          attack.table === "checkins"
+            ? { checkin_date: attack.row.checkin_date as string }
+            : { week_start: attack.row.week_start as string }
+        );
       leaked++;
     }
   }
 
-  await admin.from("checkins").delete().eq("user_id", me).gte("checkin_date", "2020-01-01").lte("checkin_date", "2020-12-31");
-  await admin.from("goals").delete().eq("user_id", me).gte("week_start", "2020-01-01").lte("week_start", "2020-12-31");
+  await admin
+    .from("checkins")
+    .delete()
+    .eq("user_id", me)
+    .gte("checkin_date", "2020-01-01")
+    .lte("checkin_date", "2020-12-31");
+  await admin
+    .from("goals")
+    .delete()
+    .eq("user_id", me)
+    .gte("week_start", "2020-01-01")
+    .lte("week_start", "2020-12-31");
   await anon.auth.signOut();
 
   console.log(

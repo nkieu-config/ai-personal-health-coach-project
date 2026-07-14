@@ -153,9 +153,7 @@ function EmptyPeriodCard({ period }: { period: DashboardPeriod }) {
   return (
     <Card>
       <CardContent className="space-y-3 py-8 text-center">
-        <p className="text-sm text-muted-foreground">
-          ไม่มีบันทึกในช่วง {period} วันที่ผ่านมา
-        </p>
+        <p className="text-sm text-muted-foreground">ไม่มีบันทึกในช่วง {period} วันที่ผ่านมา</p>
         <Link
           href={`/dashboard?days=${MAX_PERIOD}`}
           className={buttonVariants({ variant: "outline", className: "w-full" })}

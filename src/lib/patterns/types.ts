@@ -2,12 +2,7 @@ export type Pillar = "eating" | "sleep" | "movement";
 
 export type EnergyLevel = "low" | "medium" | "high";
 
-export type BedTimeBucket =
-  | "before_23"
-  | "23_00"
-  | "00_01"
-  | "01_02"
-  | "after_02";
+export type BedTimeBucket = "before_23" | "23_00" | "00_01" | "01_02" | "after_02";
 
 export type Meal = "breakfast" | "lunch" | "dinner";
 
@@ -26,13 +21,7 @@ export type MovementBlocker = "no_time" | "rain" | "tired" | "long_sitting";
 export type MovementFeeling = "refreshed" | "relaxed" | "tired" | "no_change";
 
 export type Disruptor =
-  | "deadline"
-  | "long_meeting"
-  | "early_class"
-  | "online_class"
-  | "commute"
-  | "exam"
-  | "none";
+  "deadline" | "long_meeting" | "early_class" | "online_class" | "commute" | "exam" | "none";
 
 export type Checkin = {
   checkinDate: string;

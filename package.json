@@ -14,7 +14,9 @@
     "verify:user": "node --env-file=.env.local --import tsx scripts/verify-user.ts",
     "seed": "node --env-file=.env.local --import tsx scripts/seed.ts",
     "verify:seed": "node --env-file=.env.local --import tsx scripts/verify-seed.ts",
-    "verify:rls": "node --env-file=.env.local --import tsx scripts/verify-rls.ts"
+    "verify:rls": "node --env-file=.env.local --import tsx scripts/verify-rls.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -39,9 +41,13 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
+    "prettier": "^3.9.5",
     "tailwindcss": "^4",
     "tsx": "^4.23.0",
     "typescript": "^5",
     "vitest": "^4.1.10"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

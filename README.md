@@ -6,6 +6,22 @@ AI Personal Health Coach สำหรับนักศึกษาและ fir
 
 เอกสารทั้งหมดอยู่ที่ [docs/README.md](docs/README.md) | ศัพท์กลางที่ต้องใช้: [CONTEXT.md](CONTEXT.md) | งาน: [.scratch/BOARD.md](.scratch/BOARD.md)
 
+## เริ่มยังไง (เพื่อนร่วมทีมอ่านตรงนี้)
+
+```bash
+git clone <repo> && cd HealthCoach
+cp .env.example .env.local      # ขอค่า Supabase จาก A · Gemini key ใช้ของตัวเอง
+npm ci
+npm run dev
+```
+
+ล็อกอินด้วยบัญชี demo: **`palm@example.com` / `PalmDemo2026!`** → มีข้อมูล 24 วันพร้อม pattern ให้เทสต์ทันที **ไม่ต้องนั่งกรอก check-in เอง**
+
+**ก่อนเปิด PR:** `npm run format && npm run lint && npm test && npm run build`
+(CI ตรวจ 5 ด่านนี้ทุก PR — รันเองก่อนจะได้ไม่ต้องรอ CI แดง)
+
+**กฎ UI:** ส่วนแรกของ [DESIGN.md](DESIGN.md) — งาน: [.scratch/BOARD.md](.scratch/BOARD.md)
+
 ## Stack
 
 Next.js 16 (App Router, TypeScript) + Tailwind v4 + shadcn/ui + Supabase + Gemini API — ดูเหตุผลใน [docs/adr/](docs/adr/)

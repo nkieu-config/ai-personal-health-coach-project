@@ -56,7 +56,8 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   }
   if (!data.session) {
     return {
-      error: "สมัครสำเร็จ แต่ต้องยืนยันอีเมลก่อนเข้าใช้งาน — ปิด Confirm email ใน Supabase สำหรับ prototype",
+      error:
+        "สมัครสำเร็จ แต่ต้องยืนยันอีเมลก่อนเข้าใช้งาน — ปิด Confirm email ใน Supabase สำหรับ prototype",
     };
   }
 
