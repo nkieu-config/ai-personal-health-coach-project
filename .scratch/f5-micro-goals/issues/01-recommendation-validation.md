@@ -1,7 +1,7 @@
 # F5-01: Goal recommendation + validation คำต้องห้าม
 
 Status: ready-for-human
-Owner: C
+Owner: A
 Sprint: 2
 Priority: M (validation ห้ามตัด — เกณฑ์ Safety)
 Refs: FR-5.1, FR-5.3, docs/07 งานที่ 3

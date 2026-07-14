@@ -1,6 +1,6 @@
 # INFRA-02: Supabase project + schema + RLS
 
-Status: resolved
+Status: done
 Owner: D
 Sprint: 0
 Priority: M

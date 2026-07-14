@@ -1,7 +1,7 @@
 # F3-04: เคสข้อมูลไม่พอ (< 7 วัน)
 
 Status: ready-for-human
-Owner: C
+Owner: A
 Sprint: 2
 Priority: M — ห้ามตัด (เกณฑ์ Safety: แยก pattern จากข้อสรุปที่ไม่แน่ชัด)
 Refs: FR-3.3

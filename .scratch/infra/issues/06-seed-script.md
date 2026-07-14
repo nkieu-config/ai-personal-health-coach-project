@@ -1,7 +1,7 @@
 # INFRA-06: Seed script — demo account "ปาล์ม"
 
 Status: ready-for-human
-Owner: D
+Owner: A
 Sprint: 2
 Priority: M
 Refs: ADR-0004, docs/03, docs/05

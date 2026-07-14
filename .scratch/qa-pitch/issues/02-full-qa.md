@@ -1,7 +1,7 @@
 # QA-02: QA เต็มรอบตาม demo script
 
 Status: ready-for-human
-Owner: D + ทุกคน
+Owner: A
 Sprint: 3
 Priority: M
 Refs: docs/03 (scenario ปาล์ม), docs/04 (FR ระดับ M ทั้งหมด)

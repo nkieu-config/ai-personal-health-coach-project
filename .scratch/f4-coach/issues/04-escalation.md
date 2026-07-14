@@ -1,7 +1,7 @@
 # F4-04: Escalation เมื่อเกินขอบเขต wellness
 
 Status: ready-for-human
-Owner: C
+Owner: A
 Sprint: 2
 Priority: M — ห้ามตัด (เกณฑ์ Safety)
 Refs: FR-4.4, docs/08 (Escalation), docs/07 checklist ข้อ 1, 4, 5

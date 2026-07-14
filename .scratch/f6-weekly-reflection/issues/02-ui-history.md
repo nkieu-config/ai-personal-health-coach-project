@@ -1,7 +1,7 @@
 # F6-02: Reflection UI + ดูย้อนหลัง
 
 Status: ready-for-human
-Owner: B
+Owner: 🟨 สิทธิ์+เป้าหมาย
 Sprint: 3
 Priority: M (ย้อนหลัง = S)
 Refs: FR-6.1, FR-6.2

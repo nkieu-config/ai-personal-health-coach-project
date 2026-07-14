@@ -1,7 +1,7 @@
 # F2-03: Disruptor overlay บนทุกกราฟ
 
 Status: ready-for-human
-Owner: B
+Owner: 🟦 กราฟ
 Sprint: 2
 Priority: M — จุดขายเรื่อง Personalization
 Refs: FR-2.2, CONTEXT.md (Disruptor)

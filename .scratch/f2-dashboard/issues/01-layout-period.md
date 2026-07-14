@@ -1,6 +1,6 @@
 # F2-01: Dashboard layout + ตัวเลือกช่วง 7/14/30 วัน
 
-Status: ready-for-human
+Status: done
 Owner: B
 Sprint: 1
 Priority: M

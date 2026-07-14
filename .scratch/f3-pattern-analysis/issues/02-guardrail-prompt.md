@@ -1,7 +1,7 @@
 # F3-02: System prompt guardrail กลาง
 
 Status: ready-for-human
-Owner: C
+Owner: A
 Sprint: 1
 Priority: M — ห้ามตัด (เกณฑ์ Safety)
 Refs: docs/07 (ร่าง system prompt), docs/08 ชั้นที่ 2

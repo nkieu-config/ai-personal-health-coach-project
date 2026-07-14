@@ -1,7 +1,7 @@
 # F4-02: Context assembly ให้ coach
 
 Status: ready-for-human
-Owner: C
+Owner: A
 Sprint: 2
 Priority: M
 Refs: FR-4.1, docs/07 งานที่ 2

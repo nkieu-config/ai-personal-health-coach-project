@@ -1,7 +1,7 @@
 # F4-03: Guided flow "ตั้งเป้าสัปดาห์หน้า"
 
 Status: ready-for-human
-Owner: C
+Owner: 🟩 โค้ช
 Sprint: 2
 Priority: M — คือ "coaching conversation อย่างน้อย 1 flow" ที่โจทย์บังคับ
 Refs: FR-4.3, docs/07 งานที่ 2

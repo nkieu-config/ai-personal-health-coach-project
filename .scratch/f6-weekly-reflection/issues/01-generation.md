@@ -1,7 +1,7 @@
 # F6-01: Reflection generation + cache
 
 Status: ready-for-human
-Owner: C
+Owner: A
 Sprint: 3
 Priority: M
 Refs: FR-6.1, FR-6.3, docs/07 งานที่ 4

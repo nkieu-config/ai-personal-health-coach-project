@@ -1,6 +1,6 @@
 # F7-01: หน้า Privacy
 
-Status: ready-for-human
+Status: done
 Owner: D
 Sprint: 1
 Priority: M — ห้ามตัด (เกณฑ์ Privacy)

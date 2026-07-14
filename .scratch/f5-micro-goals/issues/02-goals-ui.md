@@ -1,7 +1,7 @@
 # F5-02: Goals UI — รับ/ปรับ/ปฏิเสธ + ติ๊กรายวัน
 
 Status: ready-for-human
-Owner: B
+Owner: 🟨 สิทธิ์+เป้าหมาย
 Sprint: 2
 Priority: M
 Refs: FR-5.2

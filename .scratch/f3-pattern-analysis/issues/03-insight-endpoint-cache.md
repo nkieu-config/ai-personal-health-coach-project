@@ -1,7 +1,7 @@
 # F3-03: Insight generation endpoint + cache
 
 Status: ready-for-human
-Owner: C
+Owner: A
 Sprint: 2
 Priority: M
 Refs: FR-3.2, FR-3.4, docs/06 workflow 2

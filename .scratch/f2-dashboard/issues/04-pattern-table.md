@@ -1,7 +1,7 @@
 # F2-04: ตาราง Pattern → ความหมาย → Next Step
 
 Status: ready-for-human
-Owner: B
+Owner: 🟦 กราฟ
 Sprint: 2
 Priority: M
 Refs: FR-2.3, โจทย์ Feature 2, output schema จาก F3-03

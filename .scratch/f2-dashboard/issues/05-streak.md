@@ -1,7 +1,7 @@
 # F2-05: Streak การบันทึกเชิงบวก
 
 Status: ready-for-human
-Owner: B
+Owner: 🟦 กราฟ
 Sprint: 3
 Priority: C — ทำเมื่องาน M/S เสร็จหมดแล้วเท่านั้น
 Refs: FR-2.4

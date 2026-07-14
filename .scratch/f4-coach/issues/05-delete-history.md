@@ -1,7 +1,7 @@
 # F4-05: ลบประวัติแชท
 
 Status: ready-for-human
-Owner: C
+Owner: 🟩 โค้ช
 Sprint: 2
 Priority: S
 Refs: FR-4.5, FR-7.x
