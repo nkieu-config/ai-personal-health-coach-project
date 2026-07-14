@@ -6,7 +6,7 @@
 > ทุกอย่างที่แตะ **Supabase / Gemini / service role / Safety 🔒** เป็นของ A
 > **3 สายเรียกฟังก์ชันที่มีอยู่แล้ว → วาด UI → จบ** ไม่ต้องแตะ DB ไม่ต้องแตะ AI ไม่มีไฟล์ทับกัน
 
-## สถานะ: เสร็จ 18 / 39 งาน (ยกเลิก 1)
+## สถานะ: เสร็จ 19 / 39 งาน (ยกเลิก 1)
 
 - ✅ **Sprint 0** — repo · Supabase + RLS · Vercel · Gemini
 - ✅ **F0** — สมัคร/ล็อกอิน (Google + รหัสผ่าน) · onboarding · disclaimer
@@ -17,6 +17,7 @@
 - ✅ **F3-02 guardrail 🔒** — รัน checklist 10 เคสจริง เจอรูรั่ว 4 จุด แก้หมด · หลักฐานอยู่ที่ `.scratch/ai-safety-test/`
 - ✅ **INFRA-07 โควตา** — cache-first + จำกัดแชท 5 ข้อความ/คน/วัน + ข้อความโควตาหมดเป็นมิตร
 - ✅ **F3-05** — `lib/patterns` ตอบตาราง Feature 2 ครบ 3 แถวแล้ว (เดิมได้แค่แถวเดียว)
+- ✅ **INFRA-06 seed "ปาล์ม"** — 24 วันบน production · pattern ครบ 3 แถว · **`palm@example.com / PalmDemo2026!`**
 - ⛔ **INFRA-05 wireframe — ยกเลิก** (DESIGN.md + UI จริงแทนไปแล้ว)
 
 > 🔍 **14 ก.ค. — audit แผน+เอกสารทั้งระบบเทียบโจทย์** พบว่า **Required Input ของโจทย์ข้อ 5 ขาดไป 4 ช่อง** (ความรู้สึกหลังขยับ · เวลามื้อแรก · ของว่าง/ผัก-ผลไม้ · ช่วงที่งานหนัก) → ปิดครบใน F1-05 แล้ว
@@ -36,7 +37,7 @@
 
 ### 🔧 งานของ A (ไม่บล็อกใคร ทำคู่ขนานไปเรื่อย ๆ)
 
-~~F3-02 guardrail 🔒~~ ✅ → ~~INFRA-07 โควตา~~ ✅ → **F3-03 insight** → F3-04 ข้อมูลไม่พอ 🔒 → F4-02 context → F4-04 escalation 🔒 → F5-01 goal AI 🔒 → F6-01 reflection AI → **INFRA-06 seed** → QA-01 🔒 · QA-03 pitch · QA-04
+~~F3-02~~ ✅ → ~~INFRA-07~~ ✅ → ~~F3-05~~ ✅ → ~~INFRA-06 seed~~ ✅ → **F3-03 insight** → F3-04 🔒 → F4-02 → F4-04 🔒 → F5-01 🔒 → F6-01 → QA-01 🔒 · QA-03 pitch · QA-04
 
 > **AI ทั้งหมดอัปเกรดอยู่ "ข้างหลัง" ฟังก์ชันเดิม** — signature ไม่เปลี่ยน **3 สายไม่ต้องแก้โค้ดแม้แต่บรรทัดเดียว**
 
@@ -103,7 +104,6 @@ getLatestReflection() · getReflections() · generateReflection()  // @/lib/ai-o
 | f5/02 | หน้า goals | 🟨 | |
 | f6/02 | หน้า reflection | 🟨 | |
 | f3/03 · f3/04 🔒 | AI insight + ข้อมูลไม่พอ | A | |
-| infra/06 | Seed "ปาล์ม" | A | ⚠️ service role — A เท่านั้น · **ต้องรอ f3/05 merge ก่อน** |
 | f4/02 · f4/04 🔒 | AI coach context + escalation | A | |
 | f5/01 🔒 · f6/01 | AI goal + reflection | A | |
 | infra/06 | Seed "ปาล์ม" | A | ⚠️ ใช้ service role — A เท่านั้น |
@@ -114,4 +114,4 @@ getLatestReflection() · getReflections() · generateReflection()  // @/lib/ai-o
 ## จุดที่ต้องรอกัน (เหลือแค่ 2 จุด)
 
 1. **F2-04** รอ A ทำ F3-03 เสร็จ (ตอนนี้ใช้ stub ได้แล้ว — วาด UI ไปก่อนได้เลย)
-2. **INFRA-06 seed** เสร็จ (~21 ก.ค.) → ทุกคนมีข้อมูล 4 สัปดาห์ของ "ปาล์ม" ไว้ demo
+2. ~~INFRA-06 seed~~ ✅ **เสร็จแล้ว เร็วกว่าแผน 7 วัน** — ล็อกอิน `palm@example.com / PalmDemo2026!` เห็นข้อมูล 24 วัน + pattern ครบทันที **ไม่ต้องนั่งกรอก check-in เองแล้ว**
