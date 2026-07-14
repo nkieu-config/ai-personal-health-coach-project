@@ -20,6 +20,11 @@ npm run dev
 **ก่อนเปิด PR:** `npm run format && npm run lint && npm test && npm run build`
 (CI ตรวจ 5 ด่านนี้ทุก PR — รันเองก่อนจะได้ไม่ต้องรอ CI แดง)
 
+**ถ้าแตะ UI ให้รัน `npm run e2e` ด้วย** (~40 วินาที) — เปิดทุกหน้าจริงบนมือถือ+เดสก์ท็อป × light+dark แล้วเช็คว่า:
+h1 อันเดียว · ไม่มี horizontal scroll · ปุ่มสูง ≥ 44px · **ข้อความอ่านออก (contrast ≥ 4.5:1)** · ไม่มี console error · เช็คอินบันทึกได้จริง
+
+> unit test 87 ตัวทดสอบแต่ตรรกะใน `lib/` — **PR ที่ทำ layout พังหรือ dashboard ขาว จะผ่าน CI เขียวหมด** `e2e` คือด่านเดียวที่จับได้
+
 **กฎ UI:** ส่วนแรกของ [DESIGN.md](DESIGN.md) — งาน: [.scratch/BOARD.md](.scratch/BOARD.md)
 
 ## Stack
