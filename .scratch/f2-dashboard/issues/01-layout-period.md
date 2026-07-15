@@ -23,7 +23,7 @@ Refs: FR-2.1
 2026-07-12 (kickoff → B): **สาย Dashboard — ทำขนานได้เลย ไม่ต้องรอ F1 check-in ของ A**
 
 **ไฟล์ที่คุณแก้:** `src/app/(app)/dashboard/page.tsx` (มี placeholder อยู่แล้ว — **แทนที่เนื้อหาในไฟล์นี้**) + สร้าง component เพิ่มใน `src/components/dashboard/`
-อย่าแตะโซนคนอื่น: `lib/patterns` + `lib/ai` = ไม้ · `app/(app)/settings` = คีตะ · `app/(app)/checkin` = A
+อย่าแตะโซนคนอื่น: `lib/**` = A · `app/(app)/coach` = 🟩 · `app/(app)/settings` `goals` `reflection` = 🟨 · `app/(app)/checkin` = A (zone เต็มใน BOARD)
 **Branch:** `feat/f2-dashboard`
 
 **ปลดล็อกข้อมูล (ตาราง `checkins` ยังว่าง) — 1 นาทีจบ:**
