@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ai": "node --env-file=.env.local --import tsx scripts/test-ai.ts",
+    "test:escalation": "node --env-file=.env.local --import tsx scripts/test-escalation.ts",
     "test:insight": "node --env-file=.env.local --import tsx scripts/test-insight.ts",
     "test:coach": "node --env-file=.env.local --import tsx scripts/test-coach-context.ts",
     "test:goal": "node --env-file=.env.local --import tsx scripts/test-goal-ai.ts",
