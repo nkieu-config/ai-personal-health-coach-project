@@ -47,11 +47,11 @@ Next.js 16 (App Router, TypeScript) + Tailwind v4 + shadcn/ui + Supabase + Gemin
    cp .env.example .env.local
    ```
 
-   - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` — จาก Supabase project settings (ถาม D)
+   - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` — จาก Supabase project settings (ถาม A)
    - `SUPABASE_SERVICE_ROLE_KEY` — ใช้เฉพาะ seed script และงาน server ห้ามใช้ใน client
    - `GEMINI_API_KEY` — **ของแต่ละคนเอง** สมัครฟรีที่ [aistudio.google.com](https://aistudio.google.com) (กันแย่ง rate limit ตอน dev); production ใช้ key เดียวที่ตั้งใน Vercel
 
-3. รัน migration บน Supabase: เปิด SQL Editor แล้วรันไฟล์ `supabase/migrations/0001_init.sql` (ทำครั้งเดียวต่อ project — D ทำแล้วสำหรับ project กลาง)
+3. รัน migration บน Supabase: เปิด SQL Editor แล้วรันไฟล์ใน `supabase/migrations/` เรียงเลข `0001` → `0003` (ทำครั้งเดียวต่อ project — A รันให้แล้วสำหรับ project กลาง เพื่อนแค่ `git pull` ก็ใช้ได้)
 
 4. รัน dev server
 

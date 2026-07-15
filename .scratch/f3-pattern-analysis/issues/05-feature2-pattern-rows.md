@@ -1,6 +1,6 @@
 # F3-05: lib/patterns ยังตอบตาราง Feature 2 ของโจทย์ได้ไม่ครบ
 
-Status: ready-for-agent
+Status: done
 Owner: A
 Sprint: 2
 Priority: M — FR-2.3 บังคับให้ dashboard แสดงตารางนี้

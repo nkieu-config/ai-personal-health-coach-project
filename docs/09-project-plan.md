@@ -2,7 +2,7 @@
 
 > **ปรับแผนครั้งที่ 2 — 14 ก.ค. 2026** · แผนเดิมแบ่งงานเป็นรายคน (A/B/C/D) คนละ feature เต็มเส้น (UI+API+AI)
 > ปัญหาที่เจอจริง: **คอขวดอยู่ที่ AI + data layer** ซึ่งกองอยู่กับคนเดียว ส่วนคนอื่นต้องรอ
-> แผนใหม่: **A ทำ "เครื่องยนต์" ทั้งหมด (data layer + AI + safety) · อีก 3 สายทำ "หน้าจอ" ขนานกัน 100%**
+> แผนใหม่: **A ทำ "เครื่องยนต์" ทั้งหมด (data layer + AI + safety) · อีก 3 สายทำ "หน้าจอ" เดินขนานกัน** (มีจุดรอ A จุดเดียวคือ F4-03 ที่เรียก coach context + goal validation ของ A จริง ๆ)
 
 ## ทีมและการแบ่งงาน
 
@@ -35,6 +35,7 @@ repo + Next.js + Tailwind/shadcn + Vercel + Supabase schema + RLS + Gemini spike
 | UI/UX pass: touch target 44px, dark mode, sidebar เดสก์ท็อป, safe-area | ✅ |
 | **Data layer ครบ 5 ตัว** (`checkins` `account` `chat` `ai-outputs` `goals`) + scaffold ทุก route | ✅ |
 | **ปิดช่องโหว่โจทย์ข้อ 5** (migration 0002): เวลามื้อแรก, ของว่าง/ผัก-ผลไม้, ความรู้สึกหลังขยับ, ช่วงที่งานหนัก | ✅ |
+| **INFRA-08→15 ก่อนเปิดสาย** (PR #22): DESIGN.md, loading/Suspense, RLS perf + CHECK (migration 0003), type safety, กราฟ dark mode, **e2e เปิดทุกหน้า + CI ตรวจ main เป็น required check** | ✅ |
 
 **เช็คพอยต์ ศ. 12 ก.ค.: check-in ใช้งานจริงบน production** ✅ → **dogfooding เริ่ม จ. 13 ก.ค.** (ADR-0004)
 
