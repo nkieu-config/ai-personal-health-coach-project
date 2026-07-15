@@ -13,11 +13,11 @@
 | 5 | Prototype / demo | Web app บน Vercel | ทุกสาย | 🔶 F0/F1 ใช้จริงแล้ว · F2–F6 Sprint 2–3 |
 | 6 | ตัวอย่าง daily check-in | ในแอป (`/checkin`) + screenshot | A | ✅ **ใช้งานจริง + dogfooding ตั้งแต่ 13 ก.ค.** |
 | 7 | ตัวอย่าง dashboard | ในแอป (demo account) + screenshot | 🟦 | 🔶 layout + ช่วง 7/14/30 เสร็จ · กราฟ Sprint 2 |
-| 8 | ตัวอย่าง pattern analysis | ในแอป + ตัวอย่าง output ใน pitch deck | A + 🟦 | 🔶 `lib/patterns` คำนวณจริงแล้ว (7 candidates) · ภาษาจาก Gemini Sprint 2 |
-| 9 | ตัวอย่าง AI coaching conversation | ในแอป (guided flow) + transcript | A + 🟩 | ⬜ Sprint 2 |
-| 10 | ตัวอย่าง micro goal recommendation | ในแอป + ตัวอย่างใน pitch deck | A + 🟨 | ⬜ Sprint 2 |
-| 11 | ตัวอย่าง weekly reflection | ในแอป + ตัวอย่างเต็ม 1 ฉบับ | A + 🟨 | ⬜ Sprint 3 |
-| 12 | Safety guardrail | [08](08-safety-privacy.md) Part 1 + `lib/ai` + `lib/safety/language.ts` + ผลทดสอบ 10 ข้อ | A | ✅ design + guardrail ในโค้ด (CI บังคับ) / ⬜ ผลทดสอบ Sprint 3 |
+| 8 | ตัวอย่าง pattern analysis | ในแอป + ตัวอย่าง output ใน pitch deck | A + 🟦 | 🔶 engine ✅ (F3-03 Gemini จริง) · รอ UI ตาราง F2-04 (🟦) |
+| 9 | ตัวอย่าง AI coaching conversation | ในแอป (guided flow) + transcript | A + 🟩 | 🔶 engine ✅ (F4-02 context + F4-04 escalation) · รอ UI F4-01/F4-03 (🟩) |
+| 10 | ตัวอย่าง micro goal recommendation | ในแอป + ตัวอย่างใน pitch deck | A + 🟨 | 🔶 engine ✅ (F5-01 goal AI + validation) · รอ UI F5-02 (🟨) |
+| 11 | ตัวอย่าง weekly reflection | ในแอป + ตัวอย่างเต็ม 1 ฉบับ | A + 🟨 | 🔶 engine ✅ (F6-01 Gemini จริง) · รอ UI F6-02 (🟨) |
+| 12 | Safety guardrail | [08](08-safety-privacy.md) Part 1 + `lib/ai` + `lib/safety/language.ts` + ผลทดสอบ 10 ข้อ | A | ✅ design + guardrail (CI บังคับ) · escalation ยืนยัน 9/9 (F4-04) / ⬜ checklist เต็ม 10 ข้อ (QA-01) |
 | 13 | Privacy design | [08](08-safety-privacy.md) Part 2 + `/settings/privacy` | A + 🟨 | ✅ design + หน้าในแอป (ตอบโจทย์ข้อ 9 ครบ 6/6) / ⬜ ปุ่มลบ Sprint 2 |
 | 14 | Limitations & future improvement plan | เขียน Sprint 3 → `docs/11-limitations-future.md` | A | ⬜ Sprint 3 |
 
