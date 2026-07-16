@@ -14,7 +14,92 @@ import {
   needsReply,
   type ChatMessage,
 } from "@/lib/chat/types";
+import { cn } from "@/lib/utils";
+import { acceptGoal } from "@/lib/goals/actions";
+import { type Situation } from "@/lib/goals/types";
+
 const STARTERS = ["ช่วยดู pattern สัปดาห์นี้", "อยากตั้งเป้าสัปดาห์หน้า"];
+
+const DAY_OPTIONS = [
+  { value: "mon", label: "จันทร์" },
+  { value: "tue", label: "อังคาร" },
+  { value: "wed", label: "พุธ" },
+  { value: "thu", label: "พฤหัสฯ" },
+  { value: "fri", label: "ศุกร์" },
+  { value: "sat", label: "เสาร์" },
+  { value: "sun", label: "อาทิตย์" },
+];
+
+const CONSTRAINT_OPTIONS = [
+  { value: "no_time", label: "⏰ ไม่มีเวลา" },
+  { value: "no_place", label: "📍 สถานที่จำกัด" },
+  { value: "poor_rest", label: "🔋 เหนื่อยล้า/พักผ่อนน้อย" },
+  { value: "long_commute", label: "🚗 เดินทางไกล" },
+  { value: "limited_budget", label: "💰 งบประมาณจำกัด" },
+];
+
+const getGoalOptions = (
+  pillar: "eating" | "sleeping" | "movement",
+  busyDays: string[],
+  constraints: string[]
+): { title: string; situation: Situation }[] => {
+  const dayNames = busyDays.map((d) => {
+    if (d === "mon") return "วันจันทร์";
+    if (d === "tue") return "วันอังคาร";
+    if (d === "wed") return "วันพุธ";
+    if (d === "thu") return "วันพฤหัสฯ";
+    if (d === "fri") return "วันศุกร์";
+    if (d === "sat") return "วันเสาร์";
+    return "วันอาทิตย์";
+  });
+  const daysStr =
+    dayNames.length > 0 ? `ในคืนก่อน${dayNames.join("/")}` : "ล่วงหน้า 2 วันในสัปดาห์นี้";
+
+  if (pillar === "eating") {
+    return [
+      {
+        title: `เตรียมมื้อเช้าง่าย ๆ ไว้${daysStr}`,
+        situation: "early_class",
+      },
+      {
+        title: "ดื่มน้ำเปล่าเพิ่มขึ้น 1 แก้วแทนเครื่องดื่มหวานในช่วงบ่าย",
+        situation: "deadline",
+      },
+    ];
+  } else if (pillar === "sleeping") {
+    const sleepDaysStr =
+      dayNames.length > 0 ? `ในคืน${dayNames.join("/")}` : "อย่างน้อย 3 คืนในสัปดาห์นี้";
+    return [
+      {
+        title: `วางมือถือก่อนนอน 15 นาที ${sleepDaysStr}`,
+        situation: "phone_before_bed",
+      },
+      {
+        title: "ตั้งเวลาพัก 5 นาทีทุก 60–90 นาทีเมื่อต้องทำงานหน้าจอหรือช่วงเดดไลน์",
+        situation: "deadline",
+      },
+    ];
+  } else {
+    // movement
+    const hasCommute = constraints.includes("long_commute");
+    const moveDaysStr = dayNames.length > 0 ? `ในวัน${dayNames.join("/")}` : "ในระหว่างวัน";
+    return [
+      {
+        title: `ยืดเหยียดร่างกาย 5 นาทีหลังนั่งทำงานหรือจบคลาสเรียน${moveDaysStr}`,
+        situation: "long_screen",
+      },
+      hasCommute
+        ? {
+            title: "เดินเบา ๆ 10 นาทีหลังเดินทางถึงบ้านเพื่อผ่อนคลาย",
+            situation: "long_commute",
+          }
+        : {
+            title: "เดินขึ้นบันไดแทนลิฟต์ หรือเดินสั้น ๆ ระหว่างวัน",
+            situation: "no_exercise_time",
+          },
+    ];
+  }
+};
 
 interface CoachChatClientProps {
   initialMessages: ChatMessage[];
@@ -38,6 +123,22 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
   // Clear history double-confirm state
   const [confirmClear, setConfirmClear] = useState(false);
 
+  // Guided goal flow state
+  const [guidedFlow, setGuidedFlow] = useState(false);
+  const [guidedStep, setGuidedStep] = useState<
+    "pillar" | "busy_days" | "constraints" | "select_goal"
+  >("pillar");
+  const [guidedData, setGuidedData] = useState<{
+    pillar?: "eating" | "sleeping" | "movement";
+    busyDays: string[];
+    constraints: string[];
+  }>({
+    busyDays: [],
+    constraints: [],
+  });
+  const [selectedGoalIndex, setSelectedGoalIndex] = useState<number>(0);
+  const [editedGoalTitle, setEditedGoalTitle] = useState<string>("");
+
   const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
     messagesEndRef.current?.scrollIntoView({ behavior, block: "nearest" });
   };
@@ -48,12 +149,143 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
 
   useEffect(() => {
     scrollToBottom("smooth");
-  }, [messages, isPending]);
+  }, [messages, isPending, guidedStep, guidedFlow]);
+
+  // Generate guided flow message list for rendering
+  const getGuidedMessages = (): ChatMessage[] => {
+    const list: ChatMessage[] = [];
+    if (!guidedFlow) return list;
+
+    // Step 1 Coach Message
+    list.push({
+      id: "guided-coach-1",
+      role: "coach",
+      content:
+        "ยินดีครับ! มาวางแผนตั้งเป้าสุขภาพเล็กๆ สำหรับสัปดาห์หน้ากันดีกว่า\n\nถ้าเริ่มเปลี่ยนแค่ 1 อย่างในสัปดาห์หน้า คุณอยากเริ่มจากด้านไหนดีครับ?",
+      createdAt: new Date().toISOString(),
+    });
+
+    if (guidedStep === "pillar") return list;
+
+    // User select pillar response
+    const pillarText =
+      guidedData.pillar === "eating"
+        ? "อยากเริ่มจากด้านการกินอาหารครับ"
+        : guidedData.pillar === "sleeping"
+          ? "อยากเริ่มจากด้านการนอนหลับพักผ่อนครับ"
+          : "อยากเริ่มจากด้านการขยับร่างกาย/ออกกำลังกายครับ";
+
+    list.push({
+      id: "guided-user-1",
+      role: "user",
+      content: pillarText,
+      createdAt: new Date().toISOString(),
+    });
+
+    // Step 2 Coach Message
+    list.push({
+      id: "guided-coach-2",
+      role: "coach",
+      content: `รับทราบครับ เรื่อง${
+        guidedData.pillar === "eating"
+          ? "กิน"
+          : guidedData.pillar === "sleeping"
+            ? "นอน"
+            : "ขยับร่างกาย"
+      }นะ\n\nสัปดาห์หน้ามีวันไหนที่คุณคิดว่าจะมีตารางเรียน/ทำงานที่แน่น หรือยุ่งเป็นพิเศษบ้างไหมครับ?`,
+      createdAt: new Date().toISOString(),
+    });
+
+    if (guidedStep === "busy_days") return list;
+
+    // User select busy days response
+    const formatDays = (days: string[]) => {
+      if (days.length === 0) return "ไม่มีวันไหนเป็นพิเศษครับ";
+      const dayNames = days.map((d) => {
+        if (d === "mon") return "วันจันทร์";
+        if (d === "tue") return "วันอังคาร";
+        if (d === "wed") return "วันพุธ";
+        if (d === "thu") return "วันพฤหัสบดี";
+        if (d === "fri") return "วันศุกร์";
+        if (d === "sat") return "วันเสาร์";
+        return "วันอาทิตย์";
+      });
+      return `วันที่มีตารางแน่น: ${dayNames.join(", ")} ครับ`;
+    };
+
+    list.push({
+      id: "guided-user-2",
+      role: "user",
+      content: formatDays(guidedData.busyDays),
+      createdAt: new Date().toISOString(),
+    });
+
+    // Step 3 Coach Message
+    list.push({
+      id: "guided-coach-3",
+      role: "coach",
+      content:
+        "เข้าใจแล้วครับ\n\nปกติแล้วคุณมีข้อจำกัดอะไรบ้างไหมครับที่ทำให้ดูแลตัวเองยากในด้านนี้? เช่น เวลา สถานที่ ความเหนื่อย หรือเรื่องงบประมาณ",
+      createdAt: new Date().toISOString(),
+    });
+
+    if (guidedStep === "constraints") return list;
+
+    // User select constraints response
+    const formatConstraints = (cons: string[]) => {
+      if (cons.length === 0) return "ไม่มีข้อจำกัดเป็นพิเศษครับ";
+      const conNames = cons.map((c) => {
+        if (c === "no_time") return "ไม่มีเวลา";
+        if (c === "no_place") return "สถานที่จำกัด";
+        if (c === "tired" || c === "poor_rest") return "เหนื่อยเกินไป/ล้า";
+        if (c === "limited_budget") return "งบประมาณจำกัด";
+        if (c === "long_commute") return "เดินทางไกล";
+        return c;
+      });
+      return `ข้อจำกัด: ${conNames.join(", ")} ครับ`;
+    };
+
+    list.push({
+      id: "guided-user-3",
+      role: "user",
+      content: formatConstraints(guidedData.constraints),
+      createdAt: new Date().toISOString(),
+    });
+
+    // Step 4 Coach Message
+    list.push({
+      id: "guided-coach-4",
+      role: "coach",
+      content:
+        "ขอบคุณสำหรับข้อมูลครับ นี่คือ Micro Goal 2 ข้อที่ผมแนะนำสำหรับคุณ ลองเลือกข้อที่ชอบหรือสามารถปรับแต่งข้อความตามสะดวกได้เลยครับ",
+      createdAt: new Date().toISOString(),
+    });
+
+    return list;
+  };
 
   // Handle send message
   const handleSend = (textToSend: string) => {
     const text = textToSend.trim();
     if (!text) return;
+
+    // Intercept guided flow intent
+    if (
+      text === "อยากตั้งเป้าสัปดาห์หน้า" ||
+      text.includes("ตั้งเป้า") ||
+      text.includes("อยากตั้งเป้า")
+    ) {
+      setGuidedFlow(true);
+      setGuidedStep("pillar");
+      setGuidedData({
+        pillar: undefined,
+        busyDays: [],
+        constraints: [],
+      });
+      setError(null);
+      return;
+    }
+
     if (text.length > MESSAGE_MAX_LENGTH) {
       setError(`ข้อความยาวเกิน ${MESSAGE_MAX_LENGTH} ตัวอักษร`);
       return;
@@ -94,6 +326,103 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
         }
       } else {
         setMessages((prev) => [...prev, result.message]);
+      }
+    });
+  };
+
+  // Guided flow state setters
+  const handlePillarSelect = (pillar: "eating" | "sleeping" | "movement") => {
+    setGuidedData((prev) => ({ ...prev, pillar }));
+    setGuidedStep("busy_days");
+    setError(null);
+  };
+
+  const toggleBusyDay = (day: string) => {
+    setGuidedData((prev) => {
+      const busyDays = prev.busyDays.includes(day)
+        ? prev.busyDays.filter((d) => d !== day)
+        : [...prev.busyDays, day];
+      return { ...prev, busyDays };
+    });
+  };
+
+  const handleBusyDaysSubmit = (busyDays: string[]) => {
+    setGuidedData((prev) => ({ ...prev, busyDays }));
+    setGuidedStep("constraints");
+    setError(null);
+  };
+
+  const toggleConstraint = (constraint: string) => {
+    setGuidedData((prev) => {
+      const constraints = prev.constraints.includes(constraint)
+        ? prev.constraints.filter((c) => c !== constraint)
+        : [...prev.constraints, constraint];
+      return { ...prev, constraints };
+    });
+  };
+
+  const handleConstraintsSubmit = (constraints: string[]) => {
+    setGuidedData((prev) => ({ ...prev, constraints }));
+    const options = getGoalOptions(guidedData.pillar || "eating", guidedData.busyDays, constraints);
+    setSelectedGoalIndex(0);
+    setEditedGoalTitle(options[0]?.title || "");
+    setGuidedStep("select_goal");
+    setError(null);
+  };
+
+  const handleBackStep = () => {
+    setError(null);
+    if (guidedStep === "busy_days") {
+      setGuidedStep("pillar");
+    } else if (guidedStep === "constraints") {
+      setGuidedStep("busy_days");
+    } else if (guidedStep === "select_goal") {
+      setGuidedStep("constraints");
+    }
+  };
+
+  const handleCancelGuidedFlow = () => {
+    setGuidedFlow(false);
+    setGuidedStep("pillar");
+    setError(null);
+  };
+
+  const handleSelectOption = (index: number) => {
+    const options = getGoalOptions(
+      guidedData.pillar || "eating",
+      guidedData.busyDays,
+      guidedData.constraints
+    );
+    setSelectedGoalIndex(index);
+    setEditedGoalTitle(options[index]?.title || "");
+  };
+
+  const handleSaveGoal = () => {
+    const title = editedGoalTitle.trim();
+    if (!title) return;
+
+    setError(null);
+    const options = getGoalOptions(
+      guidedData.pillar || "eating",
+      guidedData.busyDays,
+      guidedData.constraints
+    );
+    const situation = options[selectedGoalIndex]?.situation || "no_exercise_time";
+
+    startTransition(async () => {
+      const result = await acceptGoal(title, situation);
+      if ("error" in result) {
+        setError(result.error);
+      } else {
+        const successMessage: ChatMessage = {
+          id: `guided-success-${Date.now()}`,
+          role: "coach",
+          content: `บันทึกเป้าหมาย "${title}" สำเร็จเรียบร้อยแล้วครับ! 🎉\n\nเป้าหมายนี้จะเริ่มมีผลในสัปดาห์หน้าทันที คุณสามารถเปิดดูและติดตามความคืบหน้าได้ในหน้า "เป้าหมาย" ครับ`,
+          createdAt: new Date().toISOString(),
+        };
+        setMessages((prev) => [...prev, successMessage]);
+        setGuidedFlow(false);
+        setGuidedStep("pillar");
       }
     });
   };
@@ -140,8 +469,9 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
     return () => clearTimeout(timer);
   }, [confirmClear]);
 
-  const showChips = messages.length === 0 && !isPending && quotaLeft > 0;
-  const showRetry = needsReply(messages) && !isPending;
+  const showChips = messages.length === 0 && !isPending && quotaLeft > 0 && !guidedFlow;
+  const showRetry = needsReply(messages) && !isPending && !guidedFlow;
+  const displayMessages = guidedFlow ? [...messages, ...getGuidedMessages()] : messages;
 
   return (
     <div className="flex flex-col space-y-4">
@@ -169,7 +499,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
       <Card className="flex flex-col justify-between border-border/40 shadow-sm bg-card">
         <CardContent className="p-4">
           <div className="h-[400px] overflow-y-auto pr-1 space-y-4 flex flex-col scrollbar-thin">
-            {messages.length === 0 ? (
+            {displayMessages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-3">
                 <div className="p-3 rounded-full bg-primary/5 text-primary">
                   <MessageSquare className="size-8" />
@@ -183,7 +513,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                 </div>
               </div>
             ) : (
-              messages.map((m) =>
+              displayMessages.map((m) =>
                 m.role === "user" ? (
                   <UserMessage key={m.id} message={m} />
                 ) : (
@@ -192,7 +522,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
               )
             )}
 
-            {isPending && messages.length > 0 && messages.at(-1)?.role === "user" && (
+            {isPending && displayMessages.length > 0 && displayMessages.at(-1)?.role === "user" && (
               <PendingReply />
             )}
 
@@ -202,89 +532,325 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
 
         {/* Input & Options panel */}
         <div className="border-t border-border/40 p-4 space-y-4 bg-muted/10">
-          {/* Conversation starters */}
-          {showChips && (
-            <div className="space-y-2">
-              <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-                คำถามแนะนำ:
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {STARTERS.map((starter) => (
-                  <Button
-                    key={starter}
-                    type="button"
-                    variant="outline"
-                    onClick={() => handleSend(starter)}
-                    className="min-h-11 rounded-full px-4 text-sm font-normal"
-                  >
-                    {starter}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
+          {guidedFlow ? (
+            <div className="space-y-4">
+              {guidedStep === "pillar" && (
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    กรุณาเลือกด้านที่ต้องการตั้งเป้าหมาย:
+                  </p>
+                  <div className="grid grid-cols-1 gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => handlePillarSelect("eating")}
+                      className="min-h-11 justify-start text-sm px-4 py-2"
+                    >
+                      🍽️ กินอาหาร (กินครบมื้อ, ปรับตารางกิน)
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => handlePillarSelect("sleeping")}
+                      className="min-h-11 justify-start text-sm px-4 py-2"
+                    >
+                      😴 การนอน (นอนเร็วขึ้น, พักระหว่างทำงาน)
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => handlePillarSelect("movement")}
+                      className="min-h-11 justify-start text-sm px-4 py-2"
+                    >
+                      🏃‍♂️ การขยับร่างกาย (ยืดเหยียด, เดินเพิ่มขึ้น)
+                    </Button>
+                  </div>
+                  <div className="border-t border-border/40 pt-3 flex justify-end">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleCancelGuidedFlow}
+                      className="min-h-11 text-xs text-muted-foreground"
+                    >
+                      ยกเลิกการตั้งเป้าหมาย
+                    </Button>
+                  </div>
+                </div>
+              )}
 
-          {error && (
-            <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
-              <span className="leading-normal">{error}</span>
-            </div>
-          )}
+              {guidedStep === "busy_days" && (
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    เลือกวันในสัปดาห์หน้าที่ตารางแน่น / งานยุ่งเป็นพิเศษ:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {DAY_OPTIONS.map((day) => {
+                      const isSelected = guidedData.busyDays.includes(day.value);
+                      return (
+                        <Button
+                          key={day.value}
+                          type="button"
+                          variant={isSelected ? "default" : "outline"}
+                          onClick={() => toggleBusyDay(day.value)}
+                          className="min-h-11 rounded-full px-4 text-xs font-normal"
+                        >
+                          {day.label}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  <div className="border-t border-border/40 pt-3 flex gap-2 justify-between">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleBackStep}
+                      className="min-h-11 text-xs"
+                    >
+                      ย้อนกลับ
+                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => handleBusyDaysSubmit([])}
+                        className="min-h-11 text-xs"
+                      >
+                        ไม่มีวันยุ่งเป็นพิเศษ
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => handleBusyDaysSubmit(guidedData.busyDays)}
+                        className="min-h-11 text-xs bg-primary text-primary-foreground hover:bg-primary/95"
+                      >
+                        ถัดไป
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
-          {showRetry && (
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 p-3 text-sm">
-              <span className="leading-normal text-muted-foreground">
-                ข้อความล่าสุดยังไม่ได้รับคำตอบจากโค้ช
-              </span>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleRetry}
-                className="min-h-11 shrink-0 gap-1.5 px-3 text-xs"
-              >
-                <RefreshCw className="size-3" />
-                ลองใหม่
-              </Button>
-            </div>
-          )}
+              {guidedStep === "constraints" && (
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    เลือกข้อจำกัดของคุณ (เลือกได้มากกว่า 1 ข้อ):
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {CONSTRAINT_OPTIONS.map((c) => {
+                      const isSelected = guidedData.constraints.includes(c.value);
+                      return (
+                        <Button
+                          key={c.value}
+                          type="button"
+                          variant={isSelected ? "default" : "outline"}
+                          onClick={() => toggleConstraint(c.value)}
+                          className="min-h-11 justify-start text-xs font-normal"
+                        >
+                          {c.label}
+                        </Button>
+                      );
+                    })}
+                  </div>
+                  <div className="border-t border-border/40 pt-3 flex gap-2 justify-between">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleBackStep}
+                      className="min-h-11 text-xs"
+                    >
+                      ย้อนกลับ
+                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() => handleConstraintsSubmit([])}
+                        className="min-h-11 text-xs"
+                      >
+                        ไม่มีข้อจำกัด
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => handleConstraintsSubmit(guidedData.constraints)}
+                        className="min-h-11 text-xs bg-primary text-primary-foreground hover:bg-primary/95"
+                      >
+                        ถัดไป
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
-          {/* Quota reached notice */}
-          {quotaLeft === 0 && <QuotaReachedNotice />}
+              {guidedStep === "select_goal" && (
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    เลือกเป้าหมายเล็ก ๆ (Micro Goal) ที่แนะนำสำหรับคุณ:
+                  </p>
+                  <div className="grid grid-cols-1 gap-2">
+                    {getGoalOptions(
+                      guidedData.pillar || "eating",
+                      guidedData.busyDays,
+                      guidedData.constraints
+                    ).map((opt, idx) => {
+                      const isSelected = selectedGoalIndex === idx;
+                      return (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => handleSelectOption(idx)}
+                          className={cn(
+                            "w-full text-left min-h-11 rounded-lg border p-3 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-ring",
+                            isSelected
+                              ? "border-primary bg-primary/5 font-medium"
+                              : "border-border hover:bg-muted/40"
+                          )}
+                        >
+                          <div className="flex justify-between items-center">
+                            <span>{opt.title}</span>
+                            {isSelected && (
+                              <span className="text-xs text-primary font-semibold font-mono">
+                                ตัวเลือก {idx + 1}
+                              </span>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
 
-          {/* TextInput form */}
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSend(inputValue);
-            }}
-            className="flex items-center gap-2"
-          >
-            <div className="relative flex-1">
-              <Input
-                type="text"
-                placeholder={quotaLeft > 0 ? "คุยกับโค้ชได้เลย..." : "วันนี้โควตาแชทหมดแล้ว"}
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                disabled={quotaLeft <= 0 || isPending}
-                maxLength={MESSAGE_MAX_LENGTH}
-                className="w-full min-h-11 bg-background text-sm rounded-lg pr-12 focus-visible:border-ring focus-visible:ring-3"
-              />
-              {inputValue.length > 0 && (
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground font-mono">
-                  {inputValue.length}/{MESSAGE_MAX_LENGTH}
-                </span>
+                  <div className="space-y-2 pt-1">
+                    <label
+                      htmlFor="goal-adjust-input"
+                      className="text-xs font-medium text-muted-foreground"
+                    >
+                      ✏️ คุณสามารถปรับแต่งเป้าหมายให้เข้ากับตัวเองยิ่งขึ้น:
+                    </label>
+                    <Input
+                      id="goal-adjust-input"
+                      type="text"
+                      value={editedGoalTitle}
+                      onChange={(e) => setEditedGoalTitle(e.target.value)}
+                      disabled={isPending}
+                      maxLength={80}
+                      className="w-full min-h-11 bg-background text-sm focus-visible:border-ring focus-visible:ring-3"
+                      placeholder="ปรับเปลี่ยนเป้าหมายของคุณที่นี่..."
+                    />
+                  </div>
+
+                  <div className="border-t border-border/40 pt-3 flex gap-2 justify-between">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={handleBackStep}
+                      disabled={isPending}
+                      className="min-h-11 text-xs"
+                    >
+                      ย้อนกลับ
+                    </Button>
+                    <Button
+                      type="button"
+                      onClick={handleSaveGoal}
+                      disabled={isPending || !editedGoalTitle.trim()}
+                      className="min-h-11 text-xs bg-primary text-primary-foreground hover:bg-primary/95"
+                    >
+                      {isPending ? "กำลังบันทึก..." : "💾 บันทึกเป้าหมาย"}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {error && (
+                <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive mt-2">
+                  <span className="leading-normal">{error}</span>
+                </div>
               )}
             </div>
+          ) : (
+            <>
+              {/* Conversation starters */}
+              {showChips && (
+                <div className="space-y-2">
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                    คำถามแนะนำ:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {STARTERS.map((starter) => (
+                      <Button
+                        key={starter}
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleSend(starter)}
+                        className="min-h-11 rounded-full px-4 text-sm font-normal"
+                      >
+                        {starter}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
-            <Button
-              type="submit"
-              size="icon"
-              disabled={quotaLeft <= 0 || isPending || !inputValue.trim()}
-              className="size-11 shrink-0 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg"
-              aria-label="ส่งข้อความ"
-            >
-              <Send className="size-4" />
-            </Button>
-          </form>
+              {error && (
+                <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
+                  <span className="leading-normal">{error}</span>
+                </div>
+              )}
+
+              {showRetry && (
+                <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 p-3 text-sm">
+                  <span className="leading-normal text-muted-foreground">
+                    ข้อความล่าสุดยังไม่ได้รับคำตอบจากโค้ช
+                  </span>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleRetry}
+                    className="min-h-11 shrink-0 gap-1.5 px-3 text-xs"
+                  >
+                    <RefreshCw className="size-3" />
+                    ลองใหม่
+                  </Button>
+                </div>
+              )}
+
+              {/* Quota reached notice */}
+              {quotaLeft === 0 && <QuotaReachedNotice />}
+
+              {/* TextInput form */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSend(inputValue);
+                }}
+                className="flex items-center gap-2"
+              >
+                <div className="relative flex-1">
+                  <Input
+                    type="text"
+                    placeholder={quotaLeft > 0 ? "คุยกับโค้ชได้เลย..." : "วันนี้โควตาแชทหมดแล้ว"}
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    disabled={quotaLeft <= 0 || isPending}
+                    maxLength={MESSAGE_MAX_LENGTH}
+                    className="w-full min-h-11 bg-background text-sm rounded-lg pr-12 focus-visible:border-ring focus-visible:ring-3"
+                  />
+                  {inputValue.length > 0 && (
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground font-mono">
+                      {inputValue.length}/{MESSAGE_MAX_LENGTH}
+                    </span>
+                  )}
+                </div>
+
+                <Button
+                  type="submit"
+                  size="icon"
+                  disabled={quotaLeft <= 0 || isPending || !inputValue.trim()}
+                  className="size-11 shrink-0 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg"
+                  aria-label="ส่งข้อความ"
+                >
+                  <Send className="size-4" />
+                </Button>
+              </form>
+            </>
+          )}
         </div>
       </Card>
     </div>
