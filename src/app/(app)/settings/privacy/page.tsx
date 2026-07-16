@@ -1,33 +1,11 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import {
-  AlertCircle,
-  AlertTriangle,
-  Database,
-  Eye,
-  Fingerprint,
-  History,
-  Loader2,
-  Lock,
-  Shield,
-  Trash2,
-} from "lucide-react";
+import { AlertCircle, Database, Eye, Fingerprint, History, Lock, Shield } from "lucide-react";
 import { PageContainer } from "@/components/page-container";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { deleteAllData, deleteAccount } from "@/lib/account/actions";
+import { DeleteZone } from "@/components/settings/delete-zone";
 
 export default function PrivacyPage() {
-  const router = useRouter();
-  const [deleteMode, setDeleteMode] = useState<"data" | "account" | null>(null);
-  const [confirmText, setConfirmText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
   return (
     <PageContainer width="content">
       <div className="mx-auto max-w-3xl space-y-6">
@@ -112,7 +90,7 @@ export default function PrivacyPage() {
               ข้อมูลที่ไม่มีการจัดเก็บ (Data Minimization)
             </CardTitle>
             <CardDescription>
-              เพื่อลดความกดดันด้านรูปร่างและโฟกัสที่พฤทีธรรมทั่วไป ระบบจึงจงใจไม่จัดเก็บ:
+              เพื่อลดความกดดันด้านรูปร่างและโฟกัสที่พฤติกรรมทั่วไป ระบบจึงจงใจไม่จัดเก็บ:
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -208,97 +186,7 @@ export default function PrivacyPage() {
           </CardContent>
         </Card>
 
-        {/* f7-delete-all */}
-        <Card className="border-destructive/30">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-destructive">
-              <Trash2 className="h-5 w-5" />
-              โซนอันตรายสูง
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {!deleteMode ? (
-              <div className="flex gap-2">
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    setDeleteMode("data");
-                    setConfirmText("");
-                    setError(null);
-                  }}
-                >
-                  ลบข้อมูลทั้งหมด
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => {
-                    setDeleteMode("account");
-                    setConfirmText("");
-                    setError(null);
-                  }}
-                >
-                  ลบบัญชีถาวร
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {error && (
-                  <div className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
-                    <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
-                    <div>{error}</div>
-                  </div>
-                )}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">
-                    พิมพ์ &quot;{deleteMode === "data" ? "ลบข้อมูลทั้งหมด" : "ลบบัญชีถาวร"}&quot;
-                    เพื่อยืนยัน:
-                  </label>
-                  <Input
-                    value={confirmText}
-                    onChange={(e) => setConfirmText(e.target.value)}
-                    placeholder={deleteMode === "data" ? "ลบข้อมูลทั้งหมด" : "ลบบัญชีถาวร"}
-                    disabled={isLoading}
-                  />
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setDeleteMode(null);
-                      setConfirmText("");
-                      setError(null);
-                    }}
-                    disabled={isLoading}
-                  >
-                    ยกเลิก
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={async () => {
-                      setIsLoading(true);
-                      const result =
-                        deleteMode === "data" ? await deleteAllData() : await deleteAccount();
-                      if (result && "error" in result) {
-                        setError(result.error);
-                      } else {
-                        router.push(deleteMode === "data" ? "/onboarding" : "/login");
-                      }
-                      setIsLoading(false);
-                    }}
-                    disabled={
-                      (deleteMode === "data"
-                        ? confirmText !== "ลบข้อมูลทั้งหมด"
-                        : confirmText !== "ลบบัญชีถาวร") || isLoading
-                    }
-                  >
-                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    ยืนยัน
-                  </Button>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <DeleteZone />
       </div>
     </PageContainer>
   );
