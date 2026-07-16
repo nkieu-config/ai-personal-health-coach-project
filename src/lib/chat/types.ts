@@ -22,6 +22,8 @@ export const CONTEXT_TURN_LIMIT = 20;
 
 export const DAILY_MESSAGE_LIMIT = 5;
 
+export const MESSAGE_MAX_LENGTH = 500;
+
 export function toChatMessage(row: ChatMessageRow): ChatMessage {
   return {
     id: row.id,

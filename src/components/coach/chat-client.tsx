@@ -6,11 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Chip } from "@/components/ui/chip";
 import { UserMessage, CoachMessage, PendingReply, QuotaReachedNotice } from "./message-variants";
 import { sendCoachMessage, retryCoachReply, clearChatHistory } from "@/lib/chat/actions";
-import { needsReply, type ChatMessage } from "@/lib/chat/types";
-import { cn } from "@/lib/utils";
+import {
+  DAILY_MESSAGE_LIMIT,
+  MESSAGE_MAX_LENGTH,
+  needsReply,
+  type ChatMessage,
+} from "@/lib/chat/types";
+const STARTERS = ["ช่วยดู pattern สัปดาห์นี้", "อยากตั้งเป้าสัปดาห์หน้า"];
 
 interface CoachChatClientProps {
   initialMessages: ChatMessage[];
@@ -29,11 +33,13 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
   // Scroll ref
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const tempIdRef = useRef(0);
+
   // Clear history double-confirm state
   const [confirmClear, setConfirmClear] = useState(false);
 
   const scrollToBottom = (behavior: ScrollBehavior = "smooth") => {
-    messagesEndRef.current?.scrollIntoView({ behavior });
+    messagesEndRef.current?.scrollIntoView({ behavior, block: "nearest" });
   };
 
   useEffect(() => {
@@ -48,8 +54,8 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
   const handleSend = (textToSend: string) => {
     const text = textToSend.trim();
     if (!text) return;
-    if (text.length > 500) {
-      setError("ข้อความยาวเกิน 500 ตัวอักษร");
+    if (text.length > MESSAGE_MAX_LENGTH) {
+      setError(`ข้อความยาวเกิน ${MESSAGE_MAX_LENGTH} ตัวอักษร`);
       return;
     }
     if (quotaLeft <= 0) {
@@ -62,7 +68,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
 
     // Optimistically add user message
     const tempUserMessage: ChatMessage = {
-      id: `temp-user-${Date.now()}`,
+      id: `temp-user-${(tempIdRef.current += 1)}`,
       role: "user",
       content: text,
       createdAt: new Date().toISOString(),
@@ -76,8 +82,15 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
       const result = await sendCoachMessage(text);
       if ("error" in result) {
         setError(result.error);
-        if (result.error.includes("ครบ 5 ข้อความ")) {
-          setQuotaLeft(0);
+        if (result.userMessage) {
+          const savedUserMessage = result.userMessage;
+          setMessages((prev) =>
+            prev.map((m) => (m.id === tempUserMessage.id ? savedUserMessage : m))
+          );
+        } else {
+          setMessages((prev) => prev.filter((m) => m.id !== tempUserMessage.id));
+          setQuotaLeft((prev) => result.quotaLeft ?? Math.min(DAILY_MESSAGE_LIMIT, prev + 1));
+          setInputValue(text);
         }
       } else {
         setMessages((prev) => [...prev, result.message]);
@@ -116,7 +129,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
         setError(result.error);
       } else {
         setMessages([]);
-        setQuotaLeft(5); // resetting history resets the daily message count
+        setQuotaLeft(DAILY_MESSAGE_LIMIT); // ลบแถวออก = countMessagesToday() กลับไปนับได้ใหม่
       }
     });
   };
@@ -128,6 +141,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
   }, [confirmClear]);
 
   const showChips = messages.length === 0 && !isPending && quotaLeft > 0;
+  const showRetry = needsReply(messages) && !isPending;
 
   return (
     <div className="flex flex-col space-y-4">
@@ -195,32 +209,41 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                 คำถามแนะนำ:
               </p>
               <div className="flex flex-wrap gap-2">
-                <Chip active={false} onClick={() => handleSend("ช่วยดู pattern สัปดาห์นี้")}>
-                  ช่วยดู pattern สัปดาห์นี้
-                </Chip>
-                <Chip active={false} onClick={() => handleSend("อยากตั้งเป้าสัปดาห์หน้า")}>
-                  อยากตั้งเป้าสัปดาห์หน้า
-                </Chip>
+                {STARTERS.map((starter) => (
+                  <Button
+                    key={starter}
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleSend(starter)}
+                    className="min-h-11 rounded-full px-4 text-sm font-normal"
+                  >
+                    {starter}
+                  </Button>
+                ))}
               </div>
             </div>
           )}
 
-          {/* Errors & retry handlers */}
           {error && (
-            <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive flex items-center justify-between gap-3">
+            <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
               <span className="leading-normal">{error}</span>
-              {messages.length > 0 && messages.at(-1)?.role === "user" && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={handleRetry}
-                  disabled={isPending}
-                  className="h-8 gap-1.5 text-xs text-destructive border-destructive/20 hover:bg-destructive/10 shrink-0 min-h-11 px-3"
-                >
-                  <RefreshCw className={cn("size-3", isPending && "animate-spin")} />
-                  ลองใหม่
-                </Button>
-              )}
+            </div>
+          )}
+
+          {showRetry && (
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 p-3 text-sm">
+              <span className="leading-normal text-muted-foreground">
+                ข้อความล่าสุดยังไม่ได้รับคำตอบจากโค้ช
+              </span>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={handleRetry}
+                className="min-h-11 shrink-0 gap-1.5 px-3 text-xs"
+              >
+                <RefreshCw className="size-3" />
+                ลองใหม่
+              </Button>
             </div>
           )}
 
@@ -242,12 +265,12 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 disabled={quotaLeft <= 0 || isPending}
-                maxLength={500}
+                maxLength={MESSAGE_MAX_LENGTH}
                 className="w-full min-h-11 bg-background text-sm rounded-lg pr-12 focus-visible:border-ring focus-visible:ring-3"
               />
               {inputValue.length > 0 && (
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground font-mono">
-                  {inputValue.length}/500
+                  {inputValue.length}/{MESSAGE_MAX_LENGTH}
                 </span>
               )}
             </div>
