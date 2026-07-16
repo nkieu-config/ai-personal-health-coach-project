@@ -1,6 +1,6 @@
 import { toRow } from "../src/lib/checkins/mapper";
 import { weekStart } from "../src/lib/goals/week";
-import type { Checkin } from "../src/lib/patterns/types";
+import type { Checkin } from "../src/lib/domain";
 import { createAdminClient } from "../src/lib/supabase/admin";
 
 const EMAIL = process.env.DEMO_EMAIL ?? "palm@example.com";

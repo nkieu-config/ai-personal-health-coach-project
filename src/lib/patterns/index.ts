@@ -1,11 +1,5 @@
-import type {
-  BedTimeBucket,
-  Checkin,
-  PatternCandidate,
-  PatternId,
-  PatternMetric,
-  Pillar,
-} from "./types";
+import type { BedTimeBucket, Checkin, Pillar } from "@/lib/domain";
+import type { PatternCandidate, PatternId, PatternMetric } from "./types";
 
 export const MIN_DAYS_FOR_ANALYSIS = 7;
 export const MIN_DAYS_PER_GROUP = 3;

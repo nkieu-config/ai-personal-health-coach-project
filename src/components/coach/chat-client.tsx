@@ -18,8 +18,8 @@ import { cn } from "@/lib/utils";
 import { acceptGoal, recommendGoals } from "@/lib/goals/actions";
 import { GOAL_TITLE_MAX_LENGTH, SITUATION_LABELS, type GoalSuggestion } from "@/lib/goals/types";
 import { CONSTRAINT_LABELS, EARLY_DAY_LABELS } from "@/lib/onboarding/types";
-import { PILLAR_LABELS } from "@/lib/ai-outputs/format";
-import type { Pillar } from "@/lib/patterns/types";
+import { PILLAR_LABELS } from "@/lib/checkins/labels";
+import type { Pillar } from "@/lib/domain";
 
 const GOAL_STARTER = "อยากตั้งเป้าสัปดาห์หน้า";
 const STARTERS = ["ช่วยดู pattern สัปดาห์นี้", GOAL_STARTER];

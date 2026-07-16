@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Goal } from "@/lib/goals/types";
 import { findForbiddenTerms } from "@/lib/safety/language";
-import { makeCheckins } from "@/lib/patterns/test-fixtures";
+import { makeCheckins } from "@/test/fixtures";
 import {
   buildWeekComparison,
   buildWeekFacts,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { makeCheckins } from "@/lib/patterns/test-fixtures";
+import { makeCheckins } from "@/test/fixtures";
 import { buildGoalPrompt, mergeGoalSuggestions, parseGoalSuggestions } from "./goal-ai";
 import { fallbackGoal } from "./suggest";
 import type { Situation } from "./types";

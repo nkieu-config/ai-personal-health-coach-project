@@ -1,4 +1,4 @@
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import { createClient } from "@/lib/supabase/server";
 import { daysAgo } from "./date";
 import { toCheckin } from "./mapper";

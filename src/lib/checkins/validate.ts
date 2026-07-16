@@ -1,4 +1,4 @@
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import {
   BED_TIME_LABELS,
   DISRUPTOR_LABELS,

@@ -2,7 +2,7 @@ import { mkdirSync, writeFileSync } from "node:fs";
 import { generate } from "../src/lib/ai";
 import { DEFAULT_MODEL } from "../src/lib/ai/model";
 import { computePatternCandidates } from "../src/lib/patterns";
-import { makeCheckins } from "../src/lib/patterns/test-fixtures";
+import { makeCheckins } from "../src/test/fixtures";
 import { findForbiddenTerms } from "../src/lib/safety/language";
 import { validateGoalTitle } from "../src/lib/goals/suggest";
 

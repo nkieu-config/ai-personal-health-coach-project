@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { today } from "@/lib/checkins/date";
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import { CheckinForm } from "./checkin-form";
 
 export function TodayCheckinForm({

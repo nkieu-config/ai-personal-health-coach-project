@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { makeCheckins } from "@/lib/patterns/test-fixtures";
+import { makeCheckins } from "@/test/fixtures";
 import { buildWeekFacts } from "./reflection-facts";
 import { buildReflectionPrompt, mergeReflectionText, parseReflectionText } from "./reflection-ai";
 

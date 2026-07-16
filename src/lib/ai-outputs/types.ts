@@ -1,4 +1,4 @@
-import type { Pillar } from "@/lib/patterns/types";
+import type { Pillar } from "@/lib/domain";
 
 export type PatternEvidence = {
   metric: string;

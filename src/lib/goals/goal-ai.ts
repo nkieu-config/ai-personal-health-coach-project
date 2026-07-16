@@ -2,7 +2,7 @@ import { generateJson, isQuotaExhausted } from "@/lib/ai";
 import { GOAL_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
 import { DISRUPTOR_LABELS } from "@/lib/checkins/labels";
 import { BUSY_PERIOD_LABELS, CONSTRAINT_LABELS, EARLY_DAY_LABELS } from "@/lib/onboarding/types";
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import { fallbackGoal, matchingCheckins, validateGoalTitle } from "./suggest";
 import { SITUATION_LABELS, type GoalProfile, type GoalSuggestion, type Situation } from "./types";
 

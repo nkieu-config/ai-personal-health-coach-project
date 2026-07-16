@@ -93,6 +93,7 @@ getWeekComparison(periodStart, periodEnd)  // ใหม่ (F6-03): ส่วน
 4. **อยู่ในโซนของสายตัวเอง** — ถ้าต้องแตะไฟล์นอกโซน **แจ้งกลุ่มก่อน**
    **ห้ามลง npm package เอง** (จะทำ `package-lock.json` ชนกัน) → แจ้งกลุ่ม → A ลงบน main
 5. **ห้ามแตะ DB / Supabase / Gemini ตรง ๆ** — เรียกฟังก์ชันจาก `src/lib/` เท่านั้น
+   type กลางของโปรเจกต์ (`Checkin` `Pillar` `Disruptor` …) → **`@/lib/domain`** (INFRA-21 — เดิมอยู่ `lib/patterns/types`)
    ⚠️ **โควตา Gemini ฟรี = 20 ครั้ง/วัน ทั้งแอปรวมกัน** → **อย่ากดปุ่มวิเคราะห์/แชทรัว ๆ เล่น** (มี cache กันให้แล้ว แต่รู้ไว้)
    ห้ามหาวันที่ด้วย `new Date()` → ใช้ `today()` / `daysAgo()` จาก `lib/checkins/date.ts`
    ชื่อไทยของค่าต่าง ๆ → `lib/checkins/labels.ts` · คำต้องห้าม → `lib/safety/language.ts`

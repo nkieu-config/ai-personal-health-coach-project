@@ -1,4 +1,4 @@
-import type { BedTimeBucket, Checkin } from "@/lib/patterns/types";
+import type { BedTimeBucket, Checkin } from "@/lib/domain";
 
 const BED_TIME_RANGES: Record<BedTimeBucket, [number, number]> = {
   before_23: [22, 23],

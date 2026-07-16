@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { makeCheckin } from "@/lib/patterns/test-fixtures";
+import { makeCheckin } from "@/test/fixtures";
 import { toCheckin, toRow } from "./mapper";
 import type { CheckinRow } from "./types";
 

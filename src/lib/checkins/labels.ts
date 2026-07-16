@@ -11,7 +11,14 @@ import type {
   MovementBlocker,
   MovementFeeling,
   MovementType,
-} from "@/lib/patterns/types";
+  Pillar,
+} from "@/lib/domain";
+
+export const PILLAR_LABELS: Record<Pillar, string> = {
+  eating: "การกิน",
+  sleep: "การนอน",
+  movement: "การเคลื่อนไหว",
+};
 
 export const MEAL_LABELS: Record<Meal, string> = {
   breakfast: "เช้า",

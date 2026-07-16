@@ -1,4 +1,4 @@
-import type { Checkin, Pillar } from "@/lib/patterns/types";
+import type { Checkin, Pillar } from "@/lib/domain";
 import {
   GOAL_TITLE_MAX_LENGTH,
   SITUATION_PILLARS,
