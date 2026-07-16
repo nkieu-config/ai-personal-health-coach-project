@@ -4,10 +4,12 @@ import { getCheckins } from "@/lib/checkins/queries";
 import { today } from "@/lib/checkins/date";
 import { MAX_PERIOD, parsePeriod, PeriodToggle } from "@/components/dashboard/period-toggle";
 import { PageContainer } from "@/components/page-container";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { TodaySummary } from "@/components/dashboard/today-summary";
 import { PatternTable } from "@/components/dashboard/pattern-table";
+import { PillarCharts } from "@/components/dashboard/pillar-charts";
+import { EnergyChart } from "@/components/dashboard/energy-chart";
 
 export default async function DashboardPage({ searchParams }: { searchParams: Promise<{ days?: string }> }) {
   const { days } = await searchParams;
@@ -52,18 +54,11 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       {/* Content Grid */}
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="lg:col-span-1"><TodaySummary checkin={todayCheckin} date={todayDate} /></div>
-        <div className="lg:col-span-2">
-          <Card className="h-full flex flex-col justify-between">
-            <CardHeader>
-              <CardTitle className="text-lg">กราฟแนวโน้มพฤติกรรม (การกิน การนอน และการเคลื่อนไหว)</CardTitle>
-              <CardDescription>กราฟแสดงการเปรียบเทียบพฤติกรรมการกิน การนอน และการเคลื่อนไหว ย้อนหลัง {period} วัน</CardDescription>
-            </CardHeader>
-            <CardContent className="h-[200px] flex items-center justify-center border-2 border-dashed border-muted rounded-lg m-6 mt-0">
-              <span className="text-sm text-muted-foreground">ส่วนของกราฟ (กำลังอยู่ในขั้นตอนพัฒนาในสปรินต์ถัดไป)</span>
-            </CardContent>
-          </Card>
-        </div>
+        <div className="lg:col-span-2"><PillarCharts checkins={checkins} period={period} /></div>
       </div>
+
+      {/* Energy Level Chart */}
+      <EnergyChart checkins={checkins} period={period} />
 
       {/* Pattern Insights Table */}
       <PatternTable />
