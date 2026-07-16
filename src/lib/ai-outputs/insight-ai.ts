@@ -1,6 +1,7 @@
 import { generateJson, isQuotaExhausted } from "@/lib/ai";
 import { INSIGHT_SYSTEM_PROMPT } from "@/lib/ai/system-prompt";
-import type { PatternCandidate, PatternId, Pillar } from "@/lib/patterns/types";
+import type { Pillar } from "@/lib/domain";
+import type { PatternCandidate, PatternId } from "@/lib/patterns/types";
 import { findForbiddenTerms } from "@/lib/safety/language";
 import { formatMetric, METRIC_LABELS } from "./format";
 import { toInsightPattern } from "./templates";

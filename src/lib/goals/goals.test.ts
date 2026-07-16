@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { makeCheckins } from "@/lib/patterns/test-fixtures";
+import { makeCheckins } from "@/test/fixtures";
 import { findForbiddenTerms } from "@/lib/safety/language";
 import { chooseSituations, fallbackGoal, suggestGoals, validateGoalTitle } from "./suggest";
 import { MAX_ACTIVE_GOALS, SITUATIONS, SITUATION_LABELS, SITUATION_PILLARS } from "./types";

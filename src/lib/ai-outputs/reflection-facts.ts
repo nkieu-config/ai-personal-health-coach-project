@@ -1,6 +1,6 @@
 import type { Goal, GoalStatus } from "@/lib/goals/types";
 import { SITUATION_LABELS } from "@/lib/goals/types";
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import type { Reflection } from "./types";
 
 export const MIN_DAYS_FOR_REFLECTION = 3;

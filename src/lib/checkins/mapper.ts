@@ -1,4 +1,4 @@
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import type { CheckinRow } from "./types";
 
 export function toCheckin(row: CheckinRow): Checkin {

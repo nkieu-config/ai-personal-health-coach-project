@@ -7,12 +7,12 @@ import { PageContainer } from "@/components/page-container";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { isFresh } from "@/lib/ai-outputs/cache";
-import { PILLAR_LABELS } from "@/lib/ai-outputs/format";
+import { PILLAR_LABELS } from "@/lib/checkins/labels";
 import { getReflections, getWeekComparison } from "@/lib/ai-outputs/queries";
 import type { ReflectionPillar } from "@/lib/ai-outputs/types";
 import { formatShortThaiDate } from "@/lib/checkins/date";
 import { latestCheckinAt } from "@/lib/checkins/queries";
-import type { Pillar } from "@/lib/patterns/types";
+import type { Pillar } from "@/lib/domain";
 
 export const dynamic = "force-dynamic";
 

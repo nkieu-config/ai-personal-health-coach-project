@@ -1,4 +1,4 @@
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import { CheckinForm } from "./checkin-form";
 
 export function BackfillCheckinForm({

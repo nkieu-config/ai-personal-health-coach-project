@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { makeCheckin } from "@/lib/patterns/test-fixtures";
+import { makeCheckin } from "@/test/fixtures";
 import type {
   BedTimeBucket,
   Checkin,
@@ -9,7 +9,7 @@ import type {
   FoodType,
   MovementFeeling,
   MovementType,
-} from "@/lib/patterns/types";
+} from "@/lib/domain";
 import { findForbiddenTerms } from "@/lib/safety/language";
 import { buildCheckinSummary } from "./summary";
 

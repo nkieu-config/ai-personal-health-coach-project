@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { computePatternCandidates } from "@/lib/patterns";
-import { makeCheckins } from "@/lib/patterns/test-fixtures";
+import { makeCheckins } from "@/test/fixtures";
 import { findForbiddenTerms } from "@/lib/safety/language";
-import type { Checkin, Disruptor } from "@/lib/patterns/types";
+import type { Checkin, Disruptor } from "@/lib/domain";
 import { toInsightPattern } from "./templates";
 
 const WEEK: Partial<Checkin>[] = [

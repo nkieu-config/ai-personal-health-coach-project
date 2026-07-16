@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { makeCheckin } from "@/lib/patterns/test-fixtures";
-import type { Checkin } from "@/lib/patterns/types";
+import { makeCheckin } from "@/test/fixtures";
+import type { Checkin } from "@/lib/domain";
 import { daysAgo, today } from "./date";
 import { MAX_BACKFILL_DAYS, isWithinBackfillWindow, validateCheckin } from "./validate";
 

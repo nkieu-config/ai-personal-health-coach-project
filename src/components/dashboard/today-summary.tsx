@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronRight, Activity, Moon, Utensils } from "lucide-react";
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { Insight } from "@/lib/ai-outputs/types";
 import type { Goal } from "@/lib/goals/types";
-import { makeCheckins } from "@/lib/patterns/test-fixtures";
+import { makeCheckins } from "@/test/fixtures";
 import { type CoachContextData, formatCoachContext } from "./context-format";
 
 const checkins = makeCheckins(2, (index) =>

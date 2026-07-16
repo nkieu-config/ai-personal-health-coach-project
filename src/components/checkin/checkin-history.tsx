@@ -6,7 +6,7 @@ import { Check, Pencil, Trash2 } from "lucide-react";
 import { deleteCheckin } from "@/lib/checkins/actions";
 import { formatShortThaiDate, formatThaiDate } from "@/lib/checkins/date";
 import { buildCheckinSummary } from "@/lib/checkins/summary";
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 

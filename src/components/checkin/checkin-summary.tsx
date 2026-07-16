@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CheckCircle2, Sparkles } from "lucide-react";
 import { formatThaiDate } from "@/lib/checkins/date";
 import { buildCheckinSummary } from "@/lib/checkins/summary";
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 

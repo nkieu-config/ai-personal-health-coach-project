@@ -1,4 +1,4 @@
-import type { Checkin } from "./types";
+import type { Checkin } from "@/lib/domain";
 
 const BASE_DATE = "2026-07-14";
 

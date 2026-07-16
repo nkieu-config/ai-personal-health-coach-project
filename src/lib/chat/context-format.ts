@@ -7,7 +7,7 @@ import {
   EARLY_DAY_LABELS,
   STATUS_LABELS,
 } from "@/lib/onboarding/types";
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 
 export type BehaviorProfile = {
   status: string | null;

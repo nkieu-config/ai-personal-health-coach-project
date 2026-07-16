@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import type { Checkin } from "@/lib/patterns/types";
+import type { Checkin } from "@/lib/domain";
 import { daysAgo, formatShortThaiDate } from "@/lib/checkins/date";
 import { ENERGY_LABELS } from "@/lib/checkins/labels";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";

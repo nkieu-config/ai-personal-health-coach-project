@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { computePatternCandidates } from "@/lib/patterns";
-import { makeCheckins } from "@/lib/patterns/test-fixtures";
+import { makeCheckins } from "@/test/fixtures";
 import { findForbiddenTerms } from "@/lib/safety/language";
 import { formatBedTime, formatMetric } from "./format";
 import { toInsightPattern } from "./templates";
