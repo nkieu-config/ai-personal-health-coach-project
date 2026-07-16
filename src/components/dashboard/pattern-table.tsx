@@ -12,7 +12,9 @@ export function PatternTable() {
         </CardDescription>
       </CardHeader>
       <CardContent className="h-[100px] flex items-center justify-center border-2 border-dashed border-muted rounded-lg m-6 mt-0">
-        <span className="text-sm text-muted-foreground">ส่วนของตาราง (กำลังอยู่ในขั้นตอนพัฒนาในสปรินต์ถัดไป)</span>
+        <span className="text-sm text-muted-foreground">
+          ตาราง pattern จะมาใน F2-04 — คิวถัดไปของสาย 🟦
+        </span>
       </CardContent>
     </Card>
   );

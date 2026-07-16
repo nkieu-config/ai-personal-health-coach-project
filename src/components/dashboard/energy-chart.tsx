@@ -1,12 +1,17 @@
 "use client";
 
 import * as React from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
 import type { Checkin } from "@/lib/patterns/types";
 import { daysAgo, formatShortThaiDate } from "@/lib/checkins/date";
 import { ENERGY_LABELS } from "@/lib/checkins/labels";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 
 const chartConfig = {
   energy: { label: "ระดับพลังงาน", color: "var(--chart-4)" },
@@ -69,7 +74,13 @@ export function EnergyChart({ checkins, period }: { checkins: Checkin[]; period:
           <BarChart data={processedData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey="day" tickLine={false} axisLine={false} />
-            <YAxis ticks={[1, 2, 3]} tickFormatter={formatEnergyYAxis} domain={[0, 3.2]} axisLine={false} tickLine={false} />
+            <YAxis
+              ticks={[1, 2, 3]}
+              tickFormatter={formatEnergyYAxis}
+              domain={[0, 3.2]}
+              axisLine={false}
+              tickLine={false}
+            />
             <ChartTooltip
               content={
                 <ChartTooltipContent
@@ -80,15 +91,7 @@ export function EnergyChart({ checkins, period }: { checkins: Checkin[]; period:
                 />
               }
             />
-            <Bar dataKey="energyRaw" name="energy" radius={[4, 4, 0, 0]}>
-              {processedData.map((entry, index) => {
-                let fill = "var(--chart-4)";
-                if (entry.energyRaw === 1) fill = "var(--destructive)";
-                else if (entry.energyRaw === 2) fill = "var(--muted-foreground)";
-                else if (entry.energyRaw === 3) fill = "var(--primary)";
-                return <Cell key={`cell-${index}`} fill={fill} />;
-              })}
-            </Bar>
+            <Bar dataKey="energyRaw" name="energy" fill="var(--chart-4)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ChartContainer>
       </CardContent>
