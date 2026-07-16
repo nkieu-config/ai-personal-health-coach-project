@@ -1,166 +1,99 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { CalendarCheck } from "lucide-react";
-import {
-  MAX_PERIOD,
-  PeriodToggle,
-  parsePeriod,
-  type DashboardPeriod,
-} from "@/components/dashboard/period-toggle";
-import { CurrentGoalCard } from "@/components/goals/current-goal-card";
+import { getCheckins } from "@/lib/checkins/queries";
+import { daysAgo, today } from "@/lib/checkins/date";
+import { MAX_PERIOD, parsePeriod, PeriodToggle } from "@/components/dashboard/period-toggle";
 import { PageContainer } from "@/components/page-container";
 import { CardSkeleton } from "@/components/page-skeleton";
-import { ReflectionCard } from "@/components/reflection/reflection-card";
+import { Card, CardContent } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { daysAgo, formatThaiDate, today } from "@/lib/checkins/date";
-import { getCheckins } from "@/lib/checkins/queries";
-import { buildCheckinSummary } from "@/lib/checkins/summary";
-import type { Checkin } from "@/lib/patterns/types";
-
-function ComingSoonSection({ label }: { label: string }) {
-  return (
-    <div className="flex h-40 items-center justify-center rounded-lg border border-dashed bg-muted/30 text-center text-sm text-muted-foreground">
-      {label}
-    </div>
-  );
-}
-
-function WelcomeCard() {
-  return (
-    <Card className="text-center">
-      <CardHeader>
-        <CardTitle>ยินดีต้อนรับสู่ HealthCoach 👋</CardTitle>
-        <CardDescription>เริ่มจากบันทึกวันนี้ก่อน</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-sm text-muted-foreground">
-          พอบันทึกต่อเนื่องสักพัก หน้านี้จะเริ่มแสดงรูปแบบการกิน การนอน
-          และการเคลื่อนไหวของคุณให้เห็น
-        </p>
-        <Link href="/checkin" className={buttonVariants({ className: "w-full" })}>
-          <CalendarCheck className="size-4" />
-          เช็คอินวันแรกของคุณ
-        </Link>
-      </CardContent>
-    </Card>
-  );
-}
-
-function TodayCard({ checkin }: { checkin: Checkin | null }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">สรุปวันนี้</CardTitle>
-        <CardDescription>{formatThaiDate(today())}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        {checkin ? (
-          <ul className="space-y-1 text-sm text-muted-foreground">
-            {buildCheckinSummary(checkin).lines.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
-        ) : (
-          <div className="space-y-3">
-            <p className="text-sm text-muted-foreground">ยังไม่ได้บันทึกของวันนี้</p>
-            <Link href="/checkin" className={buttonVariants({ className: "w-full" })}>
-              เช็คอินวันนี้
-            </Link>
-          </div>
-        )}
-      </CardContent>
-    </Card>
-  );
-}
+import { CurrentGoalCard } from "@/components/goals/current-goal-card";
+import { ReflectionCard } from "@/components/reflection/reflection-card";
+import { TodaySummary } from "@/components/dashboard/today-summary";
+import { PatternTable } from "@/components/dashboard/pattern-table";
+import { PillarCharts } from "@/components/dashboard/pillar-charts";
+import { EnergyChart } from "@/components/dashboard/energy-chart";
 
 export default async function DashboardPage({
   searchParams,
 }: {
   searchParams: Promise<{ days?: string }>;
 }) {
-  const checkins = getCheckins(MAX_PERIOD);
-  const period = parsePeriod((await searchParams).days);
-  const recent = await checkins;
+  const { days } = await searchParams;
+  const period = parsePeriod(days);
+  const checkins = await getCheckins(MAX_PERIOD);
 
-  if (recent.length === 0) {
+  if (checkins.length === 0) {
     return (
-      <PageContainer>
-        <WelcomeCard />
+      <PageContainer width="content" className="space-y-6">
+        <div className="space-y-2">
+          <h1 className="text-xl font-semibold lg:text-2xl">ภาพรวมสุขภาพ</h1>
+          <p className="text-sm text-muted-foreground">
+            ดูแนวโน้มสุขภาพและคำแนะนำจากบันทึกสุขภาพรายวันของคุณ
+          </p>
+        </div>
+        <Card className="flex flex-col items-center justify-center border-dashed p-8 text-center">
+          <CardContent className="flex max-w-sm flex-col items-center justify-center space-y-4 pt-6">
+            <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+              <CalendarCheck className="size-6" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-lg font-semibold">ยังไม่มีข้อมูลสุขภาพ</h2>
+              <p className="text-sm text-muted-foreground">
+                บันทึกสุขภาพรายวันครั้งแรกของคุณเพื่อเริ่มต้นวิเคราะห์แนวโน้มสุขภาพทั้ง 3 ด้าน
+                (การกิน การนอน และการเคลื่อนไหว)
+              </p>
+            </div>
+            <Link href="/checkin" className={buttonVariants({ className: "w-full lg:w-auto" })}>
+              เช็คอินวันนี้
+            </Link>
+          </CardContent>
+        </Card>
       </PageContainer>
     );
   }
 
-  const from = daysAgo(period - 1);
-  const inPeriod = recent.filter((checkin) => checkin.checkinDate >= from);
-  const todaysCheckin = recent.find((checkin) => checkin.checkinDate === today()) ?? null;
+  const todayDate = today();
+  const todayCheckin = checkins.find((c) => c.checkinDate === todayDate) ?? null;
+  const inPeriod = checkins.filter((c) => c.checkinDate >= daysAgo(period - 1));
 
   return (
-    <PageContainer width="content" className="space-y-5">
-      <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-        <div>
+    <PageContainer width="content" className="space-y-6">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="space-y-2">
           <h1 className="text-xl font-semibold lg:text-2xl">ภาพรวมสุขภาพ</h1>
-          <p className="text-sm text-muted-foreground">ดูรูปแบบของตัวเองย้อนหลัง</p>
+          <p className="text-sm text-muted-foreground">
+            ดูแนวโน้มสุขภาพและคำแนะนำจากบันทึกสุขภาพรายวันของคุณ — บันทึกแล้ว {inPeriod.length} วัน
+            จาก {period} วันที่ผ่านมา
+          </p>
         </div>
-        <PeriodToggle period={period} />
+        <div className="flex items-center gap-2">
+          <PeriodToggle period={period} />
+        </div>
       </div>
 
-      {inPeriod.length === 0 ? (
-        <div className="space-y-5">
-          <TodayCard checkin={todaysCheckin} />
-          <EmptyPeriodCard period={period} />
+      <div className="grid gap-5 lg:grid-cols-3">
+        <div className="lg:col-span-1">
+          <TodaySummary checkin={todayCheckin} date={todayDate} />
         </div>
-      ) : (
-        <div className="grid gap-5 lg:grid-cols-3 lg:items-start">
-          <div className="space-y-5 lg:col-span-1">
-            <TodayCard checkin={todaysCheckin} />
-            <Suspense fallback={<CardSkeleton rows={1} />}>
-              <CurrentGoalCard />
-            </Suspense>
-            <Suspense fallback={<CardSkeleton rows={1} />}>
-              <ReflectionCard />
-            </Suspense>
-          </div>
-
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-base">แนวโน้ม 3 ด้าน</CardTitle>
-              <CardDescription>
-                บันทึกแล้ว {inPeriod.length} วัน จาก {period} วันที่ผ่านมา
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ComingSoonSection label="กราฟ กิน / นอน / เคลื่อนไหว (F2-02)" />
-            </CardContent>
-          </Card>
-
-          <Card className="lg:col-span-3">
-            <CardHeader>
-              <CardTitle className="text-base">รูปแบบที่พบ</CardTitle>
-              <CardDescription>สัญญาณที่น่าติดตาม ไม่ใช่ข้อสรุป</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ComingSoonSection label="ตาราง pattern (F2-04)" />
-            </CardContent>
-          </Card>
+        <div className="lg:col-span-2">
+          <PillarCharts checkins={checkins} period={period} />
         </div>
-      )}
+      </div>
+
+      <EnergyChart checkins={checkins} period={period} />
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        <Suspense fallback={<CardSkeleton rows={1} />}>
+          <CurrentGoalCard />
+        </Suspense>
+        <Suspense fallback={<CardSkeleton rows={1} />}>
+          <ReflectionCard />
+        </Suspense>
+      </div>
+
+      <PatternTable />
     </PageContainer>
-  );
-}
-
-function EmptyPeriodCard({ period }: { period: DashboardPeriod }) {
-  return (
-    <Card>
-      <CardContent className="space-y-3 py-8 text-center">
-        <p className="text-sm text-muted-foreground">ไม่มีบันทึกในช่วง {period} วันที่ผ่านมา</p>
-        <Link
-          href={`/dashboard?days=${MAX_PERIOD}`}
-          className={buttonVariants({ variant: "outline", className: "w-full" })}
-        >
-          ลองดูย้อนหลัง {MAX_PERIOD} วัน
-        </Link>
-      </CardContent>
-    </Card>
   );
 }
