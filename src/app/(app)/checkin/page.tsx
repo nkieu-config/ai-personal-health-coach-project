@@ -16,36 +16,37 @@ export default async function CheckinPage() {
   const hasEarlierCheckin = recent.some((checkin) => checkin.checkinDate !== date);
   const missedYesterday = !recent.some((checkin) => checkin.checkinDate === yesterday);
 
-  return (
-    <PageContainer className="space-y-4">
-      <h1 className="sr-only">เช็คอินประจำวัน</h1>
-
-      {hasEarlierCheckin && missedYesterday && (
-        <Link
-          href={`/checkin/edit/${yesterday}`}
-          className="flex items-center gap-3 rounded-lg border border-dashed p-3 text-sm transition-colors hover:bg-muted"
-        >
-          <CalendarPlus className="size-4 shrink-0 text-primary" />
-          <span>
-            ยังไม่ได้บันทึกของ{formatThaiDate(yesterday)}
-            <span className="block text-xs text-muted-foreground">
-              ลืมกรอกก่อนนอนก็ย้อนกลับไปบันทึกได้
-            </span>
+  const nudge =
+    hasEarlierCheckin && missedYesterday ? (
+      <Link
+        href={`/checkin/edit/${yesterday}`}
+        className="flex items-center gap-3 rounded-lg border border-dashed p-3 text-sm transition-colors hover:bg-muted"
+      >
+        <CalendarPlus className="size-4 shrink-0 text-primary" />
+        <span>
+          ยังไม่ได้บันทึกของ{formatThaiDate(yesterday)}
+          <span className="block text-xs text-muted-foreground">
+            ลืมกรอกก่อนนอนก็ย้อนกลับไปบันทึกได้
           </span>
-        </Link>
-      )}
+        </span>
+      </Link>
+    ) : null;
 
-      <TodayCheckinForm date={date} existing={existing} />
+  const footer =
+    recent.length > 0 ? (
+      <Link
+        href="/checkin/history"
+        className={buttonVariants({ variant: "ghost", className: "w-full" })}
+      >
+        <History className="size-4" />
+        ดูบันทึกย้อนหลัง
+      </Link>
+    ) : null;
 
-      {recent.length > 0 && (
-        <Link
-          href="/checkin/history"
-          className={buttonVariants({ variant: "ghost", className: "w-full" })}
-        >
-          <History className="size-4" />
-          ดูบันทึกย้อนหลัง
-        </Link>
-      )}
+  return (
+    <PageContainer width="content">
+      <h1 className="sr-only">เช็คอินประจำวัน</h1>
+      <TodayCheckinForm date={date} existing={existing} nudge={nudge} footer={footer} />
     </PageContainer>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useTransition, type ReactNode } from "react";
+import { Check } from "lucide-react";
 import { saveCheckin } from "@/lib/checkins/actions";
-import { formatThaiDate, today } from "@/lib/checkins/date";
+import { formatThaiDate } from "@/lib/checkins/date";
 import { CheckinSummary } from "./checkin-summary";
 import {
   BED_TIME_LABELS,
@@ -39,6 +39,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Chip, toggleValue } from "@/components/ui/chip";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 const STEPS = ["กิน", "นอน", "เคลื่อนไหว", "บริบทวัน"];
 
@@ -75,16 +76,59 @@ function Field({
   );
 }
 
+function StepRail({ step }: { step: number }) {
+  return (
+    <nav aria-hidden className="hidden lg:block">
+      <p className="mb-3 px-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+        ขั้นตอน
+      </p>
+      <ol className="space-y-1">
+        {STEPS.map((name, index) => {
+          const done = index < step;
+          const current = index === step;
+          return (
+            <li
+              key={name}
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm",
+                current ? "bg-muted font-medium text-foreground" : "text-muted-foreground"
+              )}
+            >
+              <span
+                className={cn(
+                  "flex size-6 shrink-0 items-center justify-center rounded-full border text-xs",
+                  done
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : current
+                      ? "border-2 border-primary text-foreground"
+                      : "border-border"
+                )}
+              >
+                {done ? <Check className="size-3.5" /> : index + 1}
+              </span>
+              {name}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
+  );
+}
+
 export function CheckinForm({
   date,
   existing,
   heading,
   beforeSave,
+  nudge,
+  footer,
 }: {
   date: string;
   existing: Checkin | null;
   heading: string;
   beforeSave?: () => string | null;
+  nudge?: ReactNode;
+  footer?: ReactNode;
 }) {
   const [step, setStep] = useState(0);
   const [saved, setSaved] = useState<Checkin | null>(null);
@@ -214,286 +258,301 @@ export function CheckinForm({
   }
 
   if (saved) {
-    return <CheckinSummary checkin={saved} onEdit={() => setSaved(null)} />;
+    return (
+      <div className="mx-auto max-w-md">
+        <CheckinSummary checkin={saved} onEdit={() => setSaved(null)} />
+      </div>
+    );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>
-          {heading} · {STEPS[step]}
-        </CardTitle>
-        <CardDescription>
-          {formatThaiDate(date)} · ขั้นที่ {step + 1} จาก {STEPS.length}
-          {existing && " · กำลังแก้ไขบันทึกเดิม"}
-        </CardDescription>
-        <div className="flex gap-1 pt-2">
-          {STEPS.map((name, index) => (
-            <div
-              key={name}
-              className={`h-1 flex-1 rounded-full ${index <= step ? "bg-primary" : "bg-muted"}`}
-            />
-          ))}
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-6">
-        {step === 0 && (
-          <>
-            <Field label="วันนี้กินกี่มื้อ">
-              {MEAL_COUNTS.map((count) => (
-                <Chip
-                  key={count}
-                  active={mealsCount === count}
-                  onClick={() => setMealsCount(count)}
-                >
-                  {count} มื้อ
-                </Chip>
+    <div className="lg:grid lg:grid-cols-[13rem_minmax(0,28rem)] lg:items-start lg:justify-center lg:gap-8">
+      <StepRail step={step} />
+      <div className="mx-auto w-full max-w-md space-y-4 lg:mx-0 lg:max-w-none">
+        {nudge}
+        <Card>
+          <CardHeader>
+            <CardTitle>
+              {heading} · {STEPS[step]}
+            </CardTitle>
+            <CardDescription>
+              {formatThaiDate(date)} · ขั้นที่ {step + 1} จาก {STEPS.length}
+              {existing && " · กำลังแก้ไขบันทึกเดิม"}
+            </CardDescription>
+            <div className="flex gap-1 pt-2 lg:hidden">
+              {STEPS.map((name, index) => (
+                <div
+                  key={name}
+                  className={`h-1 flex-1 rounded-full ${index <= step ? "bg-primary" : "bg-muted"}`}
+                />
               ))}
-            </Field>
-
-            {asks.skippedMeals && (
-              <Field label="มื้อไหนที่ข้ามไป" hint="เลือกได้หลายมื้อ">
-                {keysOf(MEAL_LABELS).map((meal) => (
-                  <Chip
-                    key={meal}
-                    active={skippedMeals.includes(meal)}
-                    onClick={() => setSkippedMeals(toggleValue(skippedMeals, meal))}
-                  >
-                    {MEAL_LABELS[meal]}
-                  </Chip>
-                ))}
-              </Field>
-            )}
-
-            {asks.firstMealTime && (
-              <Field label="มื้อแรกของวันกินตอนไหน" hint="ข้ามได้">
-                {keysOf(FIRST_MEAL_TIME_LABELS).map((time) => (
-                  <Chip
-                    key={time}
-                    active={firstMealTime === time}
-                    onClick={() => setFirstMealTime(firstMealTime === time ? null : time)}
-                  >
-                    {FIRST_MEAL_TIME_LABELS[time]}
-                  </Chip>
-                ))}
-              </Field>
-            )}
-
-            <Field label="วันนี้ได้กินอะไรอีกไหม" hint="เลือกได้หลายอย่าง · ข้ามได้">
-              {keysOf(FOOD_TYPE_LABELS).map((type) => (
-                <Chip
-                  key={type}
-                  active={foodTypes.includes(type)}
-                  onClick={() => setFoodTypes(toggleValue(foodTypes, type))}
-                >
-                  {FOOD_TYPE_LABELS[type]}
-                </Chip>
-              ))}
-            </Field>
-
-            <Field label="เครื่องดื่มหวานวันนี้" hint="ชานม น้ำอัดลม กาแฟใส่น้ำตาล">
-              {SWEET_DRINKS.map((count) => (
-                <Chip
-                  key={count}
-                  active={sweetDrinks === count}
-                  onClick={() => setSweetDrinks(count)}
-                >
-                  {count === 0 ? "ไม่ดื่ม" : `${countLabel(count, 4)} แก้ว`}
-                </Chip>
-              ))}
-            </Field>
-
-            {asks.mealFeeling && (
-              <Field label="หลังกินรู้สึกยังไง" hint="ข้ามได้">
-                {keysOf(MEAL_FEELING_LABELS).map((feeling) => (
-                  <Chip
-                    key={feeling}
-                    active={mealFeeling === feeling}
-                    onClick={() => setMealFeeling(mealFeeling === feeling ? null : feeling)}
-                  >
-                    {MEAL_FEELING_LABELS[feeling]}
-                  </Chip>
-                ))}
-              </Field>
-            )}
-          </>
-        )}
-
-        {step === 1 && (
-          <>
-            <Field label="เมื่อคืนนอนกี่ชั่วโมง">
-              {SLEEP_HOURS.map((hours) => (
-                <Chip
-                  key={hours}
-                  active={sleepHours === hours}
-                  onClick={() => setSleepHours(hours)}
-                >
-                  {hours === 3 ? "≤3" : countLabel(hours, 10)} ชม.
-                </Chip>
-              ))}
-            </Field>
-
-            <Field label="เข้านอนตอนไหน">
-              {keysOf(BED_TIME_LABELS).map((bucket) => (
-                <Chip
-                  key={bucket}
-                  active={bedTimeBucket === bucket}
-                  onClick={() => setBedTimeBucket(bucket)}
-                >
-                  {BED_TIME_LABELS[bucket]}
-                </Chip>
-              ))}
-            </Field>
-
-            {asks.lateReason && (
-              <Field label="ที่นอนดึกเพราะอะไร" hint="ข้ามได้">
-                {keysOf(LATE_REASON_LABELS).map((reason) => (
-                  <Chip
-                    key={reason}
-                    active={lateReason === reason}
-                    onClick={() => setLateReason(lateReason === reason ? null : reason)}
-                  >
-                    {LATE_REASON_LABELS[reason]}
-                  </Chip>
-                ))}
-              </Field>
-            )}
-
-            <Field label="ตื่นมารู้สึกว่านอนหลับดีแค่ไหน">
-              {SLEEP_QUALITIES.map((quality) => (
-                <Chip
-                  key={quality}
-                  active={sleepQuality === quality}
-                  onClick={() => setSleepQuality(quality)}
-                >
-                  {quality} · {SLEEP_QUALITY_LABELS[quality]}
-                </Chip>
-              ))}
-            </Field>
-          </>
-        )}
-
-        {step === 2 && (
-          <>
-            <Field label="วันนี้ขยับร่างกายแบบไหนบ้าง" hint="เลือกได้หลายอย่าง">
-              {keysOf(MOVEMENT_TYPE_LABELS).map((type) => (
-                <Chip
-                  key={type}
-                  active={movementTypes.includes(type)}
-                  onClick={() => pickMovementType(type)}
-                >
-                  {MOVEMENT_TYPE_LABELS[type]}
-                </Chip>
-              ))}
-            </Field>
-
-            {asks.movementMinutes && (
-              <Field label="รวมแล้วประมาณกี่นาที">
-                {MOVEMENT_MINUTES.map((value) => (
-                  <Chip
-                    key={value}
-                    active={movementMinutes === value}
-                    onClick={() => setMovementMinutes(value)}
-                  >
-                    {value === 0 ? "แทบไม่ได้ขยับ" : `${countLabel(value, 60)} นาที`}
-                  </Chip>
-                ))}
-              </Field>
-            )}
-
-            {asks.movementBlocker && (
-              <Field label="อะไรทำให้ไม่ได้ขยับ" hint="ข้ามได้">
-                {keysOf(MOVEMENT_BLOCKER_LABELS).map((blocker) => (
-                  <Chip
-                    key={blocker}
-                    active={movementBlocker === blocker}
-                    onClick={() => setMovementBlocker(movementBlocker === blocker ? null : blocker)}
-                  >
-                    {MOVEMENT_BLOCKER_LABELS[blocker]}
-                  </Chip>
-                ))}
-              </Field>
-            )}
-
-            {asks.movementFeeling && (
-              <Field label="หลังขยับรู้สึกยังไง" hint="ข้ามได้">
-                {keysOf(MOVEMENT_FEELING_LABELS).map((feeling) => (
-                  <Chip
-                    key={feeling}
-                    active={movementFeeling === feeling}
-                    onClick={() => setMovementFeeling(movementFeeling === feeling ? null : feeling)}
-                  >
-                    {MOVEMENT_FEELING_LABELS[feeling]}
-                  </Chip>
-                ))}
-              </Field>
-            )}
-          </>
-        )}
-
-        {step === 3 && (
-          <>
-            <Field label="พลังงานวันนี้โดยรวม">
-              {keysOf(ENERGY_LABELS).map((level) => (
-                <Chip
-                  key={level}
-                  active={energyLevel === level}
-                  onClick={() => setEnergyLevel(level)}
-                >
-                  {ENERGY_LABELS[level]}
-                </Chip>
-              ))}
-            </Field>
-
-            <Field label="วันนี้มีอะไรพิเศษไหม" hint="เลือกได้หลายอย่าง">
-              {keysOf(DISRUPTOR_LABELS).map((disruptor) => (
-                <Chip
-                  key={disruptor}
-                  active={disruptors.includes(disruptor)}
-                  onClick={() => pickDisruptor(disruptor)}
-                >
-                  {DISRUPTOR_LABELS[disruptor]}
-                </Chip>
-              ))}
-            </Field>
-
-            <div className="space-y-2">
-              <Label htmlFor="note">บันทึกเพิ่มเติม (ข้ามได้)</Label>
-              <Textarea
-                id="note"
-                value={note}
-                onChange={(event) => setNote(event.target.value)}
-                maxLength={NOTE_MAX_LENGTH}
-                rows={3}
-                placeholder="เช่น วันนี้ประชุมยาว เลยไม่ได้กินข้าวเที่ยง"
-              />
-              <p className="text-right text-xs text-muted-foreground">
-                {note.length}/{NOTE_MAX_LENGTH}
-              </p>
             </div>
-          </>
-        )}
+          </CardHeader>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+          <CardContent className="space-y-6">
+            {step === 0 && (
+              <>
+                <Field label="วันนี้กินกี่มื้อ">
+                  {MEAL_COUNTS.map((count) => (
+                    <Chip
+                      key={count}
+                      active={mealsCount === count}
+                      onClick={() => setMealsCount(count)}
+                    >
+                      {count} มื้อ
+                    </Chip>
+                  ))}
+                </Field>
 
-        <div className="flex gap-2">
-          {step > 0 && (
-            <Button variant="outline" onClick={() => setStep(step - 1)} disabled={pending}>
-              ย้อนกลับ
-            </Button>
-          )}
-          {step < STEPS.length - 1 ? (
-            <Button className="flex-1" onClick={() => setStep(step + 1)} disabled={!canProceed}>
-              ถัดไป
-            </Button>
-          ) : (
-            <Button className="flex-1" onClick={submit} disabled={!canProceed || pending}>
-              {pending ? "กำลังบันทึก…" : "บันทึก"}
-            </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+                {asks.skippedMeals && (
+                  <Field label="มื้อไหนที่ข้ามไป" hint="เลือกได้หลายมื้อ">
+                    {keysOf(MEAL_LABELS).map((meal) => (
+                      <Chip
+                        key={meal}
+                        active={skippedMeals.includes(meal)}
+                        onClick={() => setSkippedMeals(toggleValue(skippedMeals, meal))}
+                      >
+                        {MEAL_LABELS[meal]}
+                      </Chip>
+                    ))}
+                  </Field>
+                )}
+
+                {asks.firstMealTime && (
+                  <Field label="มื้อแรกของวันกินตอนไหน" hint="ข้ามได้">
+                    {keysOf(FIRST_MEAL_TIME_LABELS).map((time) => (
+                      <Chip
+                        key={time}
+                        active={firstMealTime === time}
+                        onClick={() => setFirstMealTime(firstMealTime === time ? null : time)}
+                      >
+                        {FIRST_MEAL_TIME_LABELS[time]}
+                      </Chip>
+                    ))}
+                  </Field>
+                )}
+
+                <Field label="วันนี้ได้กินอะไรอีกไหม" hint="เลือกได้หลายอย่าง · ข้ามได้">
+                  {keysOf(FOOD_TYPE_LABELS).map((type) => (
+                    <Chip
+                      key={type}
+                      active={foodTypes.includes(type)}
+                      onClick={() => setFoodTypes(toggleValue(foodTypes, type))}
+                    >
+                      {FOOD_TYPE_LABELS[type]}
+                    </Chip>
+                  ))}
+                </Field>
+
+                <Field label="เครื่องดื่มหวานวันนี้" hint="ชานม น้ำอัดลม กาแฟใส่น้ำตาล">
+                  {SWEET_DRINKS.map((count) => (
+                    <Chip
+                      key={count}
+                      active={sweetDrinks === count}
+                      onClick={() => setSweetDrinks(count)}
+                    >
+                      {count === 0 ? "ไม่ดื่ม" : `${countLabel(count, 4)} แก้ว`}
+                    </Chip>
+                  ))}
+                </Field>
+
+                {asks.mealFeeling && (
+                  <Field label="หลังกินรู้สึกยังไง" hint="ข้ามได้">
+                    {keysOf(MEAL_FEELING_LABELS).map((feeling) => (
+                      <Chip
+                        key={feeling}
+                        active={mealFeeling === feeling}
+                        onClick={() => setMealFeeling(mealFeeling === feeling ? null : feeling)}
+                      >
+                        {MEAL_FEELING_LABELS[feeling]}
+                      </Chip>
+                    ))}
+                  </Field>
+                )}
+              </>
+            )}
+
+            {step === 1 && (
+              <>
+                <Field label="เมื่อคืนนอนกี่ชั่วโมง">
+                  {SLEEP_HOURS.map((hours) => (
+                    <Chip
+                      key={hours}
+                      active={sleepHours === hours}
+                      onClick={() => setSleepHours(hours)}
+                    >
+                      {hours === 3 ? "≤3" : countLabel(hours, 10)} ชม.
+                    </Chip>
+                  ))}
+                </Field>
+
+                <Field label="เข้านอนตอนไหน">
+                  {keysOf(BED_TIME_LABELS).map((bucket) => (
+                    <Chip
+                      key={bucket}
+                      active={bedTimeBucket === bucket}
+                      onClick={() => setBedTimeBucket(bucket)}
+                    >
+                      {BED_TIME_LABELS[bucket]}
+                    </Chip>
+                  ))}
+                </Field>
+
+                {asks.lateReason && (
+                  <Field label="ที่นอนดึกเพราะอะไร" hint="ข้ามได้">
+                    {keysOf(LATE_REASON_LABELS).map((reason) => (
+                      <Chip
+                        key={reason}
+                        active={lateReason === reason}
+                        onClick={() => setLateReason(lateReason === reason ? null : reason)}
+                      >
+                        {LATE_REASON_LABELS[reason]}
+                      </Chip>
+                    ))}
+                  </Field>
+                )}
+
+                <Field label="ตื่นมารู้สึกว่านอนหลับดีแค่ไหน">
+                  {SLEEP_QUALITIES.map((quality) => (
+                    <Chip
+                      key={quality}
+                      active={sleepQuality === quality}
+                      onClick={() => setSleepQuality(quality)}
+                    >
+                      {quality} · {SLEEP_QUALITY_LABELS[quality]}
+                    </Chip>
+                  ))}
+                </Field>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <Field label="วันนี้ขยับร่างกายแบบไหนบ้าง" hint="เลือกได้หลายอย่าง">
+                  {keysOf(MOVEMENT_TYPE_LABELS).map((type) => (
+                    <Chip
+                      key={type}
+                      active={movementTypes.includes(type)}
+                      onClick={() => pickMovementType(type)}
+                    >
+                      {MOVEMENT_TYPE_LABELS[type]}
+                    </Chip>
+                  ))}
+                </Field>
+
+                {asks.movementMinutes && (
+                  <Field label="รวมแล้วประมาณกี่นาที">
+                    {MOVEMENT_MINUTES.map((value) => (
+                      <Chip
+                        key={value}
+                        active={movementMinutes === value}
+                        onClick={() => setMovementMinutes(value)}
+                      >
+                        {value === 0 ? "แทบไม่ได้ขยับ" : `${countLabel(value, 60)} นาที`}
+                      </Chip>
+                    ))}
+                  </Field>
+                )}
+
+                {asks.movementBlocker && (
+                  <Field label="อะไรทำให้ไม่ได้ขยับ" hint="ข้ามได้">
+                    {keysOf(MOVEMENT_BLOCKER_LABELS).map((blocker) => (
+                      <Chip
+                        key={blocker}
+                        active={movementBlocker === blocker}
+                        onClick={() =>
+                          setMovementBlocker(movementBlocker === blocker ? null : blocker)
+                        }
+                      >
+                        {MOVEMENT_BLOCKER_LABELS[blocker]}
+                      </Chip>
+                    ))}
+                  </Field>
+                )}
+
+                {asks.movementFeeling && (
+                  <Field label="หลังขยับรู้สึกยังไง" hint="ข้ามได้">
+                    {keysOf(MOVEMENT_FEELING_LABELS).map((feeling) => (
+                      <Chip
+                        key={feeling}
+                        active={movementFeeling === feeling}
+                        onClick={() =>
+                          setMovementFeeling(movementFeeling === feeling ? null : feeling)
+                        }
+                      >
+                        {MOVEMENT_FEELING_LABELS[feeling]}
+                      </Chip>
+                    ))}
+                  </Field>
+                )}
+              </>
+            )}
+
+            {step === 3 && (
+              <>
+                <Field label="พลังงานวันนี้โดยรวม">
+                  {keysOf(ENERGY_LABELS).map((level) => (
+                    <Chip
+                      key={level}
+                      active={energyLevel === level}
+                      onClick={() => setEnergyLevel(level)}
+                    >
+                      {ENERGY_LABELS[level]}
+                    </Chip>
+                  ))}
+                </Field>
+
+                <Field label="วันนี้มีอะไรพิเศษไหม" hint="เลือกได้หลายอย่าง">
+                  {keysOf(DISRUPTOR_LABELS).map((disruptor) => (
+                    <Chip
+                      key={disruptor}
+                      active={disruptors.includes(disruptor)}
+                      onClick={() => pickDisruptor(disruptor)}
+                    >
+                      {DISRUPTOR_LABELS[disruptor]}
+                    </Chip>
+                  ))}
+                </Field>
+
+                <div className="space-y-2">
+                  <Label htmlFor="note">บันทึกเพิ่มเติม (ข้ามได้)</Label>
+                  <Textarea
+                    id="note"
+                    value={note}
+                    onChange={(event) => setNote(event.target.value)}
+                    maxLength={NOTE_MAX_LENGTH}
+                    rows={3}
+                    placeholder="เช่น วันนี้ประชุมยาว เลยไม่ได้กินข้าวเที่ยง"
+                  />
+                  <p className="text-right text-xs text-muted-foreground">
+                    {note.length}/{NOTE_MAX_LENGTH}
+                  </p>
+                </div>
+              </>
+            )}
+
+            {error && <p className="text-sm text-destructive">{error}</p>}
+
+            <div className="flex gap-2">
+              {step > 0 && (
+                <Button variant="outline" onClick={() => setStep(step - 1)} disabled={pending}>
+                  ย้อนกลับ
+                </Button>
+              )}
+              {step < STEPS.length - 1 ? (
+                <Button className="flex-1" onClick={() => setStep(step + 1)} disabled={!canProceed}>
+                  ถัดไป
+                </Button>
+              ) : (
+                <Button className="flex-1" onClick={submit} disabled={!canProceed || pending}>
+                  {pending ? "กำลังบันทึก…" : "บันทึก"}
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+        {footer}
+      </div>
+    </div>
   );
 }
