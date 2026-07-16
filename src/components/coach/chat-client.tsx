@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useTransition } from "react";
-import { Trash2, Send, RefreshCw, MessageSquare } from "lucide-react";
+import { Trash2, Send, RefreshCw, MessageSquare, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,91 +15,23 @@ import {
   type ChatMessage,
 } from "@/lib/chat/types";
 import { cn } from "@/lib/utils";
-import { acceptGoal } from "@/lib/goals/actions";
-import { type Situation } from "@/lib/goals/types";
+import { acceptGoal, recommendGoals } from "@/lib/goals/actions";
+import { GOAL_TITLE_MAX_LENGTH, SITUATION_LABELS, type GoalSuggestion } from "@/lib/goals/types";
+import { CONSTRAINT_LABELS, EARLY_DAY_LABELS } from "@/lib/onboarding/types";
+import { PILLAR_LABELS } from "@/lib/ai-outputs/format";
+import type { Pillar } from "@/lib/patterns/types";
 
-const STARTERS = ["ช่วยดู pattern สัปดาห์นี้", "อยากตั้งเป้าสัปดาห์หน้า"];
+const GOAL_STARTER = "อยากตั้งเป้าสัปดาห์หน้า";
+const STARTERS = ["ช่วยดู pattern สัปดาห์นี้", GOAL_STARTER];
 
-const DAY_OPTIONS = [
-  { value: "mon", label: "จันทร์" },
-  { value: "tue", label: "อังคาร" },
-  { value: "wed", label: "พุธ" },
-  { value: "thu", label: "พฤหัสฯ" },
-  { value: "fri", label: "ศุกร์" },
-  { value: "sat", label: "เสาร์" },
-  { value: "sun", label: "อาทิตย์" },
+const PILLAR_OPTIONS: { value: Pillar; hint: string }[] = [
+  { value: "eating", hint: "กินครบมื้อ ปรับตารางกิน" },
+  { value: "sleep", hint: "นอนเร็วขึ้น พักระหว่างทำงาน" },
+  { value: "movement", hint: "ยืดเหยียด เดินเพิ่มขึ้น" },
 ];
 
-const CONSTRAINT_OPTIONS = [
-  { value: "no_time", label: "⏰ ไม่มีเวลา" },
-  { value: "no_place", label: "📍 สถานที่จำกัด" },
-  { value: "poor_rest", label: "🔋 เหนื่อยล้า/พักผ่อนน้อย" },
-  { value: "long_commute", label: "🚗 เดินทางไกล" },
-  { value: "limited_budget", label: "💰 งบประมาณจำกัด" },
-];
-
-const getGoalOptions = (
-  pillar: "eating" | "sleeping" | "movement",
-  busyDays: string[],
-  constraints: string[]
-): { title: string; situation: Situation }[] => {
-  const dayNames = busyDays.map((d) => {
-    if (d === "mon") return "วันจันทร์";
-    if (d === "tue") return "วันอังคาร";
-    if (d === "wed") return "วันพุธ";
-    if (d === "thu") return "วันพฤหัสฯ";
-    if (d === "fri") return "วันศุกร์";
-    if (d === "sat") return "วันเสาร์";
-    return "วันอาทิตย์";
-  });
-  const daysStr =
-    dayNames.length > 0 ? `ในคืนก่อน${dayNames.join("/")}` : "ล่วงหน้า 2 วันในสัปดาห์นี้";
-
-  if (pillar === "eating") {
-    return [
-      {
-        title: `เตรียมมื้อเช้าง่าย ๆ ไว้${daysStr}`,
-        situation: "early_class",
-      },
-      {
-        title: "ดื่มน้ำเปล่าเพิ่มขึ้น 1 แก้วแทนเครื่องดื่มหวานในช่วงบ่าย",
-        situation: "deadline",
-      },
-    ];
-  } else if (pillar === "sleeping") {
-    const sleepDaysStr =
-      dayNames.length > 0 ? `ในคืน${dayNames.join("/")}` : "อย่างน้อย 3 คืนในสัปดาห์นี้";
-    return [
-      {
-        title: `วางมือถือก่อนนอน 15 นาที ${sleepDaysStr}`,
-        situation: "phone_before_bed",
-      },
-      {
-        title: "ตั้งเวลาพัก 5 นาทีทุก 60–90 นาทีเมื่อต้องทำงานหน้าจอหรือช่วงเดดไลน์",
-        situation: "deadline",
-      },
-    ];
-  } else {
-    // movement
-    const hasCommute = constraints.includes("long_commute");
-    const moveDaysStr = dayNames.length > 0 ? `ในวัน${dayNames.join("/")}` : "ในระหว่างวัน";
-    return [
-      {
-        title: `ยืดเหยียดร่างกาย 5 นาทีหลังนั่งทำงานหรือจบคลาสเรียน${moveDaysStr}`,
-        situation: "long_screen",
-      },
-      hasCommute
-        ? {
-            title: "เดินเบา ๆ 10 นาทีหลังเดินทางถึงบ้านเพื่อผ่อนคลาย",
-            situation: "long_commute",
-          }
-        : {
-            title: "เดินขึ้นบันไดแทนลิฟต์ หรือเดินสั้น ๆ ระหว่างวัน",
-            situation: "no_exercise_time",
-          },
-    ];
-  }
-};
+const DAY_OPTIONS = Object.entries(EARLY_DAY_LABELS) as [string, string][];
+const CONSTRAINT_OPTIONS = Object.entries(CONSTRAINT_LABELS) as [string, string][];
 
 interface CoachChatClientProps {
   initialMessages: ChatMessage[];
@@ -129,13 +61,14 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
     "pillar" | "busy_days" | "constraints" | "select_goal"
   >("pillar");
   const [guidedData, setGuidedData] = useState<{
-    pillar?: "eating" | "sleeping" | "movement";
+    pillar?: Pillar;
     busyDays: string[];
     constraints: string[];
   }>({
     busyDays: [],
     constraints: [],
   });
+  const [goalOptions, setGoalOptions] = useState<GoalSuggestion[] | null>(null);
   const [selectedGoalIndex, setSelectedGoalIndex] = useState<number>(0);
   const [editedGoalTitle, setEditedGoalTitle] = useState<string>("");
 
@@ -168,12 +101,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
     if (guidedStep === "pillar") return list;
 
     // User select pillar response
-    const pillarText =
-      guidedData.pillar === "eating"
-        ? "อยากเริ่มจากด้านการกินอาหารครับ"
-        : guidedData.pillar === "sleeping"
-          ? "อยากเริ่มจากด้านการนอนหลับพักผ่อนครับ"
-          : "อยากเริ่มจากด้านการขยับร่างกาย/ออกกำลังกายครับ";
+    const pillarText = `อยากเริ่มจากด้าน${PILLAR_LABELS[guidedData.pillar ?? "eating"]}ครับ`;
 
     list.push({
       id: "guided-user-1",
@@ -186,13 +114,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
     list.push({
       id: "guided-coach-2",
       role: "coach",
-      content: `รับทราบครับ เรื่อง${
-        guidedData.pillar === "eating"
-          ? "กิน"
-          : guidedData.pillar === "sleeping"
-            ? "นอน"
-            : "ขยับร่างกาย"
-      }นะ\n\nสัปดาห์หน้ามีวันไหนที่คุณคิดว่าจะมีตารางเรียน/ทำงานที่แน่น หรือยุ่งเป็นพิเศษบ้างไหมครับ?`,
+      content: `รับทราบครับ เรื่อง${PILLAR_LABELS[guidedData.pillar ?? "eating"]}นะ\n\nสัปดาห์หน้ามีวันไหนที่คุณคิดว่าจะมีตารางเรียน/ทำงานที่แน่น หรือยุ่งเป็นพิเศษบ้างไหมครับ?`,
       createdAt: new Date().toISOString(),
     });
 
@@ -201,16 +123,8 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
     // User select busy days response
     const formatDays = (days: string[]) => {
       if (days.length === 0) return "ไม่มีวันไหนเป็นพิเศษครับ";
-      const dayNames = days.map((d) => {
-        if (d === "mon") return "วันจันทร์";
-        if (d === "tue") return "วันอังคาร";
-        if (d === "wed") return "วันพุธ";
-        if (d === "thu") return "วันพฤหัสบดี";
-        if (d === "fri") return "วันศุกร์";
-        if (d === "sat") return "วันเสาร์";
-        return "วันอาทิตย์";
-      });
-      return `วันที่มีตารางแน่น: ${dayNames.join(", ")} ครับ`;
+      const dayNames = days.map((d) => EARLY_DAY_LABELS[d as keyof typeof EARLY_DAY_LABELS]);
+      return `วันที่มีตารางแน่น: ${dayNames.join(" ")} ครับ`;
     };
 
     list.push({
@@ -234,14 +148,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
     // User select constraints response
     const formatConstraints = (cons: string[]) => {
       if (cons.length === 0) return "ไม่มีข้อจำกัดเป็นพิเศษครับ";
-      const conNames = cons.map((c) => {
-        if (c === "no_time") return "ไม่มีเวลา";
-        if (c === "no_place") return "สถานที่จำกัด";
-        if (c === "tired" || c === "poor_rest") return "เหนื่อยเกินไป/ล้า";
-        if (c === "limited_budget") return "งบประมาณจำกัด";
-        if (c === "long_commute") return "เดินทางไกล";
-        return c;
-      });
+      const conNames = cons.map((c) => CONSTRAINT_LABELS[c as keyof typeof CONSTRAINT_LABELS]);
       return `ข้อจำกัด: ${conNames.join(", ")} ครับ`;
     };
 
@@ -269,12 +176,8 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
     const text = textToSend.trim();
     if (!text) return;
 
-    // Intercept guided flow intent
-    if (
-      text === "อยากตั้งเป้าสัปดาห์หน้า" ||
-      text.includes("ตั้งเป้า") ||
-      text.includes("อยากตั้งเป้า")
-    ) {
+    // เข้า guided flow เฉพาะตอนกดปุ่ม starter — ข้อความที่ผู้ใช้พิมพ์เองต้องถึงโค้ชเสมอ
+    if (text === GOAL_STARTER) {
       setGuidedFlow(true);
       setGuidedStep("pillar");
       setGuidedData({
@@ -331,7 +234,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
   };
 
   // Guided flow state setters
-  const handlePillarSelect = (pillar: "eating" | "sleeping" | "movement") => {
+  const handlePillarSelect = (pillar: Pillar) => {
     setGuidedData((prev) => ({ ...prev, pillar }));
     setGuidedStep("busy_days");
     setError(null);
@@ -363,11 +266,27 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
 
   const handleConstraintsSubmit = (constraints: string[]) => {
     setGuidedData((prev) => ({ ...prev, constraints }));
-    const options = getGoalOptions(guidedData.pillar || "eating", guidedData.busyDays, constraints);
-    setSelectedGoalIndex(0);
-    setEditedGoalTitle(options[0]?.title || "");
     setGuidedStep("select_goal");
     setError(null);
+    setGoalOptions(null);
+    setEditedGoalTitle("");
+
+    startTransition(async () => {
+      const result = await recommendGoals({
+        pillar: guidedData.pillar,
+        busyDays: guidedData.busyDays,
+        constraints,
+      });
+
+      if ("error" in result) {
+        setError(result.error);
+        return;
+      }
+
+      setGoalOptions(result.suggestions);
+      setSelectedGoalIndex(0);
+      setEditedGoalTitle(result.suggestions[0]?.title ?? "");
+    });
   };
 
   const handleBackStep = () => {
@@ -388,42 +307,35 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
   };
 
   const handleSelectOption = (index: number) => {
-    const options = getGoalOptions(
-      guidedData.pillar || "eating",
-      guidedData.busyDays,
-      guidedData.constraints
-    );
+    if (!goalOptions) return;
     setSelectedGoalIndex(index);
-    setEditedGoalTitle(options[index]?.title || "");
+    setEditedGoalTitle(goalOptions[index]?.title ?? "");
   };
 
   const handleSaveGoal = () => {
     const title = editedGoalTitle.trim();
-    if (!title) return;
+    const situation = goalOptions?.[selectedGoalIndex]?.situation;
+    if (!title || !situation) return;
 
     setError(null);
-    const options = getGoalOptions(
-      guidedData.pillar || "eating",
-      guidedData.busyDays,
-      guidedData.constraints
-    );
-    const situation = options[selectedGoalIndex]?.situation || "no_exercise_time";
 
     startTransition(async () => {
       const result = await acceptGoal(title, situation);
       if ("error" in result) {
         setError(result.error);
-      } else {
-        const successMessage: ChatMessage = {
-          id: `guided-success-${Date.now()}`,
-          role: "coach",
-          content: `บันทึกเป้าหมาย "${title}" สำเร็จเรียบร้อยแล้วครับ! 🎉\n\nเป้าหมายนี้จะเริ่มมีผลในสัปดาห์หน้าทันที คุณสามารถเปิดดูและติดตามความคืบหน้าได้ในหน้า "เป้าหมาย" ครับ`,
-          createdAt: new Date().toISOString(),
-        };
-        setMessages((prev) => [...prev, successMessage]);
-        setGuidedFlow(false);
-        setGuidedStep("pillar");
+        return;
       }
+
+      const successMessage: ChatMessage = {
+        id: `guided-success-${(tempIdRef.current += 1)}`,
+        role: "coach",
+        content: `บันทึกเป้าหมาย "${title}" เรียบร้อยแล้วครับ\n\nเป้าหมายนี้จะเริ่มมีผลในสัปดาห์หน้าทันที เปิดดูและติ๊กความคืบหน้าได้ในหน้า "เป้าหมาย" ครับ`,
+        createdAt: new Date().toISOString(),
+      };
+      setMessages((prev) => [...prev, successMessage]);
+      setGuidedFlow(false);
+      setGuidedStep("pillar");
+      setGoalOptions(null);
     });
   };
 
@@ -540,30 +452,17 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                     กรุณาเลือกด้านที่ต้องการตั้งเป้าหมาย:
                   </p>
                   <div className="grid grid-cols-1 gap-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => handlePillarSelect("eating")}
-                      className="min-h-11 justify-start text-sm px-4 py-2"
-                    >
-                      🍽️ กินอาหาร (กินครบมื้อ, ปรับตารางกิน)
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => handlePillarSelect("sleeping")}
-                      className="min-h-11 justify-start text-sm px-4 py-2"
-                    >
-                      😴 การนอน (นอนเร็วขึ้น, พักระหว่างทำงาน)
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => handlePillarSelect("movement")}
-                      className="min-h-11 justify-start text-sm px-4 py-2"
-                    >
-                      🏃‍♂️ การขยับร่างกาย (ยืดเหยียด, เดินเพิ่มขึ้น)
-                    </Button>
+                    {PILLAR_OPTIONS.map((option) => (
+                      <Button
+                        key={option.value}
+                        type="button"
+                        variant="outline"
+                        onClick={() => handlePillarSelect(option.value)}
+                        className="min-h-11 justify-start px-4 py-2 text-sm font-normal"
+                      >
+                        {PILLAR_LABELS[option.value]} ({option.hint})
+                      </Button>
+                    ))}
                   </div>
                   <div className="border-t border-border/40 pt-3 flex justify-end">
                     <Button
@@ -584,17 +483,18 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                     เลือกวันในสัปดาห์หน้าที่ตารางแน่น / งานยุ่งเป็นพิเศษ:
                   </p>
                   <div className="flex flex-wrap gap-2">
-                    {DAY_OPTIONS.map((day) => {
-                      const isSelected = guidedData.busyDays.includes(day.value);
+                    {DAY_OPTIONS.map(([value, label]) => {
+                      const isSelected = guidedData.busyDays.includes(value);
                       return (
                         <Button
-                          key={day.value}
+                          key={value}
                           type="button"
                           variant={isSelected ? "default" : "outline"}
-                          onClick={() => toggleBusyDay(day.value)}
-                          className="min-h-11 rounded-full px-4 text-xs font-normal"
+                          aria-pressed={isSelected}
+                          onClick={() => toggleBusyDay(value)}
+                          className="min-h-11 rounded-full px-4 text-sm font-normal"
                         >
-                          {day.label}
+                          {label}
                         </Button>
                       );
                     })}
@@ -634,18 +534,19 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     เลือกข้อจำกัดของคุณ (เลือกได้มากกว่า 1 ข้อ):
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    {CONSTRAINT_OPTIONS.map((c) => {
-                      const isSelected = guidedData.constraints.includes(c.value);
+                  <div className="grid grid-cols-1 gap-2 lg:grid-cols-2">
+                    {CONSTRAINT_OPTIONS.map(([value, label]) => {
+                      const isSelected = guidedData.constraints.includes(value);
                       return (
                         <Button
-                          key={c.value}
+                          key={value}
                           type="button"
                           variant={isSelected ? "default" : "outline"}
-                          onClick={() => toggleConstraint(c.value)}
-                          className="min-h-11 justify-start text-xs font-normal"
+                          aria-pressed={isSelected}
+                          onClick={() => toggleConstraint(value)}
+                          className="min-h-11 justify-start text-sm font-normal"
                         >
-                          {c.label}
+                          {label}
                         </Button>
                       );
                     })}
@@ -685,44 +586,44 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     เลือกเป้าหมายเล็ก ๆ (Micro Goal) ที่แนะนำสำหรับคุณ:
                   </p>
-                  <div className="grid grid-cols-1 gap-2">
-                    {getGoalOptions(
-                      guidedData.pillar || "eating",
-                      guidedData.busyDays,
-                      guidedData.constraints
-                    ).map((opt, idx) => {
-                      const isSelected = selectedGoalIndex === idx;
-                      return (
-                        <button
-                          key={idx}
-                          type="button"
-                          onClick={() => handleSelectOption(idx)}
-                          className={cn(
-                            "w-full text-left min-h-11 rounded-lg border p-3 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-ring",
-                            isSelected
-                              ? "border-primary bg-primary/5 font-medium"
-                              : "border-border hover:bg-muted/40"
-                          )}
-                        >
-                          <div className="flex justify-between items-center">
-                            <span>{opt.title}</span>
-                            {isSelected && (
-                              <span className="text-xs text-primary font-semibold font-mono">
-                                ตัวเลือก {idx + 1}
-                              </span>
+                  {!goalOptions ? (
+                    <div className="flex items-center gap-2 rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                      <Loader2 className="size-4 shrink-0 animate-spin" />
+                      กำลังดูบันทึกของคุณเพื่อเลือกเป้าหมายที่ทำได้จริง...
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-2">
+                      {goalOptions.map((option, index) => {
+                        const isSelected = selectedGoalIndex === index;
+                        return (
+                          <button
+                            key={option.situation}
+                            type="button"
+                            aria-pressed={isSelected}
+                            onClick={() => handleSelectOption(index)}
+                            className={cn(
+                              "w-full min-h-11 rounded-lg border p-3 text-left text-sm transition-all focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 focus-visible:outline-none",
+                              isSelected
+                                ? "border-primary bg-primary/5 font-medium"
+                                : "border-border hover:bg-muted/40"
                             )}
-                          </div>
-                        </button>
-                      );
-                    })}
-                  </div>
+                          >
+                            <span>{option.title}</span>
+                            <span className="mt-1 block text-xs font-normal text-muted-foreground">
+                              {SITUATION_LABELS[option.situation]}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
 
                   <div className="space-y-2 pt-1">
                     <label
                       htmlFor="goal-adjust-input"
                       className="text-xs font-medium text-muted-foreground"
                     >
-                      ✏️ คุณสามารถปรับแต่งเป้าหมายให้เข้ากับตัวเองยิ่งขึ้น:
+                      ปรับแต่งเป้าหมายให้เข้ากับตัวเองยิ่งขึ้นได้:
                     </label>
                     <Input
                       id="goal-adjust-input"
@@ -730,7 +631,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                       value={editedGoalTitle}
                       onChange={(e) => setEditedGoalTitle(e.target.value)}
                       disabled={isPending}
-                      maxLength={80}
+                      maxLength={GOAL_TITLE_MAX_LENGTH}
                       className="w-full min-h-11 bg-background text-sm focus-visible:border-ring focus-visible:ring-3"
                       placeholder="ปรับเปลี่ยนเป้าหมายของคุณที่นี่..."
                     />
@@ -749,10 +650,10 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                     <Button
                       type="button"
                       onClick={handleSaveGoal}
-                      disabled={isPending || !editedGoalTitle.trim()}
+                      disabled={isPending || !goalOptions || !editedGoalTitle.trim()}
                       className="min-h-11 text-xs bg-primary text-primary-foreground hover:bg-primary/95"
                     >
-                      {isPending ? "กำลังบันทึก..." : "💾 บันทึกเป้าหมาย"}
+                      {isPending ? "กำลังบันทึก..." : "บันทึกเป้าหมาย"}
                     </Button>
                   </div>
                 </div>
