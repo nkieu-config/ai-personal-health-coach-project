@@ -73,11 +73,11 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        <div className="lg:col-span-1">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+        <div className="lg:col-span-1 min-w-0">
           <TodaySummary checkin={todayCheckin} date={todayDate} />
         </div>
-        <div className="lg:col-span-2">
+        <div className="lg:col-span-2 min-w-0">
           <PillarCharts checkins={checkins} period={period} />
         </div>
       </div>
