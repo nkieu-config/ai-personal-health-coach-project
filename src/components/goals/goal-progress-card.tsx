@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { AlertCircle, CheckCircle2, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,6 +13,7 @@ import {
   type GoalStatus,
 } from "@/lib/goals/types";
 import { weekDates } from "@/lib/goals/week";
+import { today } from "@/lib/checkins/date";
 
 interface GoalProgressCardProps {
   goal: Goal;
@@ -20,20 +22,22 @@ interface GoalProgressCardProps {
 export function GoalProgressCard({ goal }: GoalProgressCardProps) {
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const currentProgress = goal.progressDates || [];
   const weekDaysList = weekDates(goal.weekStart);
   const dayLabels = ["จ.", "อ.", "พ.", "พฤ.", "ศ.", "ส.", "อา."];
+  const todayStr = today();
 
   const handleToggleDay = (dateStr: string) => {
     setError(null);
     startTransition(async () => {
       const result = await toggleGoalDay(goal.id, dateStr);
-      if (result && typeof result === "object" && "error" in result) {
-        setError(result.error as string);
-      } else {
-        window.location.reload();
+      if ("error" in result) {
+        setError(result.error);
+        return;
       }
+      router.refresh();
     });
   };
 
@@ -41,11 +45,11 @@ export function GoalProgressCard({ goal }: GoalProgressCardProps) {
     setError(null);
     startTransition(async () => {
       const result = await updateGoalStatus(goal.id, newStatus);
-      if (result && typeof result === "object" && "error" in result) {
-        setError(result.error as string);
-      } else {
-        window.location.reload();
+      if ("error" in result) {
+        setError(result.error);
+        return;
       }
+      router.refresh();
     });
   };
 
@@ -98,6 +102,7 @@ export function GoalProgressCard({ goal }: GoalProgressCardProps) {
           <div className="grid grid-cols-7 gap-2">
             {weekDaysList.map((dateStr, index) => {
               const isChecked = currentProgress.includes(dateStr);
+              const isFuture = dateStr > todayStr;
               const displayNum = dateStr.split("-")[2] || String(index + 1);
 
               return (
@@ -105,11 +110,14 @@ export function GoalProgressCard({ goal }: GoalProgressCardProps) {
                   key={dateStr}
                   type="button"
                   onClick={() => handleToggleDay(dateStr)}
-                  disabled={isPending}
+                  disabled={isPending || isFuture}
+                  aria-label={dateStr}
                   className={`flex min-h-11 flex-col items-center justify-center rounded-md border text-xs font-medium transition-all focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 ${
                     isChecked
                       ? "border-primary bg-primary text-primary-foreground font-semibold"
-                      : "border-border bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
+                      : isFuture
+                        ? "cursor-not-allowed border-border bg-muted text-muted-foreground opacity-50"
+                        : "border-border bg-muted text-muted-foreground hover:bg-accent hover:text-foreground"
                   }`}
                 >
                   <span>{dayLabels[index]}</span>

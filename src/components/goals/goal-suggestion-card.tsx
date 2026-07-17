@@ -1,12 +1,18 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { AlertCircle, Check, Loader2, RotateCcw, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { recommendGoals, acceptGoal } from "@/lib/goals/actions";
-import { SITUATION_LABELS, type GoalSuggestion, type Goal } from "@/lib/goals/types";
+import {
+  GOAL_TITLE_MAX_LENGTH,
+  SITUATION_LABELS,
+  type GoalSuggestion,
+  type Goal,
+} from "@/lib/goals/types";
 
 interface GoalSuggestionCardProps {
   initialGoals: Goal[];
@@ -19,24 +25,20 @@ export function GoalSuggestionCard({ initialGoals }: GoalSuggestionCardProps) {
   const [customText, setCustomText] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const handleRequestGoals = () => {
     setError(null);
     startTransition(async () => {
       const result = await recommendGoals();
-      if (result && typeof result === "object" && "error" in result && result.error) {
-        setError(result.error as string);
-      } else if (result && "suggestions" in result) {
-        setSuggestions(result.suggestions);
-        setCustomText(result.suggestions[0]?.title ?? "");
-        setSelectedIndex(0);
-        setEditMode(false);
-      } else if (Array.isArray(result)) {
-        setSuggestions(result);
-        setCustomText(result[0]?.title ?? "");
-        setSelectedIndex(0);
-        setEditMode(false);
+      if ("error" in result) {
+        setError(result.error);
+        return;
       }
+      setSuggestions(result.suggestions);
+      setCustomText(result.suggestions[0]?.title ?? "");
+      setSelectedIndex(0);
+      setEditMode(false);
     });
   };
 
@@ -44,12 +46,12 @@ export function GoalSuggestionCard({ initialGoals }: GoalSuggestionCardProps) {
     setError(null);
     startTransition(async () => {
       const result = await acceptGoal(customText, suggestions[selectedIndex].situation);
-      if (result && typeof result === "object" && "error" in result && result.error) {
-        setError(result.error as string);
-      } else {
-        setSuggestions([]);
-        window.location.reload();
+      if ("error" in result) {
+        setError(result.error);
+        return;
       }
+      setSuggestions([]);
+      router.refresh();
     });
   };
 
@@ -159,14 +161,14 @@ export function GoalSuggestionCard({ initialGoals }: GoalSuggestionCardProps) {
             <Input
               value={customText}
               onChange={(e) => setCustomText(e.target.value)}
-              maxLength={80}
+              maxLength={GOAL_TITLE_MAX_LENGTH}
               placeholder="พิมพ์เป้าหมายของคุณเอง..."
               disabled={isPending}
               className="min-h-11"
               autoComplete="off"
             />
             <div className="text-xs text-muted-foreground text-right">
-              {customText.length}/80 ตัวอักษร
+              {customText.length}/{GOAL_TITLE_MAX_LENGTH} ตัวอักษร
             </div>
             <Button
               variant="outline"
