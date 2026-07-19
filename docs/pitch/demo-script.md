@@ -1,7 +1,10 @@
 # Demo Script — เดินรายคลิก (QA-03)
 
 > บทเดิน demo สดองก์ 3 ของ deck · ใช้บัญชี **ปาล์ม** (`palm@example.com`) บน production
-> **ก่อนขึ้นเวที (เช้าวัน pitch):** login ปาล์มค้างไว้ · `npm run refresh:demo-week` · เคลียร์ stray goal · เปิดแท็บ screenshot สำรองไว้ทุกจอ
+> **ก่อนขึ้นเวที (เช้าวัน pitch):**
+> 1. `npm run refresh:demo-week` — คำสั่งเดียวอุ่นทั้ง goal สัปดาห์นี้ + insight/reflection ให้ตรงวัน (ของพวกนี้เน่ารายวัน — INFRA-24) · ถ้าไม่อยากยิง Gemini: เติม `-- --goal-only`
+> 2. เช็คว่า goal ที่โชว์ตรง narrative ปาล์ม (เรื่องกิน/มื้อเช้า) — ลบ stray goal จากการ dogfood ถ้ามี
+> 3. login ปาล์มค้างไว้ + เปิดแท็บ screenshot สำรองทุกจอ
 
 ## แบ่งคนพูด (เติมชื่อจริง)
 
