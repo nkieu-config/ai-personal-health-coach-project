@@ -131,4 +131,4 @@
 
 - **AI ผล cache หมดแล้ว** — วัน demo แค่เปิดอ่าน ไม่ยิง Gemini สด (ยกเว้นสไลด์ 9 ถ้าจะโชว์ปฏิเสธสด → มี screenshot สำรอง)
 - **เน็ตล่ม** — screenshot ทุกจอใน `screenshots/` เดินเรื่องต่อได้
-- **ก่อนขึ้นเวที** รัน `npm run refresh:demo-week` + เคลียร์ stray goal (ดู [README](README.md))
+- **ก่อนขึ้นเวที** — ขั้นตอนเช้าวันจริงทั้งหมดอยู่หัวไฟล์ [demo-script.md](demo-script.md)
