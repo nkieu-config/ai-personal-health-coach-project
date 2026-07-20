@@ -118,7 +118,7 @@ src/
 scripts/
 ├── seed.ts                     ← seed data ของ demo account (ADR-0004)
 └── verify-user.ts              ← พิสูจน์ว่าลบข้อมูลแล้วไม่มีแถวตกค้าง (หลักฐาน FR-7.2)
-supabase/migrations/            ← 0001_init.sql, 0002_mission_input_coverage.sql
+supabase/migrations/            ← 0001 ตาราง+RLS · 0002 ฟิลด์โจทย์ข้อ 5 · 0003 index RLS + CHECK
 ```
 
 **ไม่มี `app/api/` — ทุก mutation เป็น Server Action** (`"use server"` ใน `lib/*/actions.ts`) ทำให้ API key และ service role อยู่ฝั่ง server เสมอโดยไม่ต้องเขียน route handler เอง

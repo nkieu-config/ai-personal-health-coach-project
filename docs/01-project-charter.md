@@ -39,26 +39,15 @@ Production: https://personal-healthcoach.vercel.app/ · Repo: https://github.com
 | Stack | Next.js + Supabase + Tailwind/shadcn, deploy Vercel | 0002 |
 | AI | Google Gemini free tier ผ่าน service module สลับได้ | 0003 |
 | Demo data | Seed data (demo account) + dogfooding ทีม 4 คน | 0004 |
+| Auth | Google OAuth + email/password (Supabase Auth) | 0005 |
 
-## ทีม
+## ทีมและ Timeline
 
-4 คน ทักษะ fullstack ใกล้เคียงกัน แบ่งงานตาม feature (รายละเอียดใน [09-project-plan.md](09-project-plan.md))
+4 คน ทักษะ fullstack ใกล้เคียงกัน · **A (PM & SA) ทำเครื่องยนต์ (data layer + AI + safety) · อีก 3 สายทำหน้าจอเดินขนานกัน**
 
-| Role | หน้าที่ |
-|---|---|
-| PM & SA (เจ้าของเอกสารชุดนี้) | แผนงาน, requirement, เอกสารส่งมอบ, pitch deck + พัฒนา feature ที่รับผิดชอบ |
-| Developer × 3 | พัฒนา feature ตามที่แบ่งใน project plan |
+Sprint 0 (6–8 ก.ค.) setup → Sprint 1 (9–15) auth + check-in **เริ่ม dogfooding 13 ก.ค.** → Sprint 2 (16–22) AI ทั้งหมด → Sprint 3 (23–28) reflection + polish + pitch → **freeze 29 · Pitching Day 30 ก.ค.**
 
-## Timeline ภาพรวม
-
-| ช่วง | วันที่ | เป้าหมาย |
-|---|---|---|
-| Sprint 0 | 6–8 ก.ค. | Setup repo, Supabase, wireframe, แบ่งงาน |
-| Sprint 1 | 9–15 ก.ค. | Auth + Check-in + Dashboard เวอร์ชันแรก — **เริ่ม dogfooding 13 ก.ค.** |
-| Sprint 2 | 16–22 ก.ค. | AI ทั้งหมด: pattern analysis, coach chat, micro goals |
-| Sprint 3 | 23–28 ก.ค. | Weekly reflection, seed data, polish, pitch deck |
-| Freeze | 29 ก.ค. | Code freeze + ซ้อม pitch |
-| **Pitching Day** | **30 ก.ค.** | นำเสนอ |
+การแบ่งโซนไฟล์ รายละเอียดแต่ละ sprint และ risk register อยู่ใน [09-project-plan.md](09-project-plan.md)
 
 ## เกณฑ์ความสำเร็จ
 
