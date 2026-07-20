@@ -177,6 +177,17 @@ test("dashboard — การ์ดวิเคราะห์รูปแบบ
   await expect(page.getByText("วิเคราะห์รูปแบบพฤติกรรม")).toBeVisible();
 });
 
+test("dashboard — แถบวัน (UX-04) วาดแท่งนอนจากข้อมูลจริง ไม่ใช่กล่องเปล่า", async ({ page }) => {
+  await page.goto("/dashboard");
+  await page.waitForLoadState("networkidle");
+
+  await expect(page.getByText("คืนสู่เช้า — 7 วันล่าสุด")).toBeVisible();
+  await expect(page.getByText("ช่วงที่นอน")).toBeVisible();
+
+  const sleepBars = page.locator(".bg-chart-1");
+  await expect(sleepBars.first(), "seed ของปาล์มต้องมีวันที่บันทึกการนอน").not.toHaveCount(0);
+});
+
 test("dashboard — marker ปัจจัยรบกวนกดด้วยคีย์บอร์ดได้ (ไม่ต้องใช้เมาส์)", async ({ page }) => {
   await page.goto("/dashboard?days=30");
   await page.waitForLoadState("networkidle");
