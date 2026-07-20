@@ -6,8 +6,8 @@
 
 ## Issues
 
-| # | งาน | Owner | Sprint |
-|---|---|---|---|
-| 01 | Auth (Google + email/password) | D | 1 |
-| 02 | Onboarding + โปรไฟล์ | A | 1 |
-| 03 | Safety disclaimer | A | 1 |
+| # | งาน | Sprint |
+| --- | --- | --- |
+| 01 | Auth (Google + email/password) | 1 |
+| 02 | Onboarding + โปรไฟล์ | 1 |
+| 03 | Safety disclaimer | 1 |

@@ -54,7 +54,7 @@
 |---|---|---|---|
 | `sleep_hours` | numeric | 0–14 (step 0.5) | แกนหลักของ pattern ทุกตัว |
 | `bed_time_bucket` | text | `before_23` `23_00` `00_01` `01_02` `after_02` | ความคงที่ของเวลานอน (บัคเก็ตพอ ไม่ต้องเวลาเป๊ะ) |
-| *(เวลาตื่น)* | **คำนวณ ไม่เก็บ** | `wakeTimeRange()` = `bed_time_bucket` + `sleep_hours` | โจทย์ 5.3 ขอ "เวลาเข้านอนและตื่นนอนโดยประมาณ" — ถาม 2 ใน 3 พอ ข้อที่ 3 คำนวณได้ **ถามซ้ำ = เพิ่มภาระโดยไม่ได้ข้อมูลใหม่** |
+| *(เวลาตื่น)* | **คำนวณ ไม่เก็บ** | `wakeTimeRange()` = `bed_time_bucket` + `sleep_hours` | เหตุผลอยู่ในเจตนาข้อ 3 ด้านบน |
 | `sleep_quality` | int | 1–5 | คุณภาพที่ประเมินเอง |
 | `late_reason` | text? | `work` `exam` `phone` `commute` `other` | สาเหตุนอนดึก (ถามเฉพาะเมื่อ bed_time ดึก) |
 
@@ -158,7 +158,7 @@ create table ai_outputs (
 
 ทุกตารางเปิด RLS: `user_id = auth.uid()` สำหรับ select/insert/update/delete (รายละเอียด policy ใน docs/08)
 
-**ไฟล์ migration จริงอยู่ที่ `supabase/migrations/`** — `0001_init.sql` (ตารางทั้งหมด + RLS) และ `0002_mission_input_coverage.sql` (ฟิลด์ที่โจทย์ข้อ 5 ขอเพิ่ม) · รันตามลำดับใน Supabase SQL Editor
+**ไฟล์ migration จริงอยู่ที่ `supabase/migrations/`** (รันตามลำดับ) — `0001_init.sql` ตารางทั้งหมด + RLS · `0002_mission_input_coverage.sql` ฟิลด์ที่โจทย์ข้อ 5 ขอเพิ่ม · `0003_rls_performance_and_constraints.sql` index ของ RLS + CHECK กันข้อมูลขยะ
 
 ## การจำแนกชั้นข้อมูล
 
