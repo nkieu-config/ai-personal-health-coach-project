@@ -6,10 +6,10 @@
 
 ## Issues
 
-| # | งาน | Owner | Sprint |
-|---|---|---|---|
-| 01 | Layout + ตัวเลือกช่วงเวลา | B | 1 |
-| 02 | กราฟ 3 pillars + energy | B | 1 |
-| 03 | Disruptor overlay | B | 2 |
-| 04 | Pattern table | B | 2 |
-| 05 | Streak เชิงบวก | B | 3 |
+| # | งาน | Sprint |
+| --- | --- | --- |
+| 01 | Layout + ตัวเลือกช่วงเวลา | 1 |
+| 02 | กราฟ 3 pillars + energy | 1 |
+| 03 | Disruptor overlay | 2 |
+| 04 | Pattern table | 2 |
+| 05 | Streak เชิงบวก | 3 |
