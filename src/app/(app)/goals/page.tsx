@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Link from "next/link";
 import { PageContainer } from "@/components/page-container";
-import { Target } from "lucide-react";
+import { NotebookPen, Target } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { getActiveGoals } from "@/lib/goals/queries";
 import { GoalSuggestionCard } from "@/components/goals/goal-suggestion-card";
 import { GoalProgressCard } from "@/components/goals/goal-progress-card";
@@ -43,6 +45,14 @@ export default async function GoalsPage() {
             </>
           )}
         </div>
+
+        <Link
+          href="/reflection"
+          className={buttonVariants({ variant: "ghost", className: "w-full" })}
+        >
+          <NotebookPen className="size-4" />
+          ดูสรุปสัปดาห์
+        </Link>
       </div>
     </PageContainer>
   );

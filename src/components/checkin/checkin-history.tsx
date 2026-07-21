@@ -14,9 +14,9 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 const ENERGY_BADGE = {
-  low: { label: "พลังงานต่ำ", variant: "outline" as const },
+  low: { label: "พลังงานต่ำ", variant: "secondary" as const },
   medium: { label: "พลังงานปานกลาง", variant: "secondary" as const },
-  high: { label: "พลังงานสูง", variant: "default" as const },
+  high: { label: "พลังงานสูง", variant: "secondary" as const },
 };
 
 function HistoryRow({ checkin }: { checkin: Checkin }) {
