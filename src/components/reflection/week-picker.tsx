@@ -18,7 +18,10 @@ export function pickWeek<T extends WeekOption>(
 
 export function WeekPicker({ weeks, selected }: { weeks: WeekOption[]; selected: string }) {
   return (
-    <nav aria-label="เลือกสัปดาห์" className="-mx-4 overflow-x-auto px-4 lg:mx-0 lg:px-0">
+    <nav
+      aria-label="เลือกสัปดาห์"
+      className="-mx-3 overflow-x-auto px-3 xs:-mx-4 xs:px-4 lg:mx-0 lg:px-0"
+    >
       <div className="flex w-max gap-1 rounded-full border bg-muted/40 p-1">
         {weeks.map((week, index) => {
           const active = week.periodStart === selected;

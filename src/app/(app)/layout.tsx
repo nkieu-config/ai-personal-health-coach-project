@@ -25,18 +25,22 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       <AppSidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-10 border-b bg-background lg:hidden">
-          <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-2">
+        <header className="sticky top-0 z-10 border-b bg-background pt-[env(safe-area-inset-top)] lg:hidden">
+          <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-3 py-2 xs:px-4">
             <BrandLockup markClassName="size-5" />
             <SignOutIconButton />
           </div>
         </header>
 
-        <main id="main" tabIndex={-1} className="flex-1 px-4 py-6 outline-none lg:px-10 lg:py-10">
+        <main
+          id="main"
+          tabIndex={-1}
+          className="flex-1 px-3 py-6 outline-none xs:px-4 lg:px-10 lg:py-10"
+        >
           {children}
         </main>
 
-        <div className="px-4 pb-3 lg:px-10 lg:pb-8">
+        <div className="px-3 pb-3 xs:px-4 lg:px-10 lg:pb-8">
           <PageContainer width="content">
             <SafetyNotice />
           </PageContainer>

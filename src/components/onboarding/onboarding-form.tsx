@@ -67,7 +67,7 @@ export function OnboardingForm({ defaultName }: { defaultName: string }) {
   }
 
   return (
-    <main className="flex min-h-dvh items-center justify-center p-4">
+    <main className="flex min-h-dvh items-center justify-center p-3 xs:p-4">
       <h1 className="sr-only">ตั้งค่าเริ่มต้น Cadence</h1>
       <Card className="w-full max-w-md">
         <CardHeader>
