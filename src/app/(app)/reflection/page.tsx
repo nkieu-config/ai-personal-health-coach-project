@@ -22,15 +22,26 @@ const PILLAR_ICONS: Record<Pillar, typeof Utensils> = {
   movement: Footprints,
 };
 
+const PILLAR_COLORS: Record<Pillar, string> = {
+  eating: "var(--chart-2)",
+  sleep: "var(--chart-1)",
+  movement: "var(--chart-3)",
+};
+
 function PillarSection({ entry }: { entry: ReflectionPillar }) {
   const Icon = PILLAR_ICONS[entry.pillar];
   return (
-    <div className="space-y-2">
-      <h3 className="flex items-center gap-2 text-sm font-semibold">
-        <Icon className="size-4 shrink-0 text-primary" />
-        ด้าน{PILLAR_LABELS[entry.pillar]}
-      </h3>
-      <p className="text-base leading-relaxed text-muted-foreground">{entry.summary}</p>
+    <div className="flex gap-3">
+      <div
+        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted/60"
+        style={{ color: PILLAR_COLORS[entry.pillar] }}
+      >
+        <Icon className="size-4" />
+      </div>
+      <div className="space-y-1 pt-0.5">
+        <h3 className="text-sm font-semibold text-foreground">ด้าน{PILLAR_LABELS[entry.pillar]}</h3>
+        <p className="text-base leading-relaxed text-foreground/90">{entry.summary}</p>
+      </div>
     </div>
   );
 }
@@ -151,7 +162,7 @@ export default async function ReflectionPage({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-base leading-relaxed text-muted-foreground">{selected.strengths}</p>
+            <p className="text-base leading-relaxed text-foreground/90">{selected.strengths}</p>
           </CardContent>
         </Card>
 
@@ -163,7 +174,7 @@ export default async function ReflectionPage({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-base leading-relaxed text-muted-foreground">{selected.nextWeek}</p>
+            <p className="text-base leading-relaxed text-foreground/90">{selected.nextWeek}</p>
             <Link href="/goals" className={buttonVariants({ className: "w-full" })}>
               ตั้งเป้าสัปดาห์หน้า
             </Link>
