@@ -37,7 +37,7 @@ export default function PrivacyPage() {
         </div>
 
         <Card className="border-primary/10 bg-accent/20">
-          <CardContent className="text-sm leading-relaxed text-foreground">
+          <CardContent className="text-sm text-foreground">
             HealthCoach เก็บบันทึกการกิน การนอน และการเคลื่อนไหวที่คุณกรอกเอง เพื่อแสดง pattern
             และให้คำแนะนำสำหรับคุณเท่านั้น ข้อมูลของคุณไม่ถูกแชร์ให้ผู้ใช้คนอื่นหรือบุคคลที่สาม
             คุณแก้ไขหรือลบข้อมูลทั้งหมดได้ทุกเมื่อจากหน้านี้ ระบบนี้เป็นผู้ช่วยดูแลสุขภาพทั่วไป
@@ -140,7 +140,7 @@ export default function PrivacyPage() {
               การป้องกันทางเทคนิค
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>
               <strong className="text-foreground">แยกแยะสิทธิ์อย่างเข้มงวด (RLS):</strong>{" "}
               ข้อมูลทั้งหมดควบคุมผ่านนโยบาย Supabase Row Level Security (RLS)
@@ -168,7 +168,7 @@ export default function PrivacyPage() {
               การระบุตัวตนและการรวมข้อมูล
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>
               <strong className="text-foreground">ข้อมูลผูกกับบัญชีของคุณ ไม่ได้ anonymize:</strong>{" "}
               เพราะระบบต้องดึงบันทึกของคุณกลับมาแสดง pattern ให้คุณเห็น ถ้าตัดตัวตนออกจากฐานข้อมูล
@@ -197,7 +197,7 @@ export default function PrivacyPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm leading-relaxed text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               สามารถเข้าไปที่หน้าประวัติบันทึกรายวัน เพื่อดูรายการบันทึกของตัวเอง แก้ไข
               หรือลบข้อมูลการเช็กอินของแต่ละวันย้อนหลังได้ด้วยตนเอง
             </p>

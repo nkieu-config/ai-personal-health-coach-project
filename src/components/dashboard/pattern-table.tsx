@@ -81,7 +81,7 @@ function PatternTableDesktop({ patterns }: { patterns: InsightPattern[] }) {
                 <p className="font-medium text-foreground">{pattern.observation}</p>
                 <EvidenceRow pattern={pattern} />
               </td>
-              <td className="px-4 py-4 text-muted-foreground leading-relaxed">{pattern.meaning}</td>
+              <td className="px-4 py-4 text-muted-foreground ">{pattern.meaning}</td>
               <td className="px-4 py-4">
                 <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
                   <p className="mb-1 text-[10px] font-bold text-primary uppercase tracking-wider">

@@ -65,7 +65,7 @@ export function QuotaReachedNotice() {
       <Moon className="mt-0.5 size-5 shrink-0 text-muted-foreground" />
       <div className="space-y-1">
         <p className="text-sm font-medium text-foreground">คุยกับโค้ชครบสำหรับวันนี้แล้ว</p>
-        <p className="text-xs leading-relaxed text-muted-foreground">
+        <p className="text-xs text-muted-foreground">
           พรุ่งนี้กลับมาคุยต่อได้เลย ระหว่างนี้ยังเช็คอินและดูข้อมูลย้อนหลังได้ตามปกติ
         </p>
       </div>

@@ -190,7 +190,7 @@ export function DayLines({ checkins }: { checkins: Checkin[] }) {
           </span>
         </div>
 
-        <p className="pt-2 text-xs leading-relaxed text-muted-foreground">
+        <p className="pt-2 text-xs text-muted-foreground">
           เช็คอินบันทึกเวลาเป็นช่วง (เช่น เข้านอน 23:00–00:00) แท่งจึงวางตามกลางช่วงที่เลือกไว้
           ไม่ใช่เวลานาทีจริง
         </p>

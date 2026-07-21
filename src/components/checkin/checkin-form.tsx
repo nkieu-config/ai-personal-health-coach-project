@@ -119,7 +119,7 @@ function StepRail({ step }: { step: number }) {
           );
         })}
       </ol>
-      <p className="mt-6 rounded-lg bg-muted/40 px-3 py-3 text-xs leading-relaxed text-muted-foreground">
+      <p className="mt-6 rounded-lg bg-muted/40 px-3 py-3 text-xs text-muted-foreground">
         กรอกไม่จบก็ไม่เป็นไร ที่บันทึกไว้แล้วยังอยู่ กลับมาต่อทีหลังได้
       </p>
     </nav>
@@ -346,7 +346,7 @@ export function CheckinForm({
                 </Field>
 
                 {mealsCount === 0 && (
-                  <p className="rounded-lg bg-muted/50 px-3 py-2.5 text-xs leading-relaxed text-muted-foreground">
+                  <p className="rounded-lg bg-muted/50 px-3 py-2.5 text-xs text-muted-foreground">
                     วันที่ยุ่งจนไม่ได้กินก็มีนะ บันทึกไว้ก่อน แล้วค่อย ๆ ดูแลตัวเองกันต่อพรุ่งนี้
                   </p>
                 )}

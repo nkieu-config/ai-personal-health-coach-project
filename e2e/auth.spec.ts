@@ -39,7 +39,6 @@ test("/login — รหัสผ่านผิดขึ้น error ที่ s
   await page.locator("#password").fill("wrong-password-123");
   await page.getByRole("button", { name: "เข้าสู่ระบบ" }).click();
 
-  // Next.js มี route announcer role=alert ของตัวเองอยู่แล้ว จึงต้องเจาะเฉพาะในฟอร์ม
   const alert = page.locator("form").getByRole("alert");
   await expect(alert, "error ต้องเป็น role=alert เพื่อให้ screen reader ประกาศ").toBeVisible();
   await expect(alert).toContainText("อีเมลหรือรหัสผ่านไม่ถูกต้อง");

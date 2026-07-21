@@ -93,9 +93,7 @@ export function DeleteZone() {
           </div>
         ) : (
           <div className="space-y-4">
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              {MODES[mode].description}
-            </p>
+            <p className="text-sm text-muted-foreground">{MODES[mode].description}</p>
 
             {error && (
               <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">

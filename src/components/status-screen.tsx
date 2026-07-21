@@ -27,7 +27,7 @@ export function StatusScreen({
 
       <div className="max-w-md space-y-2">
         <h1 className="text-xl font-semibold lg:text-2xl">{title}</h1>
-        <p className="text-sm leading-relaxed text-muted-foreground">{description}</p>
+        <p className="text-sm text-muted-foreground">{description}</p>
       </div>
 
       {children && <div className="flex flex-wrap justify-center gap-3">{children}</div>}

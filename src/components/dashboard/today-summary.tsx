@@ -88,7 +88,7 @@ export function TodaySummary({ checkin, date }: { checkin: Checkin | null; date:
             />
           ))}
         </div>
-        <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground leading-relaxed">
+        <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground ">
           {checkin
             ? buildCheckinSummary(checkin).encouragement
             : "คุณยังไม่ได้บันทึกพฤติกรรมสุขภาพของวันนี้ แวะมาเช็คอินสักนิดเพื่อดูภาพรวมของวันนี้กันนะ"}

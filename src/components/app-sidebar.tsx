@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NavIcon } from "./nav-pending";
 import { NAV_ITEMS, isActivePath } from "./nav-items";
-import { SignOutButton } from "./sign-out-button";
+import { SignOutMenuItem } from "./sign-out-button";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -41,7 +41,7 @@ export function AppSidebar() {
         </nav>
 
         <div className="mt-auto">
-          <SignOutButton />
+          <SignOutMenuItem />
         </div>
       </div>
     </aside>

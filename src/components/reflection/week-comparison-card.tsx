@@ -51,7 +51,7 @@ export function WeekComparisonCard({ comparison }: { comparison: WeekComparison 
             <ChangeRow key={change.metric} change={change} />
           ))}
         </div>
-        <p className="pt-3 text-xs leading-relaxed text-muted-foreground">
+        <p className="pt-3 text-xs text-muted-foreground">
           ตัวเลขเทียบเป็นค่าเฉลี่ยต่อวันและสัดส่วนของวันที่บันทึก
           จึงเทียบกันได้แม้สองสัปดาห์บันทึกไม่เท่ากัน
         </p>

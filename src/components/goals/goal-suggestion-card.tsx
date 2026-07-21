@@ -157,7 +157,7 @@ export function GoalSuggestionCard({ initialGoals }: GoalSuggestionCardProps) {
 
         {!editMode ? (
           <div className="space-y-2">
-            <div className="rounded-lg border border-border bg-muted/50 p-3 text-sm font-medium leading-relaxed">
+            <div className="rounded-lg border border-border bg-muted/50 p-3 text-sm font-medium ">
               {customText}
             </div>
             <Button

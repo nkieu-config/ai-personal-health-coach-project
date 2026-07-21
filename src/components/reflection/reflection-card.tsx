@@ -23,7 +23,7 @@ export async function ReflectionCard() {
 
       <CardContent className="space-y-4">
         {reflection?.strengths && (
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             <span className="font-medium text-foreground">จุดแข็งสัปดาห์นี้ · </span>
             {reflection.strengths}
           </p>

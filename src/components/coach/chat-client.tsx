@@ -446,7 +446,7 @@ export function CoachChatClient({
                   <p className="text-xs font-medium text-muted-foreground">โค้ช</p>
                   <div className="space-y-2">
                     <p className="text-sm text-muted-foreground">{opener.fact}</p>
-                    <p className="text-lg leading-snug font-medium">{opener.question}</p>
+                    <p className="text-lg font-medium">{opener.question}</p>
                   </div>
                   <div className="flex flex-wrap gap-2 pt-1">
                     {STARTERS.map((starter) => (
@@ -716,7 +716,7 @@ export function CoachChatClient({
 
               {error && (
                 <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive mt-2">
-                  <span className="leading-normal">{error}</span>
+                  <span className="">{error}</span>
                 </div>
               )}
             </div>
@@ -749,13 +749,13 @@ export function CoachChatClient({
                   role="alert"
                   className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive"
                 >
-                  <span className="leading-normal">{error}</span>
+                  <span className="">{error}</span>
                 </div>
               )}
 
               {showRetry && (
                 <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 p-3 text-sm">
-                  <span className="leading-normal text-muted-foreground">
+                  <span className="text-muted-foreground">
                     ข้อความล่าสุดยังไม่ได้รับคำตอบจากโค้ช
                   </span>
                   <Button

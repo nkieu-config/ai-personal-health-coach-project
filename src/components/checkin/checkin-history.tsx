@@ -2,27 +2,16 @@
 
 import { useState, useTransition } from "react";
 import Link from "next/link";
-import { Check, Footprints, Moon, Pencil, Trash2, Utensils } from "lucide-react";
+import { Check, Pencil, Trash2 } from "lucide-react";
+import { PILLAR_COLORS, PILLAR_ICONS } from "@/components/pillar-visual";
 import { deleteCheckin } from "@/lib/checkins/actions";
 import { formatShortThaiDate, formatThaiDate, formatThaiMonth } from "@/lib/checkins/date";
 import { DISRUPTOR_LABELS } from "@/lib/checkins/labels";
 import { buildCheckinSummary } from "@/lib/checkins/summary";
-import type { Checkin, Pillar } from "@/lib/domain";
+import type { Checkin } from "@/lib/domain";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-
-const PILLAR_ICONS: Record<Pillar, typeof Utensils> = {
-  eating: Utensils,
-  sleep: Moon,
-  movement: Footprints,
-};
-
-const PILLAR_COLORS: Record<Pillar, string> = {
-  eating: "var(--chart-2)",
-  sleep: "var(--chart-1)",
-  movement: "var(--chart-3)",
-};
 
 const ENERGY_BADGE = {
   low: { label: "พลังงานต่ำ", variant: "outline" as const },

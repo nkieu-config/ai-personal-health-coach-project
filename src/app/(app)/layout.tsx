@@ -5,7 +5,7 @@ import { AppNav } from "@/components/app-nav";
 import { AppSidebar } from "@/components/app-sidebar";
 import { PageContainer } from "@/components/page-container";
 import { SafetyNotice } from "@/components/safety-notice";
-import { SignOutButton } from "@/components/sign-out-button";
+import { SignOutIconButton } from "@/components/sign-out-button";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const user = await getCurrentUser();
@@ -27,7 +27,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         <header className="sticky top-0 z-10 border-b bg-background lg:hidden">
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-2">
             <span className="font-semibold">HealthCoach</span>
-            <SignOutButton compact />
+            <SignOutIconButton />
           </div>
         </header>
 

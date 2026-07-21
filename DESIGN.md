@@ -69,7 +69,7 @@ export default async function MyPage() {
 | ระยะห่างใน field (label + input) | `space-y-2` | |
 | กลุ่ม Chip | `gap-2` | |
 | ความสูงเต็มจอ | `min-h-dvh` | **ห้าม `min-h-screen`** — 100vh บนมือถือสูงเกินจอจริง |
-| z-index | **ห้ามเพิ่มใหม่** | ทั้งแอปมีจุดเดียว: header มือถือ `z-10` — ถ้าคิดว่าต้องใช้ ให้ถามก่อน |
+| z-index | **ห้ามเพิ่มค่าใหม่** | ทั้งแอปมี 2 ชั้นเท่านั้น: `z-10` = แถบที่ sticky (header มือถือ) · `z-50` = ของที่ต้องลอยเหนือทุกอย่าง (popover ของ disruptor, skip link) — ถ้าจะเพิ่มชั้นที่ 3 ให้ถามก่อน |
 | Interactive ที่สร้างเอง | ต้องมี focus ring | ก๊อป `focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50` จาก Button — คนใช้คีย์บอร์ดต้องเห็นว่า focus อยู่ไหน |
 
 ## ทุกหน้าใหม่ต้องมี `loading.tsx` — ห้ามลืม
@@ -207,7 +207,7 @@ const config = {
 
 ## ใช้ยังไง
 
-1. **สี/มุมโค้ง/ฟอนต์ ถูก map ลง `src/app/globals.css` แล้ว** — เขียน UI ด้วย semantic class ของ shadcn ตามปกติ (`bg-primary`, `text-muted-foreground`, `border`, `rounded-lg`) จะได้ theme นี้อัตโนมัติ **ห้าม hardcode hex ในหน้าไหนทั้งนั้น**
+1. **สี/มุมโค้ง/ฟอนต์ ถูก map ลง `src/app/globals.css` แล้ว** — เขียน UI ด้วย semantic class ของ shadcn ตามปกติ (`bg-primary`, `text-muted-foreground`, `border`, `rounded-lg`) จะได้ theme นี้อัตโนมัติ **ห้าม hardcode hex ในหน้าไหนทั้งนั้น** · ข้อยกเว้นเดียวคือ **โลโก้แบรนด์ภายนอก** (เช่น ตัว G ของ Google ใน `google-button.tsx`) — สีแบรนด์ต้องคงที่ ห้ามพลิกตาม dark mode ตามข้อกำหนดของเจ้าของแบรนด์
 2. **ฟอนต์**: Unica77/CohereText เป็นฟอนต์ proprietary + ไม่รองรับภาษาไทย → แทนด้วย **IBM Plex Sans Thai** (UI ทั้งหมด) และ **IBM Plex Mono** (ตัวเลข/label เชิงเทคนิค เช่น ค่าสถิติใน dashboard — ใช้ class `font-mono`) โหลดผ่าน `next/font` ใน `layout.tsx` แล้ว
 3. **สีหลัก = เขียวมรกต `#06805a`** (`bg-primary`) — ปุ่มหลัก/จุดเน้น · พื้นหลังขาว การ์ดขาว แยกด้วยขอบมิ้นต์ `#dcefe6` · พื้นรอง/ไฮไลต์เป็นมิ้นต์อ่อน (`bg-muted` `bg-accent`)
 4. **สีกราฟ**: `--chart-1` ฟ้า (นอน) · `--chart-2` อำพัน (กิน) · `--chart-3` มิ้นต์ (ขยับ) · `--chart-4` ลาเวนเดอร์ · `--chart-5` ปะการัง

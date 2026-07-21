@@ -1,15 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Footprints, Moon, Utensils } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { PILLAR_COLORS, PILLAR_ICONS, PILLAR_ORDER } from "@/components/pillar-visual";
 import { SafetyNotice } from "@/components/safety-notice";
 import { buttonVariants } from "@/components/ui/button";
-
-const PILLARS = [
-  { icon: Utensils, label: "การกิน", color: "var(--chart-2)" },
-  { icon: Moon, label: "การนอน", color: "var(--chart-1)" },
-  { icon: Footprints, label: "การเคลื่อนไหว", color: "var(--chart-3)" },
-];
+import { PILLAR_LABELS } from "@/lib/checkins/labels";
 
 export default async function LandingPage() {
   const supabase = await createClient();
@@ -29,15 +24,18 @@ export default async function LandingPage() {
         </p>
       </div>
       <ul className="flex flex-wrap justify-center gap-3">
-        {PILLARS.map(({ icon: Icon, label, color }) => (
-          <li
-            key={label}
-            className="flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm font-medium"
-          >
-            <Icon className="size-4 shrink-0" style={{ color }} />
-            {label}
-          </li>
-        ))}
+        {PILLAR_ORDER.map((pillar) => {
+          const Icon = PILLAR_ICONS[pillar];
+          return (
+            <li
+              key={pillar}
+              className="flex items-center gap-2 rounded-full border bg-card px-4 py-2 text-sm font-medium"
+            >
+              <Icon className="size-4 shrink-0" style={{ color: PILLAR_COLORS[pillar] }} />
+              {PILLAR_LABELS[pillar]}
+            </li>
+          );
+        })}
       </ul>
 
       <div className="flex gap-3">
