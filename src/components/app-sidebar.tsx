@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { BrandLockup } from "./brand";
 import { NavIcon } from "./nav-pending";
 import { NAV_ITEMS, isActivePath } from "./nav-items";
 import { SignOutMenuItem } from "./sign-out-button";
@@ -13,7 +14,7 @@ export function AppSidebar() {
   return (
     <aside className="hidden w-64 shrink-0 border-r bg-muted/30 lg:block">
       <div className="sticky top-0 flex h-dvh flex-col gap-8 p-5">
-        <span className="px-3 pt-2 text-lg font-semibold">HealthCoach</span>
+        <BrandLockup className="px-3 pt-2" wordClassName="text-lg" />
 
         <nav aria-label="เมนูหลัก">
           <ul className="space-y-1">

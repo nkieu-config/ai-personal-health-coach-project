@@ -17,8 +17,8 @@ const plexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://personal-healthcoach.vercel.app"),
   title: {
-    default: "HealthCoach",
-    template: "%s · HealthCoach",
+    default: "Cadence",
+    template: "%s · Cadence",
   },
   description: "ผู้ช่วยดูแลสุขภาพประจำวันสำหรับนักศึกษาและคนเริ่มทำงาน",
 };

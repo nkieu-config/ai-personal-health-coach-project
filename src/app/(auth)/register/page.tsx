@@ -19,7 +19,7 @@ export default async function RegisterPage({
         <CardTitle>
           <h1>สมัครสมาชิก</h1>
         </CardTitle>
-        <CardDescription>เริ่มดูแลสุขภาพประจำวันกับ HealthCoach</CardDescription>
+        <CardDescription>เริ่มดูแลสุขภาพประจำวันกับ Cadence</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error === "oauth" && (

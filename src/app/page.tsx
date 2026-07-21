@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { BrandMark } from "@/components/brand";
 import { PILLAR_COLORS, PILLAR_ICONS, PILLAR_ORDER } from "@/components/pillar-visual";
 import { SafetyNotice } from "@/components/safety-notice";
 import { buttonVariants } from "@/components/ui/button";
@@ -17,7 +18,10 @@ export default async function LandingPage() {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-8 p-4 text-center">
       <div className="space-y-3">
-        <h1 className="text-4xl font-bold tracking-tight">HealthCoach</h1>
+        <h1 className="flex items-center justify-center gap-3 text-4xl font-bold tracking-tight">
+          <BrandMark className="size-10" />
+          Cadence
+        </h1>
         <p className="max-w-md text-muted-foreground">
           ผู้ช่วยดูแลสุขภาพประจำวันสำหรับนักศึกษาและคนเริ่มทำงาน — เห็น pattern การกิน การนอน
           การเคลื่อนไหว แล้วเริ่มจากก้าวเล็ก ๆ ที่ทำได้จริง

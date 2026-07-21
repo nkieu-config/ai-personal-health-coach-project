@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { getCurrentUser, hasCompletedOnboarding } from "@/lib/auth/user";
 import { AppNav } from "@/components/app-nav";
+import { BrandLockup } from "@/components/brand";
 import { AppSidebar } from "@/components/app-sidebar";
 import { PageContainer } from "@/components/page-container";
 import { SafetyNotice } from "@/components/safety-notice";
@@ -26,7 +27,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-10 border-b bg-background lg:hidden">
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-2">
-            <span className="font-semibold">HealthCoach</span>
+            <BrandLockup markClassName="size-5" />
             <SignOutIconButton />
           </div>
         </header>

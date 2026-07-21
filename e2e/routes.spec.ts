@@ -72,7 +72,7 @@ test("dashboard — ข้อมูล seed ของปาล์มโผล่
 
   await expect(page.getByText("สรุปวันนี้")).toBeVisible();
   await expect(page.getByText("เป้าหมายสัปดาห์นี้", { exact: true })).toBeVisible();
-  await expect(page.getByText("ยินดีต้อนรับสู่ HealthCoach 👋")).toBeHidden();
+  await expect(page.getByText("ยังไม่มีข้อมูลสุขภาพ")).toBeHidden();
 });
 
 test("dashboard — การ์ดวิเคราะห์รูปแบบ (F2-04) แสดงทุกสถานะ cache", async ({ page }) => {

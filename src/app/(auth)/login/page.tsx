@@ -19,7 +19,7 @@ export default async function LoginPage({
         <CardTitle>
           <h1>เข้าสู่ระบบ</h1>
         </CardTitle>
-        <CardDescription>HealthCoach — ผู้ช่วยดูแลสุขภาพประจำวัน</CardDescription>
+        <CardDescription>Cadence — ผู้ช่วยดูแลสุขภาพประจำวัน</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {error === "oauth" && (

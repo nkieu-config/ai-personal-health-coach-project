@@ -21,7 +21,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const DISCLAIMER =
-  "HealthCoach เป็นผู้ช่วยดูแลสุขภาพประจำวัน (wellness coach) ไม่ใช่บริการทางการแพทย์ — ไม่วินิจฉัยโรค ไม่แนะนำยาหรืออาหารเสริม ไม่ให้แผนลดน้ำหนัก หากมีอาการผิดปกติหรือกังวลเรื่องสุขภาพ ควรปรึกษาแพทย์หรือผู้เชี่ยวชาญ";
+  "Cadence เป็นผู้ช่วยดูแลสุขภาพประจำวัน (wellness coach) ไม่ใช่บริการทางการแพทย์ — ไม่วินิจฉัยโรค ไม่แนะนำยาหรืออาหารเสริม ไม่ให้แผนลดน้ำหนัก หากมีอาการผิดปกติหรือกังวลเรื่องสุขภาพ ควรปรึกษาแพทย์หรือผู้เชี่ยวชาญ";
 
 const TOTAL_STEPS = 5;
 
@@ -68,7 +68,7 @@ export function OnboardingForm({ defaultName }: { defaultName: string }) {
 
   return (
     <main className="flex min-h-dvh items-center justify-center p-4">
-      <h1 className="sr-only">ตั้งค่าเริ่มต้น HealthCoach</h1>
+      <h1 className="sr-only">ตั้งค่าเริ่มต้น Cadence</h1>
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>ตั้งค่าเริ่มต้น</CardTitle>
@@ -187,7 +187,7 @@ export function OnboardingForm({ defaultName }: { defaultName: string }) {
                     <Check className="size-3.5 text-primary-foreground opacity-0 peer-checked:opacity-100" />
                   </span>
                   <span>
-                    ฉันเข้าใจว่า HealthCoach เป็นผู้ช่วยดูแลสุขภาพทั่วไป ไม่ใช่คำแนะนำทางการแพทย์
+                    ฉันเข้าใจว่า Cadence เป็นผู้ช่วยดูแลสุขภาพทั่วไป ไม่ใช่คำแนะนำทางการแพทย์
                   </span>
                 </label>
               </div>

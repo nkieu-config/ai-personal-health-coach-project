@@ -1,4 +1,4 @@
-# Board — HealthCoach (อัปเดต 20 ก.ค. 2026)
+# Board — Cadence (อัปเดต 20 ก.ค. 2026)
 
 ## Pitch 30 ก.ค. · Code freeze 29 ก.ค. · เหลือ 10 วัน
 
