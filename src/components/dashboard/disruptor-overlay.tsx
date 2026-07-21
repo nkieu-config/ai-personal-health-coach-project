@@ -289,12 +289,14 @@ export function useDisruptorMarkers() {
     }
   };
 
+  const isLocked = activeDisruptor?.isLocked ?? false;
+
   React.useEffect(() => {
-    if (!activeDisruptor?.isLocked) return;
+    if (!isLocked) return;
     const dismiss = () => setActiveDisruptor(null);
     document.addEventListener("click", dismiss);
     return () => document.removeEventListener("click", dismiss);
-  }, [activeDisruptor]);
+  }, [isLocked]);
 
   return { activeDisruptor, setActiveDisruptor, handleMarkerHover, handleMarkerClick };
 }

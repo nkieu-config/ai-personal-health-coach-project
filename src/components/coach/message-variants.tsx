@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { MessageCircle, Moon } from "lucide-react";
 import type { ChatMessage } from "@/lib/chat/types";
 import { FormattedMessage } from "./formatted-message";
@@ -13,7 +14,7 @@ function CoachAvatar() {
   );
 }
 
-export function UserMessage({ message }: { message: ChatMessage }) {
+export const UserMessage = memo(function UserMessage({ message }: { message: ChatMessage }) {
   return (
     <div className="flex justify-end">
       <div className="max-w-[80%] rounded-2xl rounded-br-sm bg-primary px-4 py-2.5 text-sm text-primary-foreground">
@@ -21,9 +22,9 @@ export function UserMessage({ message }: { message: ChatMessage }) {
       </div>
     </div>
   );
-}
+});
 
-export function CoachMessage({ message }: { message: ChatMessage }) {
+export const CoachMessage = memo(function CoachMessage({ message }: { message: ChatMessage }) {
   return (
     <div className="flex gap-2.5">
       <CoachAvatar />
@@ -35,7 +36,7 @@ export function CoachMessage({ message }: { message: ChatMessage }) {
       </div>
     </div>
   );
-}
+});
 
 export function PendingReply() {
   return (

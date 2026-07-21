@@ -13,7 +13,7 @@ import { ReflectionCard } from "@/components/reflection/reflection-card";
 import { TodaySummary } from "@/components/dashboard/today-summary";
 import { PatternTable } from "@/components/dashboard/pattern-table";
 import { DayLines } from "@/components/dashboard/day-lines";
-import { PillarCharts } from "@/components/dashboard/pillar-charts";
+import { PillarChartsLazy } from "@/components/dashboard/pillar-charts-lazy";
 
 export default async function DashboardPage({
   searchParams,
@@ -84,7 +84,7 @@ export default async function DashboardPage({
           <TodaySummary checkin={todayCheckin} date={todayDate} />
         </div>
         <div className="lg:col-span-2 min-w-0">
-          <PillarCharts checkins={checkins} period={period} />
+          <PillarChartsLazy checkins={checkins} period={period} />
         </div>
       </div>
 
