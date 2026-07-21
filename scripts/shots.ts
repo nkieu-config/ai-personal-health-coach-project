@@ -21,8 +21,8 @@ type Page = Awaited<ReturnType<Awaited<ReturnType<typeof chromium.launch>>["newP
 async function login(page: Page) {
   await page.goto(`${BASE}/login`);
   await page.waitForLoadState("networkidle");
-  await page.getByLabel(/อีเมล/i).fill(EMAIL);
-  await page.getByLabel(/รหัสผ่าน/i).fill(PASSWORD);
+  await page.getByLabel("อีเมล", { exact: true }).fill(EMAIL);
+  await page.getByLabel("รหัสผ่าน", { exact: true }).fill(PASSWORD);
   await page.getByRole("button", { name: /เข้าสู่ระบบ|ล็อกอิน/ }).click();
   await page.waitForURL(/dashboard|checkin|onboarding/, { timeout: 20000 });
 }
