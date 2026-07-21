@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CalendarPlus } from "lucide-react";
 import { BackfillCheckinForm } from "@/components/checkin/backfill-checkin-form";
 import { PageContainer } from "@/components/page-container";
 import { formatThaiDate, today } from "@/lib/checkins/date";
@@ -27,8 +28,17 @@ export default async function EditCheckinPage({ params }: { params: Promise<{ da
   const existing = await getCheckinByDate(date);
 
   return (
-    <PageContainer width="content">
-      <h1 className="sr-only">บันทึกย้อนหลัง</h1>
+    <PageContainer width="content" className="space-y-6">
+      <div className="space-y-2">
+        <h1 className="flex items-center gap-2 text-xl font-semibold lg:text-2xl">
+          <CalendarPlus className="size-6 shrink-0 text-primary" />
+          บันทึกย้อนหลัง
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          {formatThaiDate(date)}
+          {existing ? " · กำลังแก้ไขบันทึกเดิม" : " · ยังไม่เคยบันทึกวันนี้"}
+        </p>
+      </div>
       <BackfillCheckinForm date={date} existing={existing} />
     </PageContainer>
   );

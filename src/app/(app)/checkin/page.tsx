@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageContainer } from "@/components/page-container";
-import { CalendarPlus, History } from "lucide-react";
+import { CalendarCheck, CalendarPlus, History } from "lucide-react";
 import { TodayCheckinForm } from "@/components/checkin/today-checkin-form";
 import { buttonVariants } from "@/components/ui/button";
 import { daysAgo, formatThaiDate, today } from "@/lib/checkins/date";
@@ -47,8 +47,16 @@ export default async function CheckinPage() {
     ) : null;
 
   return (
-    <PageContainer width="content">
-      <h1 className="sr-only">เช็คอินประจำวัน</h1>
+    <PageContainer width="content" className="space-y-6">
+      <div className="space-y-2">
+        <h1 className="flex items-center gap-2 text-xl font-semibold lg:text-2xl">
+          <CalendarCheck className="size-6 shrink-0 text-primary" />
+          เช็คอินประจำวัน
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          บันทึกการกิน การนอน และการเคลื่อนไหวของวันนี้ ใช้เวลาไม่ถึง 3 นาที
+        </p>
+      </div>
       <TodayCheckinForm date={date} existing={existing} nudge={nudge} footer={footer} />
     </PageContainer>
   );
