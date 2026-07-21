@@ -296,14 +296,14 @@ export function CheckinForm({
 
   if (saved) {
     return (
-      <div className="mx-auto max-w-md">
+      <div className="mx-auto w-full max-w-md lg:mx-0">
         <CheckinSummary checkin={saved} onEdit={() => setSaved(null)} />
       </div>
     );
   }
 
   return (
-    <div className="lg:grid lg:grid-cols-[13rem_minmax(0,28rem)] lg:items-start lg:justify-center lg:gap-8">
+    <div className="lg:grid lg:grid-cols-[13rem_minmax(0,28rem)] lg:items-start lg:gap-8">
       <StepRail step={step} />
       <div className="mx-auto w-full max-w-md space-y-4 lg:mx-0 lg:max-w-none">
         {nudge}
