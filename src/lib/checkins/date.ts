@@ -21,6 +21,12 @@ export function daysAgo(days: number): string {
   return shiftDate(today(), -days);
 }
 
+export function daysBetween(from: string, to: string): number {
+  const start = new Date(`${from}T00:00:00Z`).getTime();
+  const end = new Date(`${to}T00:00:00Z`).getTime();
+  return Math.round((end - start) / 86_400_000);
+}
+
 export function formatThaiDate(isoDate: string): string {
   return new Intl.DateTimeFormat("th-TH", {
     weekday: "long",
