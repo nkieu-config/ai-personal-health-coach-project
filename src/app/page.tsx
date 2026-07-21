@@ -16,7 +16,7 @@ export default async function LandingPage() {
   if (user) redirect("/checkin");
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center gap-8 p-4 text-center">
+    <main className="flex min-h-dvh flex-col items-center justify-center gap-8 p-3 text-center xs:p-4">
       <div className="space-y-3">
         <h1 className="flex items-center justify-center gap-3 text-4xl font-bold tracking-tight">
           <BrandMark className="size-10" />

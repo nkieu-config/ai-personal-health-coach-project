@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function OnboardingLoading() {
   return (
-    <main className="flex min-h-dvh items-center justify-center p-4">
+    <main className="flex min-h-dvh items-center justify-center p-3 xs:p-4">
       <LoadingLabel />
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-2">

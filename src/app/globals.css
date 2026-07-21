@@ -5,6 +5,7 @@
 @custom-variant dark (@media (prefers-color-scheme: dark));
 
 @theme {
+  --breakpoint-xs: 375px;
   --text-xs--line-height: 1.5;
   --text-sm--line-height: 1.65;
   --text-base--line-height: 1.75;
@@ -136,6 +137,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
   }
   html {
     @apply font-sans;

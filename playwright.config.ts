@@ -46,6 +46,18 @@ export default defineConfig({
       },
     },
     {
+      // จอแคบสุดที่ iPhone จริงเป็นได้ — SE รุ่นแรก และทุกรุ่นที่เปิด Display Zoom
+      name: "มือถือแคบ 320px",
+      dependencies: ["setup"],
+      testIgnore: [/auth\.setup\.ts/, /auth\.spec\.ts/, /checkin\.spec\.ts/],
+      use: {
+        ...devices["iPhone SE"],
+        browserName: "chromium",
+        colorScheme: "light",
+        storageState: "e2e/.auth/demo.json",
+      },
+    },
+    {
       name: "เดสก์ท็อป · dark",
       dependencies: ["setup"],
       testIgnore: [/auth\.setup\.ts/, /auth\.spec\.ts/, /checkin\.spec\.ts/],
