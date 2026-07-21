@@ -7,13 +7,21 @@
 | [deck-outline.md](deck-outline.md) | โครงสไลด์ 13 หน้า + speaker notes + เกณฑ์ที่แต่ละสไลด์ปิด | ✅ ร่างแล้ว |
 | [demo-script.md](demo-script.md) | บทเดิน demo รายคลิก + ใครพูดท่อนไหน + **ขั้นตอนเตรียมวันจริงทั้งหมด** | ✅ ร่างแล้ว (รอเติมชื่อคนพูด) |
 | `deck.pdf` (หรือลิงก์ deck) | สไลด์จริงทำใน Canva/Slides ตาม deck-outline แล้ว export | ⬜ |
-| `screenshots/` | ภาพสำรองทุกจอสำคัญ — plan B เมื่อเน็ต/AI ล่มกลางเวที | ⬜ |
+| [`screenshots/`](screenshots/) | ภาพสำรองทุกจอสำคัญ — plan B เมื่อเน็ต/AI ล่มกลางเวที | ✅ สร้างด้วย `npm run shots` |
 
 ## งานที่เหลือ
 
 1. เติมชื่อคนพูดใน demo-script
 2. ทำสไลด์จริงตาม deck-outline → export `deck.pdf` วางที่นี่
-3. เก็บ screenshot ทุกจอลง `screenshots/`
+3. รัน `npm run shots` ซ้ำหลัง freeze ให้ภาพตรงกับของจริงวันนำเสนอ
 4. ซ้อมเต็ม 2 รอบวันที่ 29 ก.ค. (checklist ซ้อม + กฎเหล็กวันจริงอยู่ท้าย demo-script)
 
 > ขั้นตอนเช้าวัน pitch (รัน `npm run refresh:demo-week`, เคลียร์ stray goal, ข้อห้ามเรื่องโควตา) รวมอยู่ที่เดียวใน [demo-script.md](demo-script.md) — ไม่เขียนซ้ำที่นี่
+
+## `npm run shots`
+
+ถ่ายทุกหน้า × มือถือ/เดสก์ท็อป × light/dark (28 รูป) พร้อมเช็คว่าไม่มี console error · ไม่มีการเลื่อนแนวนอน · h1 หน้าละอัน
+
+ใช้ 3 อย่างด้วยสคริปต์เดียว: รีวิวดีไซน์ตอนแก้ · แนบหลักฐาน before/after ใน PR · **ภาพสำรองวัน pitch**
+
+เก็บเข้าเรโปเฉพาะชุด `light-desktop` (ชุดที่ฉายขึ้นจอ และเป็นตัวอย่างให้กรรมการดูโดยไม่ต้องล็อกอิน) · ชุดมือถือกับ dark เป็น gitignore เพราะสร้างใหม่ได้ตลอด

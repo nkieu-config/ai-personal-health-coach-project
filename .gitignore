@@ -44,3 +44,8 @@ next-env.d.ts
 /e2e/.auth
 /test-results
 /playwright-report
+
+# ภาพรีวิวดีไซน์ที่สร้างใหม่ได้ตลอดด้วย npm run shots
+# เก็บเฉพาะชุด light-desktop ไว้ในเรโป — เป็นชุดที่ฉายวัน pitch และเป็นตัวอย่างให้กรรมการดูโดยไม่ต้องล็อกอิน
+docs/pitch/screenshots/dark-*.png
+docs/pitch/screenshots/light-mobile-*.png

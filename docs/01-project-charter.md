@@ -2,7 +2,7 @@
 
 ## ชื่อโปรเจกต์
 
-**HealthCoach** — AI Personal Health Coach for Students and First Jobbers (Mission #5)
+**Cadence** — AI Personal Health Coach for Students and First Jobbers (Mission #5)
 
 Production: https://personal-healthcoach.vercel.app/ · Repo: https://github.com/nkieu-config/ai-personal-health-coach-project
 

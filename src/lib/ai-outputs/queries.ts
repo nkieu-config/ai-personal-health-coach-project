@@ -1,4 +1,4 @@
-import { daysAgo, shiftDate, today } from "@/lib/checkins/date";
+import { daysAgo, daysBetween, shiftDate, today } from "@/lib/checkins/date";
 import { getCheckinsBetween } from "@/lib/checkins/queries";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -20,6 +20,27 @@ export function periodFor(days: number) {
   return { periodStart: daysAgo(days - 1), periodEnd: today() };
 }
 
+async function latestBySpan(kind: AiOutputKind, days: number) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("ai_outputs")
+    .select(AI_OUTPUT_COLUMNS)
+    .eq("kind", kind)
+    .order("created_at", { ascending: false })
+    .limit(10);
+
+  if (error || !data) return null;
+  const rows = data as unknown as AiOutputRow[];
+  const windowStart = daysAgo(days - 1);
+
+  return (
+    rows.find(
+      (row) =>
+        daysBetween(row.period_start, row.period_end) === days - 1 && row.period_end >= windowStart
+    ) ?? null
+  );
+}
+
 async function latest(kind: AiOutputKind, period?: { periodStart: string; periodEnd: string }) {
   const supabase = await createClient();
   let query = supabase
@@ -39,8 +60,7 @@ async function latest(kind: AiOutputKind, period?: { periodStart: string; period
 }
 
 export async function getLatestInsight(days: number): Promise<Insight | null> {
-  const period = periodFor(days);
-  const row = await latest("pattern_analysis", period);
+  const row = await latestBySpan("pattern_analysis", days);
   if (!row) return null;
 
   return {

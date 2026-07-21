@@ -1,9 +1,29 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { AlertCircle, Database, Eye, Fingerprint, History, Lock, Shield } from "lucide-react";
 import { PageContainer } from "@/components/page-container";
+import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DeleteZone } from "@/components/settings/delete-zone";
+
+export const metadata: Metadata = { title: "ความเป็นส่วนตัว" };
+
+function HealthTag() {
+  return (
+    <Badge variant="outline" className="border-primary/25 bg-primary/10 text-primary">
+      สุขภาพ
+    </Badge>
+  );
+}
+
+function PersonalTag() {
+  return <Badge variant="secondary">ส่วนบุคคล</Badge>;
+}
+
+function ContextTag() {
+  return <Badge variant="outline">บริบท</Badge>;
+}
 
 export default function PrivacyPage() {
   return (
@@ -20,8 +40,8 @@ export default function PrivacyPage() {
         </div>
 
         <Card className="border-primary/10 bg-accent/20">
-          <CardContent className="text-sm leading-relaxed text-foreground">
-            HealthCoach เก็บบันทึกการกิน การนอน และการเคลื่อนไหวที่คุณกรอกเอง เพื่อแสดง pattern
+          <CardContent className="text-sm text-foreground">
+            Cadence เก็บบันทึกการกิน การนอน และการเคลื่อนไหวที่คุณกรอกเอง เพื่อแสดง pattern
             และให้คำแนะนำสำหรับคุณเท่านั้น ข้อมูลของคุณไม่ถูกแชร์ให้ผู้ใช้คนอื่นหรือบุคคลที่สาม
             คุณแก้ไขหรือลบข้อมูลทั้งหมดได้ทุกเมื่อจากหน้านี้ ระบบนี้เป็นผู้ช่วยดูแลสุขภาพทั่วไป
             ไม่ใช่บริการทางการแพทย์
@@ -43,9 +63,9 @@ export default function PrivacyPage() {
               <table className="w-full border-collapse text-left text-sm">
                 <thead>
                   <tr className="border-b border-border font-medium text-muted-foreground">
-                    <th className="w-1/4 py-3 pr-3 font-medium">ข้อมูล</th>
+                    <th className="w-2/5 py-3 pr-3 font-medium">ข้อมูล</th>
                     <th className="w-1/4 py-3 pr-3 font-medium">จัดเป็น</th>
-                    <th className="w-2/4 py-3 font-medium">เก็บเพื่อ</th>
+                    <th className="py-3 font-medium">เก็บเพื่อ</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/50">
@@ -53,28 +73,39 @@ export default function PrivacyPage() {
                     <td className="py-3 pr-3 font-mono text-xs font-medium text-foreground">
                       email
                     </td>
-                    <td className="py-3 pr-3 text-muted-foreground">ข้อมูลส่วนบุคคล</td>
+                    <td className="py-3 pr-3">
+                      <PersonalTag />
+                    </td>
                     <td className="py-3 text-muted-foreground">login เท่านั้น</td>
                   </tr>
                   <tr className="align-top">
                     <td className="py-3 pr-3 font-medium text-foreground">
                       display_name, สถานะ, วันเรียนเช้า, ข้อจำกัด
                     </td>
-                    <td className="py-3 pr-3 text-muted-foreground">ข้อมูลส่วนบุคคล/บริบท</td>
+                    <td className="py-3 pr-3">
+                      <div className="flex flex-wrap gap-1">
+                        <PersonalTag />
+                        <ContextTag />
+                      </div>
+                    </td>
                     <td className="py-3 text-muted-foreground">personalize คำแนะนำ</td>
                   </tr>
                   <tr className="align-top">
                     <td className="py-3 pr-3 font-medium text-foreground">
                       check-in (กิน นอน เคลื่อนไหว พลังงาน disruptor)
                     </td>
-                    <td className="py-3 pr-3 text-muted-foreground">ข้อมูลสุขภาพ</td>
+                    <td className="py-3 pr-3">
+                      <HealthTag />
+                    </td>
                     <td className="py-3 text-muted-foreground">
                       pattern analysis, dashboard, reflection
                     </td>
                   </tr>
                   <tr className="align-top">
                     <td className="py-3 pr-3 font-medium text-foreground">ประวัติแชทกับ coach</td>
-                    <td className="py-3 pr-3 text-muted-foreground">ข้อมูลสุขภาพ</td>
+                    <td className="py-3 pr-3">
+                      <HealthTag />
+                    </td>
                     <td className="py-3 text-muted-foreground">ความต่อเนื่องของบทสนทนา</td>
                   </tr>
                 </tbody>
@@ -112,7 +143,7 @@ export default function PrivacyPage() {
               การป้องกันทางเทคนิค
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>
               <strong className="text-foreground">แยกแยะสิทธิ์อย่างเข้มงวด (RLS):</strong>{" "}
               ข้อมูลทั้งหมดควบคุมผ่านนโยบาย Supabase Row Level Security (RLS)
@@ -140,7 +171,7 @@ export default function PrivacyPage() {
               การระบุตัวตนและการรวมข้อมูล
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3 text-sm leading-relaxed text-muted-foreground">
+          <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>
               <strong className="text-foreground">ข้อมูลผูกกับบัญชีของคุณ ไม่ได้ anonymize:</strong>{" "}
               เพราะระบบต้องดึงบันทึกของคุณกลับมาแสดง pattern ให้คุณเห็น ถ้าตัดตัวตนออกจากฐานข้อมูล
@@ -169,7 +200,7 @@ export default function PrivacyPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm leading-relaxed text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               สามารถเข้าไปที่หน้าประวัติบันทึกรายวัน เพื่อดูรายการบันทึกของตัวเอง แก้ไข
               หรือลบข้อมูลการเช็กอินของแต่ละวันย้อนหลังได้ด้วยตนเอง
             </p>

@@ -15,14 +15,19 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HealthCoach",
+  metadataBase: new URL("https://personal-healthcoach.vercel.app"),
+  title: {
+    default: "Cadence",
+    template: "%s · Cadence",
+  },
   description: "ผู้ช่วยดูแลสุขภาพประจำวันสำหรับนักศึกษาและคนเริ่มทำงาน",
+  openGraph: { title: "Cadence — AI Personal Health Coach" },
 };
 
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#17171c" },
+    { media: "(prefers-color-scheme: dark)", color: "#0d1526" },
   ],
 };
 

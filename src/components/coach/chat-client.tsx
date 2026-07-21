@@ -1,13 +1,12 @@
 "use client";
 
 import { useState, useEffect, useRef, useTransition } from "react";
-import { Trash2, Send, RefreshCw, MessageSquare, Loader2 } from "lucide-react";
+import { Trash2, Send, RefreshCw, MessageSquare, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { UserMessage, CoachMessage, PendingReply, QuotaReachedNotice } from "./message-variants";
 import { sendCoachMessage, retryCoachReply, clearChatHistory } from "@/lib/chat/actions";
+import type { CoachOpener } from "@/lib/chat/opener";
 import {
   DAILY_MESSAGE_LIMIT,
   MESSAGE_MAX_LENGTH,
@@ -36,9 +35,14 @@ const CONSTRAINT_OPTIONS = Object.entries(CONSTRAINT_LABELS) as [string, string]
 interface CoachChatClientProps {
   initialMessages: ChatMessage[];
   initialQuotaLeft: number;
+  opener?: CoachOpener | null;
 }
 
-export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChatClientProps) {
+export function CoachChatClient({
+  initialMessages,
+  initialQuotaLeft,
+  opener,
+}: CoachChatClientProps) {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [quotaLeft, setQuotaLeft] = useState<number>(initialQuotaLeft);
   const [inputValue, setInputValue] = useState("");
@@ -49,8 +53,21 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
 
   // Scroll ref
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const tempIdRef = useRef(0);
+
+  const resizeTextarea = () => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 128)}px`;
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setInputValue(e.target.value);
+    resizeTextarea();
+  };
 
   // Clear history double-confirm state
   const [confirmClear, setConfirmClear] = useState(false);
@@ -77,11 +94,11 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
   };
 
   useEffect(() => {
-    scrollToBottom("instant");
+    if (messages.length > 0) scrollToBottom("instant");
   }, []);
 
   useEffect(() => {
-    scrollToBottom("smooth");
+    if (messages.length > 0 || guidedFlow) scrollToBottom("smooth");
   }, [messages, isPending, guidedStep, guidedFlow]);
 
   // Generate guided flow message list for rendering
@@ -211,6 +228,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
 
     setMessages((prev) => [...prev, tempUserMessage]);
     setInputValue("");
+    requestAnimationFrame(resizeTextarea);
     setQuotaLeft((prev) => Math.max(0, prev - 1));
 
     startTransition(async () => {
@@ -381,17 +399,21 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
     return () => clearTimeout(timer);
   }, [confirmClear]);
 
-  const showChips = messages.length === 0 && !isPending && quotaLeft > 0 && !guidedFlow;
+  const showChips = messages.length === 0 && !isPending && quotaLeft > 0 && !guidedFlow && !opener;
   const showRetry = needsReply(messages) && !isPending && !guidedFlow;
   const displayMessages = guidedFlow ? [...messages, ...getGuidedMessages()] : messages;
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex h-[calc(100dvh-17.5rem)] min-h-[24rem] flex-col gap-3 lg:h-[calc(100dvh-13rem)]">
       {/* Top bar controls */}
-      <div className="flex items-center justify-between pb-1">
-        <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary text-xs">
-          โควตาแชทวันนี้เหลือ: {quotaLeft} ข้อความ
-        </Badge>
+      <div className="flex min-h-9 shrink-0 items-center justify-between">
+        {quotaLeft > 0 && quotaLeft <= 2 ? (
+          <span className="text-xs text-muted-foreground">
+            เหลือคุยกับโค้ชได้อีก {quotaLeft} ข้อความวันนี้
+          </span>
+        ) : (
+          <span />
+        )}
 
         {messages.length > 0 && (
           <Button
@@ -407,16 +429,44 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
         )}
       </div>
 
-      {/* Chat Container Card */}
-      <Card className="flex flex-col justify-between border-border/40 shadow-sm bg-card">
-        <CardContent className="p-4">
-          <div
-            role="log"
-            aria-live="polite"
-            aria-label="บทสนทนากับโค้ช"
-            className="h-[400px] overflow-y-auto pr-1 space-y-4 flex flex-col scrollbar-thin"
-          >
-            {displayMessages.length === 0 ? (
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl border border-border/40 bg-card">
+        <div
+          role="log"
+          aria-live="polite"
+          aria-label="บทสนทนากับโค้ช"
+          className="flex min-h-0 flex-1 flex-col space-y-4 overflow-y-auto p-4 scrollbar-thin"
+        >
+          {displayMessages.length === 0 ? (
+            opener ? (
+              <div className="flex gap-2.5">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <MessageCircle className="size-4" />
+                </div>
+                <div className="min-w-0 flex-1 space-y-3 pt-0.5">
+                  <p className="text-xs font-medium text-muted-foreground">โค้ช</p>
+                  <div className="space-y-2">
+                    <p className="text-sm text-muted-foreground">{opener.fact}</p>
+                    <p className="text-lg font-medium">{opener.question}</p>
+                  </div>
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {STARTERS.map((starter) => (
+                      <Button
+                        key={starter}
+                        type="button"
+                        variant="outline"
+                        onClick={() => handleSend(starter)}
+                        className="min-h-11 rounded-full px-4 text-sm font-normal"
+                      >
+                        {starter}
+                      </Button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    หรือพิมพ์เล่าเรื่องของคุณด้านล่างได้เลย
+                  </p>
+                </div>
+              </div>
+            ) : (
               <div className="flex flex-col items-center justify-center h-full text-center p-6 space-y-3">
                 <div className="p-3 rounded-full bg-primary/5 text-primary">
                   <MessageSquare className="size-8" />
@@ -429,26 +479,26 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                   </p>
                 </div>
               </div>
-            ) : (
-              displayMessages.map((m) =>
-                m.role === "user" ? (
-                  <UserMessage key={m.id} message={m} />
-                ) : (
-                  <CoachMessage key={m.id} message={m} />
-                )
+            )
+          ) : (
+            displayMessages.map((m) =>
+              m.role === "user" ? (
+                <UserMessage key={m.id} message={m} />
+              ) : (
+                <CoachMessage key={m.id} message={m} />
               )
-            )}
+            )
+          )}
 
-            {isPending && displayMessages.length > 0 && displayMessages.at(-1)?.role === "user" && (
-              <PendingReply />
-            )}
+          {isPending && displayMessages.length > 0 && displayMessages.at(-1)?.role === "user" && (
+            <PendingReply />
+          )}
 
-            <div ref={messagesEndRef} />
-          </div>
-        </CardContent>
+          <div ref={messagesEndRef} />
+        </div>
 
         {/* Input & Options panel */}
-        <div className="border-t border-border/40 p-4 space-y-4 bg-muted/10">
+        <div className="shrink-0 border-t border-border/40 p-4 space-y-4 bg-muted/10">
           {guidedFlow ? (
             <div className="space-y-4">
               {guidedStep === "pillar" && (
@@ -666,7 +716,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
 
               {error && (
                 <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive mt-2">
-                  <span className="leading-normal">{error}</span>
+                  <span className="">{error}</span>
                 </div>
               )}
             </div>
@@ -699,13 +749,13 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                   role="alert"
                   className="rounded-lg border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive"
                 >
-                  <span className="leading-normal">{error}</span>
+                  <span className="">{error}</span>
                 </div>
               )}
 
               {showRetry && (
                 <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 p-3 text-sm">
-                  <span className="leading-normal text-muted-foreground">
+                  <span className="text-muted-foreground">
                     ข้อความล่าสุดยังไม่ได้รับคำตอบจากโค้ช
                   </span>
                   <Button
@@ -729,20 +779,27 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                   e.preventDefault();
                   handleSend(inputValue);
                 }}
-                className="flex items-center gap-2"
+                className="flex items-end gap-2"
               >
                 <div className="relative flex-1">
-                  <Input
-                    type="text"
+                  <textarea
+                    ref={textareaRef}
+                    rows={1}
                     placeholder={quotaLeft > 0 ? "คุยกับโค้ชได้เลย…" : "วันนี้โควตาแชทหมดแล้ว"}
                     value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
+                    onChange={handleInputChange}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSend(inputValue);
+                      }
+                    }}
                     disabled={quotaLeft <= 0 || isPending}
                     maxLength={MESSAGE_MAX_LENGTH}
-                    className="w-full min-h-11 bg-background text-sm rounded-lg pr-12 focus-visible:border-ring focus-visible:ring-3"
+                    className="max-h-32 min-h-11 w-full resize-none rounded-lg border border-input bg-background px-3 py-2.5 text-sm break-words shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 scrollbar-thin"
                   />
-                  {inputValue.length > 0 && (
-                    <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground font-mono">
+                  {inputValue.length > MESSAGE_MAX_LENGTH * 0.8 && (
+                    <span className="absolute right-3 bottom-2.5 font-mono text-[10px] text-muted-foreground">
                       {inputValue.length}/{MESSAGE_MAX_LENGTH}
                     </span>
                   )}
@@ -752,7 +809,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
                   type="submit"
                   size="icon"
                   disabled={quotaLeft <= 0 || isPending || !inputValue.trim()}
-                  className="size-11 shrink-0 bg-primary hover:bg-primary/95 text-primary-foreground rounded-lg"
+                  className="size-11 shrink-0 rounded-lg bg-primary text-primary-foreground hover:bg-primary/95"
                   aria-label="ส่งข้อความ"
                 >
                   <Send className="size-4" />
@@ -761,7 +818,7 @@ export function CoachChatClient({ initialMessages, initialQuotaLeft }: CoachChat
             </>
           )}
         </div>
-      </Card>
+      </div>
     </div>
   );
 }

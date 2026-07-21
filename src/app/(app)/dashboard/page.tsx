@@ -1,6 +1,7 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
 import Link from "next/link";
-import { CalendarCheck } from "lucide-react";
+import { BarChart3, CalendarCheck } from "lucide-react";
 import { getCheckins } from "@/lib/checkins/queries";
 import { daysAgo, today } from "@/lib/checkins/date";
 import { MAX_PERIOD, parsePeriod, PeriodToggle } from "@/components/dashboard/period-toggle";
@@ -12,8 +13,10 @@ import { CurrentGoalCard } from "@/components/goals/current-goal-card";
 import { ReflectionCard } from "@/components/reflection/reflection-card";
 import { TodaySummary } from "@/components/dashboard/today-summary";
 import { PatternTable } from "@/components/dashboard/pattern-table";
-import { PillarCharts } from "@/components/dashboard/pillar-charts";
-import { EnergyChart } from "@/components/dashboard/energy-chart";
+import { DayLines } from "@/components/dashboard/day-lines";
+import { PillarChartsLazy } from "@/components/dashboard/pillar-charts-lazy";
+
+export const metadata: Metadata = { title: "ภาพรวมสุขภาพ" };
 
 export default async function DashboardPage({
   searchParams,
@@ -28,7 +31,10 @@ export default async function DashboardPage({
     return (
       <PageContainer width="content" className="space-y-6">
         <div className="space-y-2">
-          <h1 className="text-xl font-semibold lg:text-2xl">ภาพรวมสุขภาพ</h1>
+          <h1 className="flex items-center gap-2 text-xl font-semibold lg:text-2xl">
+            <BarChart3 className="size-6 shrink-0 text-primary" />
+            ภาพรวมสุขภาพ
+          </h1>
           <p className="text-sm text-muted-foreground">
             ดูแนวโน้มสุขภาพและคำแนะนำจากบันทึกสุขภาพรายวันของคุณ
           </p>
@@ -62,7 +68,10 @@ export default async function DashboardPage({
     <PageContainer width="content" className="space-y-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="space-y-2">
-          <h1 className="text-xl font-semibold lg:text-2xl">ภาพรวมสุขภาพ</h1>
+          <h1 className="flex items-center gap-2 text-xl font-semibold lg:text-2xl">
+            <BarChart3 className="size-6 shrink-0 text-primary" />
+            ภาพรวมสุขภาพ
+          </h1>
           <p className="text-sm text-muted-foreground">
             ดูแนวโน้มสุขภาพและคำแนะนำจากบันทึกสุขภาพรายวันของคุณ — บันทึกแล้ว {inPeriod.length} วัน
             จาก {period} วันที่ผ่านมา
@@ -73,16 +82,14 @@ export default async function DashboardPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3 lg:items-start">
         <div className="lg:col-span-1 min-w-0">
           <TodaySummary checkin={todayCheckin} date={todayDate} />
         </div>
         <div className="lg:col-span-2 min-w-0">
-          <PillarCharts checkins={checkins} period={period} />
+          <PillarChartsLazy checkins={checkins} period={period} />
         </div>
       </div>
-
-      <EnergyChart checkins={checkins} period={period} />
 
       <div className="grid gap-5 lg:grid-cols-2">
         <Suspense fallback={<CardSkeleton rows={1} />}>
@@ -92,6 +99,8 @@ export default async function DashboardPage({
           <ReflectionCard />
         </Suspense>
       </div>
+
+      <DayLines checkins={checkins} />
 
       <Suspense fallback={<CardSkeleton rows={3} />}>
         <PatternTable days={period} recordedDays={inPeriod.length} />

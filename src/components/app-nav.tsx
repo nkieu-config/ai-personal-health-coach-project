@@ -23,10 +23,16 @@ export function AppNav() {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex min-h-14 flex-col items-center justify-center gap-1 py-2 text-xs transition-colors active:opacity-60",
+                  "relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg py-2 text-xs transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50 active:opacity-60",
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground"
                 )}
               >
+                {active && (
+                  <span
+                    aria-hidden
+                    className="absolute inset-x-5 top-0 h-0.5 rounded-full bg-primary"
+                  />
+                )}
                 <NavIcon icon={Icon} className="size-5" />
                 {label}
               </Link>

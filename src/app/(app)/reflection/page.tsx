@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import Link from "next/link";
-import { Footprints, Moon, NotebookPen, RefreshCw, Sparkles, Target, Utensils } from "lucide-react";
+import { NotebookPen, RefreshCw, Sparkles, Target } from "lucide-react";
+import { PILLAR_COLORS, PILLAR_ICONS } from "@/components/pillar-visual";
 import { GenerateReflectionButton } from "@/components/reflection/generate-reflection-button";
 import { WeekComparisonCard } from "@/components/reflection/week-comparison-card";
 import { pickWeek, WeekPicker } from "@/components/reflection/week-picker";
@@ -12,25 +14,25 @@ import { getReflections, getWeekComparison } from "@/lib/ai-outputs/queries";
 import type { ReflectionPillar } from "@/lib/ai-outputs/types";
 import { formatShortThaiDate } from "@/lib/checkins/date";
 import { latestCheckinAt } from "@/lib/checkins/queries";
-import type { Pillar } from "@/lib/domain";
+
+export const metadata: Metadata = { title: "สรุปสัปดาห์" };
 
 export const dynamic = "force-dynamic";
-
-const PILLAR_ICONS: Record<Pillar, typeof Utensils> = {
-  eating: Utensils,
-  sleep: Moon,
-  movement: Footprints,
-};
 
 function PillarSection({ entry }: { entry: ReflectionPillar }) {
   const Icon = PILLAR_ICONS[entry.pillar];
   return (
-    <div className="space-y-2">
-      <h3 className="flex items-center gap-2 text-sm font-semibold">
-        <Icon className="size-4 shrink-0 text-primary" />
-        ด้าน{PILLAR_LABELS[entry.pillar]}
-      </h3>
-      <p className="text-sm leading-relaxed text-muted-foreground">{entry.summary}</p>
+    <div className="flex gap-3">
+      <div
+        className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted/60"
+        style={{ color: PILLAR_COLORS[entry.pillar] }}
+      >
+        <Icon className="size-4" />
+      </div>
+      <div className="space-y-1 pt-0.5">
+        <h3 className="text-sm font-semibold text-foreground">ด้าน{PILLAR_LABELS[entry.pillar]}</h3>
+        <p className="text-base text-foreground/90">{entry.summary}</p>
+      </div>
     </div>
   );
 }
@@ -151,7 +153,7 @@ export default async function ReflectionPage({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-sm leading-relaxed text-muted-foreground">{selected.strengths}</p>
+            <p className="text-base text-foreground/90">{selected.strengths}</p>
           </CardContent>
         </Card>
 
@@ -163,7 +165,7 @@ export default async function ReflectionPage({
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <p className="text-sm leading-relaxed text-muted-foreground">{selected.nextWeek}</p>
+            <p className="text-base text-foreground/90">{selected.nextWeek}</p>
             <Link href="/goals" className={buttonVariants({ className: "w-full" })}>
               ตั้งเป้าสัปดาห์หน้า
             </Link>

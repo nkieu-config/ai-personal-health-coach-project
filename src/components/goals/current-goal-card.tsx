@@ -1,13 +1,11 @@
 import Link from "next/link";
 import { Target } from "lucide-react";
 import { getActiveGoals } from "@/lib/goals/queries";
-import { weekDates } from "@/lib/goals/week";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export async function CurrentGoalCard() {
   const active = await getActiveGoals();
-  const week = weekDates();
 
   return (
     <Card>
@@ -38,7 +36,7 @@ export async function CurrentGoalCard() {
                 <li key={goal.id} className="flex items-baseline justify-between gap-3">
                   <span>{goal.title}</span>
                   <span className="shrink-0 text-xs text-muted-foreground">
-                    {goal.progressDates.length}/{week.length}
+                    ทำได้ {goal.progressDates.length} วัน
                   </span>
                 </li>
               ))}

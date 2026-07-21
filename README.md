@@ -1,4 +1,4 @@
-# HealthCoach
+# Cadence
 
 AI Personal Health Coach สำหรับนักศึกษาและ first jobber (Mission #5) — wellness coach ที่ช่วยเห็น pattern กิน–นอน–เคลื่อนไหว และตั้ง micro goal ที่ทำได้จริง ไม่ใช่ระบบวินิจฉัยโรค
 

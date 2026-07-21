@@ -69,15 +69,20 @@ export function GoalSuggestionCard({ initialGoals }: GoalSuggestionCardProps) {
               ขอคำแนะนำแผนงานประจำสัปดาห์จาก AI เพื่อเริ่มพัฒนาสุขภาพของคุณ
             </p>
           </div>
-          <Button onClick={handleRequestGoals} disabled={isPending} className="min-h-11 px-6">
-            {isPending ? (
-              <>
-                <Loader2 className="mr-2 size-4 animate-spin" /> กำลังประมวลผล…
-              </>
-            ) : (
-              "ขอคำแนะนำเป้าหมาย"
+          <div className="space-y-2">
+            <Button onClick={handleRequestGoals} disabled={isPending} className="min-h-11 px-6">
+              {isPending ? (
+                <>
+                  <Loader2 className="mr-2 size-4 animate-spin" /> กำลังประมวลผล…
+                </>
+              ) : (
+                "ขอคำแนะนำเป้าหมาย"
+              )}
+            </Button>
+            {isPending && (
+              <p className="text-center text-xs text-muted-foreground">ใช้เวลาราว 10 วินาที</p>
             )}
-          </Button>
+          </div>
         </CardContent>
       </Card>
     );
@@ -86,20 +91,25 @@ export function GoalSuggestionCard({ initialGoals }: GoalSuggestionCardProps) {
   // เสริม: หากมีเป้าหมายแล้วแต่ต้องการกดขอเพิ่มแฝงด้านล่าง
   if (initialGoals.length > 0 && suggestions.length === 0) {
     return (
-      <Button
-        variant="outline"
-        onClick={handleRequestGoals}
-        disabled={isPending}
-        className="w-full min-h-11 text-foreground"
-      >
-        {isPending ? (
-          <>
-            <Loader2 className="mr-2 size-4 animate-spin" /> กำลังประมวลผลคำแนะนำ…
-          </>
-        ) : (
-          "ขอคำแนะนำเป้าหมายเพิ่มเติม"
+      <div className="space-y-2">
+        <Button
+          variant="outline"
+          onClick={handleRequestGoals}
+          disabled={isPending}
+          className="w-full min-h-11 text-foreground"
+        >
+          {isPending ? (
+            <>
+              <Loader2 className="mr-2 size-4 animate-spin" /> กำลังประมวลผลคำแนะนำ…
+            </>
+          ) : (
+            "ขอคำแนะนำเป้าหมายเพิ่มเติม"
+          )}
+        </Button>
+        {isPending && (
+          <p className="text-center text-xs text-muted-foreground">ใช้เวลาราว 10 วินาที</p>
         )}
-      </Button>
+      </div>
     );
   }
 
@@ -147,7 +157,7 @@ export function GoalSuggestionCard({ initialGoals }: GoalSuggestionCardProps) {
 
         {!editMode ? (
           <div className="space-y-2">
-            <div className="rounded-lg border border-border bg-muted/50 p-3 text-sm font-medium leading-relaxed">
+            <div className="rounded-lg border border-border bg-muted/50 p-3 text-sm font-medium ">
               {customText}
             </div>
             <Button

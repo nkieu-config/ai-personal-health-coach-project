@@ -1,10 +1,15 @@
+import type { Metadata } from "next";
 import { Suspense } from "react";
+import Link from "next/link";
 import { PageContainer } from "@/components/page-container";
-import { Zap } from "lucide-react";
+import { NotebookPen, Target } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { getActiveGoals } from "@/lib/goals/queries";
 import { GoalSuggestionCard } from "@/components/goals/goal-suggestion-card";
 import { GoalProgressCard } from "@/components/goals/goal-progress-card";
 import { CardSkeleton } from "@/components/page-skeleton";
+
+export const metadata: Metadata = { title: "เป้าหมายสัปดาห์นี้" };
 
 export const dynamic = "force-dynamic";
 
@@ -13,14 +18,12 @@ export default async function GoalsPage() {
 
   return (
     <PageContainer width="content">
-      <h1 className="sr-only">จัดการเป้าหมายสุขภาพสัปดาห์นี้</h1>
-
       <div className="space-y-6">
         <div className="space-y-1">
-          <h2 className="flex items-center gap-2 text-xl font-semibold lg:text-2xl text-foreground">
-            <Zap className="size-5 text-primary shrink-0" />
+          <h1 className="flex items-center gap-2 text-xl font-semibold lg:text-2xl text-foreground">
+            <Target className="size-6 shrink-0 text-primary" />
             เป้าหมายสัปดาห์นี้
-          </h2>
+          </h1>
           <p className="text-sm text-muted-foreground">
             ตั้งเป้าหมายย่อยเพื่อความต่อเนื่องและคอยติ๊กบันทึกทุก ๆ วัน
           </p>
@@ -33,12 +36,7 @@ export default async function GoalsPage() {
         <div className="space-y-4">
           {goals.length > 0 && (
             <>
-              <div className="flex items-center justify-between px-1">
-                <h3 className="text-sm font-semibold text-foreground">เป้าหมายปัจจุบัน</h3>
-                <span className="text-xs font-mono text-muted-foreground bg-muted px-2 py-0.5 rounded">
-                  {goals.length} รายการกำลังติดตาม
-                </span>
-              </div>
+              <h3 className="px-1 text-sm font-semibold text-foreground">เป้าหมายที่กำลังทำ</h3>
               <div className="space-y-4">
                 {goals.map((goal) => (
                   <GoalProgressCard key={goal.id} goal={goal} />
@@ -47,6 +45,14 @@ export default async function GoalsPage() {
             </>
           )}
         </div>
+
+        <Link
+          href="/reflection"
+          className={buttonVariants({ variant: "ghost", className: "w-full" })}
+        >
+          <NotebookPen className="size-4" />
+          ดูสรุปสัปดาห์
+        </Link>
       </div>
     </PageContainer>
   );

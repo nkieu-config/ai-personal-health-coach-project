@@ -1,4 +1,4 @@
-import { Sparkles } from "lucide-react";
+import { ChevronDown, Sparkles } from "lucide-react";
 import type { InsightPattern } from "@/lib/ai-outputs/types";
 import { getLatestInsight } from "@/lib/ai-outputs/queries";
 import { checkDataSufficiency } from "@/lib/ai-outputs/sufficiency";
@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { GenerateInsightButton } from "./generate-insight-button";
 
 const MAX_PATTERNS_SHOWN = 5;
+const MOBILE_PATTERNS_UPFRONT = 3;
 
 function EvidenceRow({ pattern }: { pattern: InsightPattern }) {
   const { metric, groupA, groupB } = pattern.evidence;
@@ -81,7 +82,7 @@ function PatternTableDesktop({ patterns }: { patterns: InsightPattern[] }) {
                 <p className="font-medium text-foreground">{pattern.observation}</p>
                 <EvidenceRow pattern={pattern} />
               </td>
-              <td className="px-4 py-4 text-muted-foreground leading-relaxed">{pattern.meaning}</td>
+              <td className="px-4 py-4 text-muted-foreground ">{pattern.meaning}</td>
               <td className="px-4 py-4">
                 <div className="rounded-lg border border-primary/20 bg-primary/5 p-3">
                   <p className="mb-1 text-[10px] font-bold text-primary uppercase tracking-wider">
@@ -201,9 +202,25 @@ export async function PatternTable({ days, recordedDays }: { days: number; recor
       <CardContent className="space-y-4">
         {/* Mobile view */}
         <div className="space-y-4 lg:hidden">
-          {shown.map((pattern, index) => (
+          {shown.slice(0, MOBILE_PATTERNS_UPFRONT).map((pattern, index) => (
             <PatternRow key={index} pattern={pattern} />
           ))}
+          {shown.length > MOBILE_PATTERNS_UPFRONT && (
+            <details className="group">
+              <summary className="flex min-h-11 cursor-pointer items-center justify-center gap-1.5 rounded-full border text-sm font-medium text-muted-foreground outline-none select-none hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 [&::-webkit-details-marker]:hidden">
+                <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" />
+                <span className="group-open:hidden">
+                  ดูอีก {shown.length - MOBILE_PATTERNS_UPFRONT} รูปแบบ
+                </span>
+                <span className="hidden group-open:inline">ซ่อนรูปแบบเพิ่มเติม</span>
+              </summary>
+              <div className="mt-4 space-y-4">
+                {shown.slice(MOBILE_PATTERNS_UPFRONT).map((pattern, index) => (
+                  <PatternRow key={index} pattern={pattern} />
+                ))}
+              </div>
+            </details>
+          )}
         </div>
 
         {/* Desktop view */}

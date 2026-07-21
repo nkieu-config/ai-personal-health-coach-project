@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LogOut } from "lucide-react";
-import { signOut } from "@/lib/auth/actions";
 import { cn } from "@/lib/utils";
+import { BrandLockup } from "./brand";
 import { NavIcon } from "./nav-pending";
 import { NAV_ITEMS, isActivePath } from "./nav-items";
-import { Button } from "@/components/ui/button";
+import { SignOutMenuItem } from "./sign-out-button";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -15,7 +14,7 @@ export function AppSidebar() {
   return (
     <aside className="hidden w-64 shrink-0 border-r bg-muted/30 lg:block">
       <div className="sticky top-0 flex h-dvh flex-col gap-8 p-5">
-        <span className="px-3 pt-2 text-lg font-semibold">HealthCoach</span>
+        <BrandLockup className="px-3 pt-2" wordClassName="text-lg" />
 
         <nav aria-label="เมนูหลัก">
           <ul className="space-y-1">
@@ -27,7 +26,7 @@ export function AppSidebar() {
                     href={href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex min-h-11 items-center gap-3 rounded-full px-4 text-sm font-medium transition-colors",
+                      "flex min-h-11 items-center gap-3 rounded-full px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                       active
                         ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -42,16 +41,9 @@ export function AppSidebar() {
           </ul>
         </nav>
 
-        <form action={signOut} className="mt-auto">
-          <Button
-            type="submit"
-            variant="ghost"
-            className="w-full justify-start gap-3 px-4 text-muted-foreground"
-          >
-            <LogOut className="size-5 shrink-0" />
-            ออกจากระบบ
-          </Button>
-        </form>
+        <div className="mt-auto">
+          <SignOutMenuItem />
+        </div>
       </div>
     </aside>
   );
