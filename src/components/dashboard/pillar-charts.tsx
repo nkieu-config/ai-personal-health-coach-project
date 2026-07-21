@@ -20,7 +20,7 @@ import {
 const chartConfig = {
   sleepHours: { label: "ชั่วโมงนอน (ชม.)", color: "var(--chart-1)" },
   mealsCount: { label: "มื้อที่กิน (มื้อ)", color: "var(--chart-2)" },
-  sweetDrinks: { label: "เครื่องดื่มหวาน (แก้ว)", color: "var(--chart-5)" },
+  sweetDrinks: { label: "เครื่องดื่มหวาน (แก้ว)", color: "var(--chart-6)" },
   movementMinutes: { label: "นาทีเคลื่อนไหว", color: "var(--chart-3)" },
   energyRaw: { label: "ระดับพลังงาน", color: "var(--chart-4)" },
 } satisfies ChartConfig;
@@ -245,7 +245,7 @@ export function PillarCharts({ checkins, period }: { checkins: Checkin[]; period
                       <Bar
                         dataKey="sweetDrinks"
                         name="sweetDrinks"
-                        fill="var(--chart-5)"
+                        fill="var(--chart-6)"
                         radius={[4, 4, 0, 0]}
                       />
                     </>

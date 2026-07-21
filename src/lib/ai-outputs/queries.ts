@@ -31,7 +31,14 @@ async function latestBySpan(kind: AiOutputKind, days: number) {
 
   if (error || !data) return null;
   const rows = data as unknown as AiOutputRow[];
-  return rows.find((row) => daysBetween(row.period_start, row.period_end) === days - 1) ?? null;
+  const windowStart = daysAgo(days - 1);
+
+  return (
+    rows.find(
+      (row) =>
+        daysBetween(row.period_start, row.period_end) === days - 1 && row.period_end >= windowStart
+    ) ?? null
+  );
 }
 
 async function latest(kind: AiOutputKind, period?: { periodStart: string; periodEnd: string }) {
