@@ -16,12 +16,19 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
   const name = profile?.display_name ?? null;
 
   return (
-    <div className="flex min-h-dvh flex-col lg:flex-row">
+    <div className="relative flex min-h-dvh flex-col lg:flex-row">
+      <a
+        href="#main"
+        className="absolute top-4 left-4 z-50 inline-flex min-h-11 -translate-y-24 items-center rounded-full bg-primary px-4 text-sm font-medium text-primary-foreground transition-transform focus-visible:translate-y-0"
+      >
+        ข้ามไปเนื้อหาหลัก
+      </a>
+
       <AppSidebar name={name} />
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-10 border-b bg-background lg:hidden">
-          <div className="mx-auto flex w-full max-w-md items-center justify-between px-4 py-2">
+          <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-2">
             <div className="min-w-0">
               <span className="block font-semibold">HealthCoach</span>
               {name && (
@@ -34,7 +41,9 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 px-4 py-6 lg:px-10 lg:py-10">{children}</main>
+        <main id="main" tabIndex={-1} className="flex-1 px-4 py-6 outline-none lg:px-10 lg:py-10">
+          {children}
+        </main>
 
         <div className="px-4 pb-3 lg:px-10 lg:pb-8">
           <PageContainer width="content">

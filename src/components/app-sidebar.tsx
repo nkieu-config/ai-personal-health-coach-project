@@ -28,7 +28,7 @@ export function AppSidebar({ name }: { name?: string | null }) {
                     href={href}
                     aria-current={active ? "page" : undefined}
                     className={cn(
-                      "flex min-h-11 items-center gap-3 rounded-full px-4 text-sm font-medium transition-colors",
+                      "flex min-h-11 items-center gap-3 rounded-full px-4 text-sm font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
                       active
                         ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:bg-muted hover:text-foreground"
