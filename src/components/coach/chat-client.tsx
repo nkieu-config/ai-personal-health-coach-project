@@ -1,7 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef, useTransition } from "react";
-import { Trash2, Send, RefreshCw, MessageSquare, MessageCircle, Loader2 } from "lucide-react";
+import {
+  Trash2,
+  Send,
+  RefreshCw,
+  MessageSquare,
+  MessageCircle,
+  Loader2,
+  Target,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { UserMessage, CoachMessage, PendingReply, QuotaReachedNotice } from "./message-variants";
@@ -744,6 +752,21 @@ export function CoachChatClient({
                       </Button>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {messages.length > 0 && inputValue === "" && (
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleSend(GOAL_STARTER)}
+                    disabled={isPending}
+                    className="min-h-11 gap-1.5 rounded-full px-4 text-sm font-normal"
+                  >
+                    <Target className="size-4 shrink-0 text-primary" />
+                    ตั้งเป้าสัปดาห์หน้า
+                  </Button>
                 </div>
               )}
 
