@@ -401,10 +401,11 @@ export function CoachChatClient({
 
   const showChips = messages.length === 0 && !isPending && quotaLeft > 0 && !guidedFlow && !opener;
   const showRetry = needsReply(messages) && !isPending && !guidedFlow;
+  const showCounter = inputValue.length > MESSAGE_MAX_LENGTH * 0.8;
   const displayMessages = guidedFlow ? [...messages, ...getGuidedMessages()] : messages;
 
   return (
-    <div className="flex h-[calc(100dvh-17.5rem)] min-h-[24rem] flex-col gap-3 lg:h-[calc(100dvh-13rem)]">
+    <div className="flex h-[calc(100dvh-17.75rem-env(safe-area-inset-top,0px))] min-h-[24rem] flex-col gap-3 lg:h-[calc(100dvh-13rem)]">
       {/* Top bar controls */}
       <div className="flex min-h-9 shrink-0 items-center justify-between">
         {quotaLeft > 0 && quotaLeft <= 2 ? (
@@ -421,7 +422,7 @@ export function CoachChatClient({
             size="sm"
             onClick={handleClearHistory}
             disabled={isPending}
-            className="h-9 gap-1.5 text-xs transition-all duration-200 min-h-11 px-3"
+            className="min-h-11 gap-1.5 px-3 text-xs transition-all duration-200"
           >
             <Trash2 className="size-4" />
             {confirmClear ? "ยืนยันล้างแชท" : "ล้างประวัติ"}
@@ -642,10 +643,12 @@ export function CoachChatClient({
                     เลือกเป้าหมายเล็ก ๆ (Micro Goal) ที่แนะนำสำหรับคุณ:
                   </p>
                   {!goalOptions ? (
-                    <div className="flex items-center gap-2 rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-                      <Loader2 className="size-4 shrink-0 animate-spin" />
-                      กำลังดูบันทึกของคุณเพื่อเลือกเป้าหมายที่ทำได้จริง...
-                    </div>
+                    error ? null : (
+                      <div className="flex items-center gap-2 rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
+                        <Loader2 className="size-4 shrink-0 animate-spin" />
+                        กำลังดูบันทึกของคุณเพื่อเลือกเป้าหมายที่ทำได้จริง...
+                      </div>
+                    )
                   ) : (
                     <div className="grid grid-cols-1 gap-2">
                       {goalOptions.map((option, index) => {
@@ -687,7 +690,7 @@ export function CoachChatClient({
                       onChange={(e) => setEditedGoalTitle(e.target.value)}
                       disabled={isPending}
                       maxLength={GOAL_TITLE_MAX_LENGTH}
-                      className="w-full min-h-11 bg-background text-sm focus-visible:border-ring focus-visible:ring-3"
+                      className="w-full min-h-11 bg-background focus-visible:border-ring focus-visible:ring-3"
                       placeholder="ปรับเปลี่ยนเป้าหมายของคุณที่นี่…"
                     />
                   </div>
@@ -785,21 +788,25 @@ export function CoachChatClient({
                   <textarea
                     ref={textareaRef}
                     rows={1}
+                    aria-label="พิมพ์ข้อความถึงโค้ช"
                     placeholder={quotaLeft > 0 ? "คุยกับโค้ชได้เลย…" : "วันนี้โควตาแชทหมดแล้ว"}
                     value={inputValue}
                     onChange={handleInputChange}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
+                      if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
                         e.preventDefault();
                         handleSend(inputValue);
                       }
                     }}
                     disabled={quotaLeft <= 0 || isPending}
                     maxLength={MESSAGE_MAX_LENGTH}
-                    className="max-h-32 min-h-11 w-full resize-none rounded-lg border border-input bg-background px-3 py-2.5 text-sm break-words shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 scrollbar-thin"
+                    className={cn(
+                      "block max-h-32 min-h-11 w-full resize-none rounded-lg border border-input bg-background px-3 py-2 text-base break-words shadow-xs transition-[color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50 scrollbar-thin md:text-sm",
+                      showCounter && "pr-16"
+                    )}
                   />
-                  {inputValue.length > MESSAGE_MAX_LENGTH * 0.8 && (
-                    <span className="absolute right-3 bottom-2.5 font-mono text-[10px] text-muted-foreground">
+                  {showCounter && (
+                    <span className="absolute right-3 bottom-2 font-mono text-[11px] text-muted-foreground">
                       {inputValue.length}/{MESSAGE_MAX_LENGTH}
                     </span>
                   )}
