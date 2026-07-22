@@ -755,7 +755,7 @@ export function CoachChatClient({
                 </div>
               )}
 
-              {messages.length > 0 && (
+              {messages.length > 0 && inputValue === "" && (
                 <div className="flex flex-wrap gap-2">
                   <Button
                     type="button"
