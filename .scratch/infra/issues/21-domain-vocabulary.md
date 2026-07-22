@@ -41,31 +41,6 @@ Priority: S — หนี้โครงสร้าง ไม่กระทบ
 
 17 ก.ค. (A) — เสร็จ · branch `refactor/infra-21-domain` · **ย้ายของอย่างเดียว ไม่มีพฤติกรรมไหนเปลี่ยน**
 
-**ทิศทางพึ่งพา ก่อน → หลัง:**
+**กติกาที่ยังใช้อยู่:** import `Checkin` + enum กลางจาก `@/lib/domain` (BOARD กติกาข้อ 5 ชี้ไว้แล้ว) · `patterns` เหลือ `ai-outputs` ที่เดียวที่พึ่ง · test fixtures อยู่ที่ `src/test/fixtures.ts`
 
-```text
-ก่อน:  checkins → patterns          (checkins พึ่งฟีเจอร์วิเคราะห์ เพื่อขอ type ของตัวเอง)
-       goals    → patterns          (ขอแค่ Checkin)
-       chat     → patterns          (ขอแค่ Checkin)
-       + อีก 26 ไฟล์ import "@/lib/patterns/types"
-
-หลัง:  ทุกอย่าง → domain            (leaf · ไม่ import ใครเลย)
-       patterns → domain
-       ai-outputs → patterns        ← เหลือที่เดียวที่พึ่ง patterns จริง ๆ และมันควรพึ่ง
-```
-
-**patterns จากที่ทุกโมดูล import เหลือ `ai-outputs` ที่เดียว** — ซึ่งถูกต้อง เพราะ ai-outputs คือคนแปลง pattern candidate เป็น insight · goals/chat ไม่เกี่ยวกับ pattern เลยแต่เดิมต้อง import เพราะ `Checkin` ไปอยู่ผิดบ้าน
-
-**ทำอะไร:**
-
-1. `src/lib/domain.ts` — `Checkin` + enum ทั้งหมด (Pillar · Meal · Disruptor · EnergyLevel · MovementType …) · **ไม่ import ใครเลย**
-2. `lib/patterns/types.ts` เหลือเฉพาะ `PatternId` · `PatternMetric` · `PatternCandidate` · `PatternGroup`
-3. `lib/patterns/test-fixtures.ts` → `src/test/fixtures.ts` — test helper ออกจากโฟลเดอร์ production (ถูกใช้จาก 11 test files + `scripts/test-ai.ts`)
-4. `PILLAR_LABELS` จาก `ai-outputs/format.ts` → `checkins/labels.ts` อยู่กับ label ตัวอื่นครบชุด (`Pillar` ไม่เคยเป็นของ ai-outputs)
-5. BOARD กติกาข้อ 5 ชี้ `@/lib/domain` แล้ว — คนทำ F2-04/F5-02 อ่านแล้วรู้ทันที
-
-**พิสูจน์ (AC: พฤติกรรมห้ามเปลี่ยน):** `npm test` 135 ผ่าน · e2e **30/30** · build/tsc/lint/format ผ่าน · แตะ 42 ไฟล์แต่ **ไม่มี logic เปลี่ยนสักบรรทัด** — import ล้วน
-
-**ทำไมทำตอนนี้:** ไม่มี PR ค้าง ไม่มีใครเขียนโค้ดอยู่ · ถ้ารอ F2-04/F5-02 เริ่ม จะแตะไฟล์ที่เพื่อนเปิดอยู่พร้อมกัน 30 ไฟล์
-
-**ที่จงใจไม่ทำในใบนี้:** แยก `chat-client.tsx` (759 บรรทัด) — 🟩 หมดคิวงานแล้ว ไฟล์แช่แข็ง แยกตอนนี้คือ churn เปล่า · `components/coming-soon.tsx` จะตายเมื่อ F5-02 เสร็จ — ลบตอนนั้นทีเดียว
+**ที่จงใจไม่ทำในใบนี้:** แยก `chat-client.tsx` — 🟩 หมดคิวงานแล้ว ไฟล์แช่แข็ง · `components/coming-soon.tsx` รอลบตอน F5-02 เสร็จ

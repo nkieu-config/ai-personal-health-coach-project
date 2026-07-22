@@ -21,10 +21,9 @@ Refs: ADR-0002, docs/06 (โครงสร้างโปรเจกต์)
 
 ## Comments
 
-2026-07-06 (AI scaffold): scaffold เสร็จแล้ว — Next.js 16.2 + Tailwind v4 + shadcn (button, card, input, label, badge, textarea), โครง lib ครบ, `npm run build` และ `npm run lint` ผ่าน, `git init` แล้วแต่ยังไม่ commit
-ข้อควรรู้: Next.js 16 เปลี่ยน `middleware.ts` เป็น `src/proxy.ts` (ทำไว้แล้วพร้อม auth guard) — อ่าน `node_modules/next/dist/docs/` ก่อนเขียนโค้ดเพราะ API ต่างจากที่คุ้น
-เหลือของที่ต้องใช้บัญชีทีม: สร้าง GitHub repo + push, ตั้ง branch protection, PR template
+2026-07-06 (AI scaffold): scaffold เสร็จ (Next.js 16.2 + Tailwind v4 + shadcn + โครง lib ครบ) · เหลือของที่ต้องใช้บัญชีทีม — สร้าง GitHub repo + push, branch protection, PR template
+ข้อควรรู้: Next.js 16 ย้าย `middleware.ts` เป็น `src/proxy.ts` — อ่าน `node_modules/next/dist/docs/` ก่อนเขียนโค้ด เพราะ API ต่างจากที่คุ้น
 
-2026-07-07: push ขึ้น GitHub แล้ว 2 commits (docs / scaffold) — เหลือ: เชิญทีม 3 คน (Settings → Collaborators), branch protection บน main (require PR + 1 review), PR template
+2026-07-07: push ขึ้น GitHub แล้ว 2 commits — เหลือ เชิญทีม 3 คน, branch protection บน main, PR template
 
-2026-07-07 (resolved): เชิญทีมครบ + branch protection ตั้งแล้ว + เพิ่ม PR template (`.github/pull_request_template.md`) → ปิด INFRA-01 ครบทุกข้อ
+2026-07-07 (resolved): เชิญทีมครบ + branch protection + PR template (`.github/pull_request_template.md`) → ปิด INFRA-01

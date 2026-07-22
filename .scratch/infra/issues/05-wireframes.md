@@ -18,14 +18,6 @@ Refs: docs/03 (scenario ปาล์ม), docs/04
 
 ## Comments
 
-## Comments
+2026-07-14 (A): **ปิดเป็น wontfix — ไม่ทำแล้ว ไม่ใช่ค้าง** · Sprint 1 จบไปโดยไม่มี wireframe และไม่เกิดปัญหา layout ชนกัน เพราะ `DESIGN.md` + `(app)/layout.tsx` + `PageContainer` ทำหน้าที่นั้นแทนอยู่แล้ว
 
-2026-07-14 (A): **ปิดเป็น wontfix — ไม่ทำแล้ว ไม่ใช่ค้าง**
-
-wireframe มีไว้กัน layout ชนกันกลาง Sprint 1 แต่ Sprint 1 จบไปแล้วโดยไม่เคยมี wireframe และ **ไม่เกิดปัญหาที่ issue นี้กลัว** เพราะของจริงที่ทำหน้าที่แทนคือ:
-
-- `DESIGN.md` — กฎ layout/component ที่บังคับใช้จริง (60 บรรทัดแรก = กฎแอป)
-- `src/app/(app)/layout.tsx` + `PageContainer` — โครงหน้าที่ทุกหน้าต้องใช้ → layout ชนกันไม่ได้ตั้งแต่แรก
-- UI จริงบน production ที่ทีม dogfood อยู่ทุกวัน
-
-**เขียน wireframe ตอนนี้ = เขียนเอกสารย้อนหลังของสิ่งที่มีอยู่แล้ว** ไม่เพิ่มค่าให้ใคร · ถ้าอยากได้ภาพไปใส่ pitch deck ใช้ screenshot ของจริง (สวยกว่าและจริงกว่า)
+ถ้าอยากได้ภาพไปใส่ pitch deck ใช้ screenshot ของจริง

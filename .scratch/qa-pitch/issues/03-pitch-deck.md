@@ -22,16 +22,12 @@ Refs: docs/10 (แนวเดินเรื่อง + mapping เกณฑ์
 
 ## Comments
 
-2026-07-14 (A): 🚨 **checklist บังคับก่อน demo — โควตา Gemini ฟรีมีแค่ 20 ครั้ง/วัน ทั้งแอป**
-
-ตัวเลขนี้วัดจริงตอนรัน F3-02 (ดู INFRA-07 + ADR-0003) · **แชท 1 ข้อความ = 1 ครั้ง** → ถ้าไม่วางแผน มีสิทธิ์หมดกลางเวที
+2026-07-14 (A): 🚨 **checklist บังคับก่อน demo — โควตา Gemini ฟรีมีแค่ 20 ครั้ง/วัน ทั้งแอป** · แชท 1 ข้อความ = 1 ครั้ง (ดู INFRA-07 + ADR-0003)
 
 ---
 
-2026-07-20 (A): **ของ 2 อย่างแรกเสร็จแล้ว + checklist ข้างบนตกยุค**
+2026-07-20 (A): ✅ deck outline + demo script ร่างเสร็จ → [`docs/pitch/`](../../../docs/pitch/) · ⚠️ โควตาเป็น **500/วัน** แล้วหลัง INFRA-23 → **อย่าดู checklist ข้างบนแล้ว** เก็บไว้เป็นประวัติเฉย ๆ แต่ยังต้องมี plan B เรื่องเน็ตล่ม
 
-- ✅ **Deck outline + demo script ร่างเสร็จ** → [`docs/pitch/`](../../../docs/pitch/) · deck-outline มี speaker notes + tag เกณฑ์ที่แต่ละสไลด์ปิด · demo-script เดินรายคลิก + แบ่งคนพูด
-- ⚠️ **โควตาไม่ใช่ 20/วันแล้ว — เป็น 500/วัน** หลัง INFRA-23 (ย้าย `gemini-3.1-flash-lite`) → ความเสี่ยง "หมดกลางเวที" ต่ำลงมาก แต่ยังต้องมี plan B เรื่องเน็ตล่ม
-- 📍 **ขั้นตอนเช้าวัน pitch ย้ายไปอยู่ที่เดียวใน [`docs/pitch/demo-script.md`](../../../docs/pitch/demo-script.md)** — รวมคำสั่ง `npm run refresh:demo-week` ที่อุ่นทั้ง goal + insight/reflection ให้ตรงวัน (ของพวกนี้ผูก `today()` จึงเก่าเองทุกวัน) · **อย่าดู checklist ข้างบนแล้ว** เก็บไว้เป็นประวัติเฉย ๆ
+📍 ขั้นตอนเช้าวัน pitch อยู่ที่เดียวใน [`docs/pitch/demo-script.md`](../../../docs/pitch/demo-script.md) — รวม `npm run refresh:demo-week` (ข้อมูล demo ผูก `today()` จึงเก่าเองทุกวัน)
 
 **เหลือทำ:** ทำสไลด์จริงใน Canva ตาม outline → export `deck.pdf` · เก็บ screenshot สำรอง · เติมชื่อคนพูด · ซ้อม 2 รอบ 29 ก.ค.

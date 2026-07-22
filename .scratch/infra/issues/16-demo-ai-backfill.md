@@ -30,15 +30,6 @@ Refs: FR-6.2, docs/07, ต่อยอด INFRA-06 (seed) + F6-01
 
 ---
 
-16 ก.ค. (A) — เสร็จ · branch `feat/infra-16-demo-ai-backfill` · `npm run backfill:demo-ai` (มี `--dry` กันพลาด)
+16 ก.ค. (A) — เสร็จ · branch `feat/infra-16-demo-ai-backfill` · รันจริงบน production แล้ว (reflection 4 สัปดาห์ + pattern 14/30 วัน) · สคริปต์ idempotent รันซ้ำได้
 
-**รันจริงบน production แล้ว** — ยิง Gemini 6 ครั้ง (quota วันนี้ยังไม่ถูกใช้ก่อนหน้า):
-
-- weekly_reflection **4 สัปดาห์** (10-16 / 3-9 ก.ค. / 26 มิ.ย.-2 ก.ค. / 19-25 มิ.ย.) — ทุกอันมี `strengths`, คำต้องห้ามหลุด 0
-- pattern_analysis **14 + 30 วัน** — 10 สัญญาณ/ช่วง, คำต้องห้ามหลุด 0 · (7 วันข้าม — ปาล์มมี 6 วัน = notEnoughData ถูกต้อง)
-
-**พิสูจน์ AC:** query production แล้ว `ai_outputs` = 6 แถวพอดี · reflection ≥2 ✅ · getLatestInsight(14)/(30) ไม่ null ✅ · ไม่มีแถวซ้ำ (idempotent: ลบ-แล้ว-ใส่ต่อ period) ✅
-
-**reuse engine เดิม 100%** — `buildWeekFacts`/`generateReflectionText`/`mergeReflectionText` และ `computePatternCandidates`/`generateInsightText`/`mergeInsightPatterns` ตัวเดียวกับ server action · script แค่เลื่อน period + ยิงผ่าน service role → output เหมือน generate ในแอปเป๊ะ · cache-fresh ด้วย (ปาล์มไม่มี check-in ใหม่) กดในแอปจะไม่ยิง Gemini ซ้ำ
-
-**ปลดหาง F6-02:** AC "เห็น reflection ≥ 2 สัปดาห์" มีข้อมูลรองรับแล้ว · เพื่อน 🟨 สร้าง UI แล้วเห็นจริงเลย ไม่ต้องกด generate เปลือง quota
+**ปลดหาง F6-02:** เพื่อน 🟨 สร้าง UI แล้วเห็นข้อมูลจริงเลย ไม่ต้องกด generate เปลือง quota

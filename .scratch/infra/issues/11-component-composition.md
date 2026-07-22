@@ -51,29 +51,6 @@ boolean 1 ตัว = 2 สถานะ · เพิ่มอีกตัว = 4
 
 ## Comments
 
-2026-07-15 (A): เสร็จแล้ว — ตรวจตาม skill `vercel-composition-patterns`
+2026-07-15 (A): เสร็จแล้ว — ตรวจตาม skill `vercel-composition-patterns` · แยกเป็น `TodayCheckinForm` / `BackfillCheckinForm` แทน flag `isBackfill` · `CheckinForm` เหลือเป็นเครื่องยนต์ที่รับแค่ `heading` + `beforeSave?` ไม่รู้จักคำว่า backfill อีกเลย
 
-**แก้ `isBackfill` แล้ว** — call site อ่านรู้เรื่องทันทีโดยไม่ต้องเปิดเข้าไปดูข้างใน
-
-```tsx
-<TodayCheckinForm date={date} existing={existing} />       // มี guard เที่ยงคืน
-<BackfillCheckinForm date={date} existing={existing} />    // ไม่ต้องมี
-```
-
-`CheckinForm` เหลือเป็นเครื่องยนต์ที่**ไม่รู้จักคำว่า "backfill" อีกเลย** — รับแค่ `heading` + `beforeSave?` (ฉีดพฤติกรรมเข้าไป ไม่ใช่ flag) · ผลพลอยได้: ternary ที่ซ่อนอยู่ในชื่อหัวข้อ (`date === today() ? ... : ...`) หายไปด้วย
-
-**ทดสอบด้วยเบราว์เซอร์จริงบน production build** — refactor นี้แตะฟอร์มเช็คอินที่ทีม dogfood ทุกวัน จะเชื่อแค่ tsc ไม่ได้:
-
-| | ผล |
-|---|---|
-| หัวข้อ 2 variant | "เช็คอิน · กิน" / "บันทึกย้อนหลัง · กิน" ✅ |
-| **บันทึกย้อนหลัง** (10 ก.ค.) | ✅ สำเร็จ · **guard ไม่บล็อกผิด** ← ความเสี่ยงหลักของ refactor นี้ |
-| **เช็คอินวันนี้** (15 ก.ค.) | ✅ สำเร็จ · guard ปล่อยผ่านถูกต้อง |
-
-**ของสำคัญที่สุดที่ได้จากงานนี้: กฎ + ตัวอย่างใน DESIGN.md สำหรับ 🟩**
-
-`components/coach/` ยังว่างเปล่า — 🟩 จะเขียน Chat UI จากศูนย์ และแชทมี state เยอะมาก (กำลังส่ง / ส่งพลาด / โควตาหมด / ครบ 5 ข้อความ / รอโค้ชตอบ)
-**ถ้าเริ่มด้วย `<Message isUser isPending isFailed />` จะกลายเป็นนรก conditional ภายใน 2 วัน**
-→ DESIGN.md มีตัวอย่าง `<UserMessage>` / `<CoachMessage>` / `<CoachThinking>` / `<RetryPrompt>` ให้ก๊อปแล้ว พร้อมเตือนเรื่อง `retryCoachReply()` ห้ามเรียก `sendCoachMessage()` ซ้ำ
-
-**ที่ตรวจแล้วผ่านอยู่แล้ว:** ไม่มี `forwardRef` เลยทั้ง repo (React 19 ✅) · ไม่มี `renderX` prop · ไม่มี state ที่พี่น้องต้องแชร์แบบผิดที่
+ส่งต่อ 🟩: `components/coach/` ยังว่างเปล่า — DESIGN.md มีกฎ + ตัวอย่าง `<UserMessage>` / `<CoachMessage>` / `<CoachThinking>` / `<RetryPrompt>` ให้ก๊อป พร้อมเตือนว่า `retryCoachReply()` ห้ามเรียก `sendCoachMessage()` ซ้ำ
