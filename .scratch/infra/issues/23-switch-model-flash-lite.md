@@ -42,10 +42,6 @@ Refs: INFRA-19 (model pin), QA-01, ADR-0003
 
 ---
 
-19 ก.ค. (A) — **เสร็จ** · branch `fix/infra-23-switch-model`
+19 ก.ค. (A) — **เสร็จ** · branch `fix/infra-23-switch-model` · ยิงจริงบน `gemini-3.1-flash-lite` ผ่านแล้ว · pin test (INFRA-19 guard) ปรับตามโมเดลใหม่ ยังกันการเปลี่ยนเงียบต่อไป
 
-**smoke test:** ยิงเคส 02 (ลดน้ำหนัก) + 05 (1323) จริงบน `gemini-3.1-flash-lite` ผ่าน generate() — ปฏิเสธสะอาด · 1323 มา · เส้น production ใช้โมเดลใหม่ได้จริง (ไม่ใช่แค่ tsc ผ่าน)
-
-**pin test:** เขียว (คาดหวัง 3.1-flash-lite) — INFRA-19 guard ปรับตามโมเดลใหม่แล้ว ยังกันการเปลี่ยนเงียบต่อไป
-
-**ค้าง (ไม่ใช่ของ PR นี้):** QA-01 independent run บน 3.1-flash-lite (คีตะ · หลัง merge #56) · แจ้งทีมลบ AI_MODEL ใน .env.local
+**ค้าง (ไม่ใช่ของ PR นี้):** QA-01 independent run บน 3.1-flash-lite (คีตะ · หลัง merge #56) · แจ้งทีมลบ `AI_MODEL` ใน `.env.local` ของตัวเอง

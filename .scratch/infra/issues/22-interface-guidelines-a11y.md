@@ -45,10 +45,6 @@ Refs: INFRA-08, INFRA-09, web-interface-guidelines review
 
 ---
 
-18 ก.ค. (A) — **ปิด** · branch `fix/infra-22-a11y`
+18 ก.ค. (A) — **ปิด** · branch `fix/infra-22-a11y` · ทำครบทั้ง 5 ข้อ (DisruptorTick keyboard · แชท aria-live · error `role="alert"` ×3 · ellipsis · themeColor)
 
-ทำครบ: DisruptorTick keyboard (role/tabIndex/aria-label/aria-expanded/onKeyDown เฉพาะวันมี disruptor) · แชท `role="log"`+`aria-live` + error `role="alert"` · goal cards ×2 error `role="alert"` · ellipsis 6 จุด · themeColor light/dark
-
-**พิสูจน์:** e2e **42/42** production build (เดิม 39 · +3 = เทสต์คีย์บอร์ด × 3 project) · stash ตัวแก้ disruptor แล้วรัน → เทสต์แดง (`not.toHaveCount(0)` fail เพราะไม่มี `[role=button]`) → เอา fix กลับ → เขียว · screenshot: Tab ถึง marker เห็น focus ring, Enter เปิด popover "เรียนเช้า" + note โดยไม่ใช้เมาส์ · format/lint/tsc/test 135
-
-**e2e guard เพิ่ม:** focus marker → Enter → popover เปิด (ปุ่ม "ปิด" โผล่เมื่อ locked) — กันไม่ให้ keyboard access หายเงียบถ้าใครแก้ overlay ต่อ
+**e2e guard เพิ่ม:** focus marker → Enter → popover เปิด — กันไม่ให้ keyboard access หายเงียบถ้าใครแก้ overlay ต่อ
